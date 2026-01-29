@@ -2,10 +2,11 @@ import { useState } from "react";
 import NavLinks from "./NavLinks";
 import Close from "@/assets/close.svg";
 import Chess from "@/assets/chess.svg";
+import PlusIcon from "@/assets/plus.svg";
 import { MOCK_GROUPS } from "@/components/gnb/mocks/groups";
 import type { Group } from "@/types/group";
 
-const ITEM_DELAY = 1000; // 각 항목 간 딜레이 (ms)
+const ITEM_DELAY = 200; // 각 항목 간 딜레이 (ms)
 
 // 모바일 메뉴 아이템 타입 정의
 type MobileMenuItem =
@@ -31,7 +32,9 @@ export default function GnbMobileMenu({
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (isOpen: boolean) => void;
 }) {
-  const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
+  const [selectedItem, setSelectedItem] = useState<number | "board" | null>(
+    null,
+  );
 
   // type: "team"만 찾음
   const teamItems = mobileMenuItems.filter(
@@ -50,18 +53,16 @@ export default function GnbMobileMenu({
 
   return (
     <div
-      className={`bg-background-primary fixed top-0 z-50 w-full transition-all duration-300 ${
-        isMobileMenuOpen
-          ? "h-screen opacity-100"
-          : "h-0 overflow-hidden opacity-50"
+      className={`bg-background-primary fixed top-0 z-50 h-screen w-full transition-transform duration-300 ${
+        isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <div className="relative px-[12px] py-[68px]">
+      <div className="relative px-[16px] py-[68px]">
         {/* 팀 목록 */}
         <div className="px-0 py-6">
-          <ul className="min-w-0 space-y-2 overflow-hidden">
+          <ul className="mb-2 min-w-0 space-y-2 overflow-hidden">
             {teamItems.map((item, index) => {
-              const isSelected = selectedGroupId === item.data.id;
+              const isSelected = selectedItem === item.data.id;
               const animationProps = getAnimationProps(index);
 
               return (
@@ -72,14 +73,14 @@ export default function GnbMobileMenu({
                 >
                   <button
                     type="button"
-                    onClick={() => setSelectedGroupId(item.data.id)}
-                    className={`text-lg-m hover:bg-surface-tertiary flex h-[52px] w-full items-center gap-3 rounded-[12px] px-4 text-left ${isSelected ? "bg-brand-secondary text-brand-primary" : ""}`}
+                    onClick={() => setSelectedItem(item.data.id)}
+                    className={`group text-lg-m hover:bg-brand-secondary flex h-[52px] w-full items-center gap-3 rounded-[12px] px-4 text-left ${isSelected ? "bg-brand-secondary text-brand-primary" : ""}`}
                   >
                     <Chess
-                      className={`h-[20px] w-[20px] flex-shrink-0 ${isSelected ? "" : "text-[#CBD5E1]"}`}
+                      className={`group-hover:text-brand-primary h-[20px] w-[20px] flex-shrink-0 ${isSelected ? "text-brand-primary" : "text-[#CBD5E1]"}`}
                     />
                     <span
-                      className={`text-lg-r text-color-primary line-clamp-2 ${isSelected ? "text-lg-sb text-brand-primary" : ""}`}
+                      className={`group-hover:text-brand-primary group-hover:text-lg-sb text-lg-r line-clamp-2 ${isSelected ? "text-lg-sb text-brand-primary" : "text-color-primary"}`}
                     >
                       {item.data.name}
                     </span>
@@ -95,13 +96,18 @@ export default function GnbMobileMenu({
               getItemIndex("addTeamButton"),
             );
             return (
-              <button
-                type="button"
-                className={animationProps.className}
-                style={animationProps.style}
-              >
-                팀 추가하기
-              </button>
+              <div className="">
+                <button
+                  type="button"
+                  className={`${animationProps.className} group text-md-sb text-brand-primary border-brand-primary hover:bg-brand-primary flex h-[42px] w-full justify-center rounded-[8px] border align-middle hover:text-white`}
+                  style={animationProps.style}
+                >
+                  <span className="flex items-center gap-1">
+                    <PlusIcon className="text-brand-primary h-4 w-4 group-hover:text-white" />
+                    팀 추가하기
+                  </span>
+                </button>
+              </div>
             );
           })()}
         </div>
@@ -110,6 +116,8 @@ export default function GnbMobileMenu({
         <NavLinks
           isMobileMenuOpen={isMobileMenuOpen}
           animationDelay={getItemIndex("navLinks") * ITEM_DELAY}
+          isSelected={selectedItem === "board"}
+          onSelect={() => setSelectedItem("board")}
         />
 
         <button

@@ -4,22 +4,65 @@ import NavLinks from "./NavLinks";
 import TeamSelector from "./TeamSelector";
 import UserArea from "./UserArea";
 import GnbMobileMenu from "./GnbMobileMenu";
+import FoldIcon from "@/assets/fold-true.svg";
+import UnFoldIcon from "@/assets/fold-false.svg";
 
 export default function Gnb() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<number | "board" | null>(
+    null,
+  );
+
+  const [isFolded, setIsFolded] = useState(false);
+
+  const handleFoldToggle = () => setIsFolded(!isFolded);
 
   return (
     <div>
-      <header className="w-full md:w-[270px] md:shrink-0">
+      <header
+        className={`relative w-full border-l border-solid border-[#E2E8F0] transition-all duration-300 md:flex md:h-screen md:shrink-0 md:flex-col ${
+          isFolded ? "md:w-[72px]" : "md:w-[270px]"
+        }`}
+      >
         {/* <GnbHeader /> */}
-        <UserArea onMenuOpen={setIsMobileMenuOpen} />
-        <GnbMobileMenu
-          isMobileMenuOpen={isMobileMenuOpen}
-          setIsMobileMenuOpen={setIsMobileMenuOpen}
-        />
-        <TeamSelector />
-        <NavLinks />
-        <GnbFooter className="hidden md:block" />
+        <div>
+          <UserArea onMenuOpen={setIsMobileMenuOpen} isFolded={isFolded} />
+        </div>
+        <div>
+          <GnbMobileMenu
+            isMobileMenuOpen={isMobileMenuOpen}
+            setIsMobileMenuOpen={setIsMobileMenuOpen}
+          />
+          <TeamSelector
+            selectedItem={selectedItem}
+            onSelectItem={setSelectedItem}
+            isFolded={isFolded}
+          />
+          <NavLinks
+            isSelected={selectedItem === "board"}
+            onSelect={() => setSelectedItem("board")}
+            isFolded={isFolded}
+          />
+        </div>
+        <div
+          className={`mt-auto hidden border-t border-[#E2E8F0] pb-6 md:block ${isFolded ? "mx-0 px-[20px]" : "mx-4"}`}
+        >
+          <GnbFooter className="mt-[20px]" isFolded={isFolded} />
+        </div>
+
+        <div
+          className={`absolute hidden md:block ${isFolded ? "top-8 right-0 translate-x-1/2" : "top-[34px] right-[24px]"}`}
+        >
+          <button type="button" onClick={handleFoldToggle}>
+            {isFolded ? (
+              <div className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E2E8F0]">
+                <UnFoldIcon className="h-6 w-6" />
+              </div>
+            ) : (
+              <FoldIcon />
+            )}
+          </button>
+        </div>
       </header>
     </div>
   );

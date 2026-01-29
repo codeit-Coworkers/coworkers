@@ -6,28 +6,50 @@ import GnbUserProfile from "./GnbUserProfile";
 
 type UserAreaProps = {
   onMenuOpen: (isOpen: boolean) => void;
+  isFolded?: boolean;
 };
 
-export default function UserArea({ onMenuOpen }: UserAreaProps) {
+export default function UserArea({
+  onMenuOpen,
+  isFolded = false,
+}: UserAreaProps) {
+  if (isFolded) {
+    return (
+      <div className="flex h-[96px] items-center justify-center">
+        <Link to="/" aria-label="홈으로 이동">
+          <div className="flex h-[52px] w-[52px] items-center justify-center">
+            <LogoMobile />
+          </div>
+        </Link>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <div className="flex items-center justify-between px-4 py-3">
+    <div className="px-4 py-3 md:px-6 md:py-[32px]">
+      {/* 모바일 */}
+      <div className="flex items-center justify-between md:hidden">
         <div className="flex items-center gap-3">
           <button
             type="button"
             aria-label="모바일 메뉴 열기"
-            className="md:hidden"
             onClick={() => onMenuOpen(true)}
           >
             <GnbMenu className="h-[24px] w-[24px]" />
           </button>
           <Link to="/" aria-label="홈으로 이동">
-            <LogoMobile className="h-[24px] w-[24px] md:hidden" />
-            <Logo className="hidden aspect-[158/32] w-[102px] md:block md:w-[158px]" />
+            <LogoMobile className="h-[24px] w-[24px]" />
           </Link>
         </div>
-        <div className="md:hidden">
-          <GnbUserProfile />
+        <GnbUserProfile />
+      </div>
+
+      {/* PC */}
+      <div className="hidden md:block">
+        <div className="flex">
+          <Link to="/" aria-label="홈으로 이동">
+            <Logo className="aspect-[158/32] w-[102px] md:w-[158px]" />
+          </Link>
         </div>
       </div>
     </div>
