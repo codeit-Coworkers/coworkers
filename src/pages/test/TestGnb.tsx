@@ -1,3 +1,9 @@
+import Gnb from "@/components/gnb/Gnb";
+
 export default function TestGnb() {
-  return <div>Test GNB Page</div>;
+  return (
+    <div>
+      <Gnb />
+    </div>
+  );
 }
