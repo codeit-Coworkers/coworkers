@@ -9,6 +9,11 @@
     box-sizing: border-box;
   }
 
+  /* font */
+  body {
+    font-family: var(--font-pretendard);
+  }
+
   /* margin reset */
   body,
   h1,
