@@ -95,7 +95,7 @@ const PM_TIMES = [
 ];
 
 export default function CalendarTime({ selectedTime, onSelectTime }: Props) {
-  const [period, setPeriod] = useState<"am" | "pm">("pm");
+  const [period, setPeriod] = useState<"am" | "pm">("am");
   const times = period === "am" ? AM_TIMES : PM_TIMES;
 
   return (
