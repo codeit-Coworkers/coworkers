@@ -69,12 +69,12 @@ export default function GnbUserProfile({ user }: UserProfileProps) {
               />
             </div>
             <div
-              className={`flex flex-col gap-1 text-left transition-opacity ${isFolded ? "pointer-events-none scale-0 opacity-0" : "scale-100 opacity-100 duration-200"}`}
+              className={`min-w-0 flex-1 flex-col gap-1 text-left transition-opacity ${isFolded ? "pointer-events-none scale-0 opacity-0" : "flex scale-100 opacity-100 duration-200"}`}
             >
-              <span className="text-lg-m text-color-primary block truncate">
+              <span className="text-lg-m text-color-primary block max-w-full truncate">
                 {user.name}
               </span>
-              <span className="text-md-m text-color-disabled block truncate">
+              <span className="text-md-m text-color-disabled block max-w-full truncate">
                 {user.team}
               </span>
             </div>
