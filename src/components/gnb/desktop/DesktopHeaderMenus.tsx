@@ -1,7 +1,9 @@
-import { useState } from "react";
 import DesktopTeamSelector from "./DesktopTeamSelector";
 import AddTeamButton from "../shared/AddTeamButton";
 import DesktopNavLinks from "./DesktopNavLinks";
+
+// 임시 상태 관리 훅
+import { useSelectedLink } from "../useSelectedLink";
 
 interface DesktopHeaderMenusProps {
   isFolded: boolean;
@@ -10,9 +12,8 @@ interface DesktopHeaderMenusProps {
 export default function DesktopHeaderMenus({
   isFolded,
 }: DesktopHeaderMenusProps) {
-  const [selectedItem, setSelectedItem] = useState<number | "board" | null>(
-    null,
-  );
+  const { selectedItem, setSelectedItem } = useSelectedLink();
+
   const selectedBoard = selectedItem === "board";
 
   return (

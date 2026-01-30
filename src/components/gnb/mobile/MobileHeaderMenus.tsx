@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Close from "@/assets/close.svg";
 import MobileTeamSelector from "./MobileTeamSelector";
 import AddTeamButton from "../shared/AddTeamButton";
@@ -8,6 +7,8 @@ import {
   getItemIndex,
   menuSlideDownProps,
 } from "../utils/menuSlideDown";
+// 임시 상태 관리 훅
+import { useSelectedLink } from "../useSelectedLink";
 
 interface MobileHeaderMenusProps {
   isOpen: boolean;
@@ -18,9 +19,8 @@ export default function MobileHeaderMenus({
   isOpen,
   onClose,
 }: MobileHeaderMenusProps) {
-  const [selectedItem, setSelectedItem] = useState<number | "board" | null>(
-    null,
-  );
+  const { selectedItem, setSelectedItem } = useSelectedLink();
+
   const selectedBoard = selectedItem === "board";
 
   const addTeamAnimationProps = menuSlideDownProps(
