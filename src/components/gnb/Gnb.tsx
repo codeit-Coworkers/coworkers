@@ -20,7 +20,7 @@ export default function Gnb() {
   return (
     <div>
       <header
-        className={`relative w-full border-l border-solid border-[#E2E8F0] transition-all duration-300 md:flex md:h-screen md:shrink-0 md:flex-col ${
+        className={`relative w-full border-r border-solid border-[#E2E8F0] transition-all duration-300 md:flex md:h-screen md:shrink-0 md:flex-col ${
           isFolded ? "md:w-[72px]" : "md:w-[270px]"
         }`}
       >
@@ -30,15 +30,18 @@ export default function Gnb() {
         </div>
         <div>
           <GnbMobileMenu
+            className="md:hidden"
             isMobileMenuOpen={isMobileMenuOpen}
             setIsMobileMenuOpen={setIsMobileMenuOpen}
           />
           <TeamSelector
+            className="hidden md:block"
             selectedItem={selectedItem}
             onSelectItem={setSelectedItem}
             isFolded={isFolded}
           />
           <NavLinks
+            className="hidden md:block"
             isSelected={selectedItem === "board"}
             onSelect={() => setSelectedItem("board")}
             isFolded={isFolded}
@@ -55,7 +58,7 @@ export default function Gnb() {
         >
           <button type="button" onClick={handleFoldToggle}>
             {isFolded ? (
-              <div className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E2E8F0]">
+              <div className="bg-background-primary flex h-8 w-8 items-center justify-center rounded-full border border-[#E2E8F0]">
                 <UnFoldIcon className="h-6 w-6" />
               </div>
             ) : (

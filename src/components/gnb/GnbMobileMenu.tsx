@@ -26,9 +26,11 @@ const getItemIndex = (type: Exclude<MobileMenuItem["type"], "team">) =>
   mobileMenuItems.findIndex((item) => item.type === type);
 
 export default function GnbMobileMenu({
+  className,
   isMobileMenuOpen,
   setIsMobileMenuOpen,
 }: {
+  className?: string;
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (isOpen: boolean) => void;
 }) {
@@ -55,7 +57,7 @@ export default function GnbMobileMenu({
     <div
       className={`bg-background-primary fixed top-0 z-50 h-screen w-full transition-transform duration-300 ${
         isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
-      }`}
+      } ${className}`}
     >
       <div className="relative px-[16px] py-[68px]">
         {/* 팀 목록 */}

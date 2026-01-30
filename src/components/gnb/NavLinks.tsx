@@ -6,7 +6,9 @@ export default function NavLinks({
   isSelected = false,
   onSelect,
   isFolded = false,
+  className,
 }: {
+  className?: string;
   isMobileMenuOpen?: boolean;
   animationDelay?: number;
   isSelected?: boolean;
@@ -35,7 +37,7 @@ export default function NavLinks({
         isMobileMenuOpen
           ? "mx-0 animate-[fadeDown_0.5s_ease-out_forwards] opacity-0"
           : "mx-4"
-      }`}
+      } ${className}`}
       style={isMobileMenuOpen ? { animationDelay: `${animationDelay}ms` } : {}}
     >
       <div className="mt-[12px]">
