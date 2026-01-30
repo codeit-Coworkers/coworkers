@@ -1,5 +1,4 @@
 import { useState } from "react";
-import PlusIcon from "@/assets/plus.svg";
 import Chess from "@/assets/chess.svg";
 import ArrowDown from "@/assets/arrow-down.svg";
 import { MOCK_GROUPS } from "@/components/gnb/mocks/groups";
@@ -14,6 +13,8 @@ import {
   type MobileMenuItem,
 } from "./utils/menuSlideDown";
 import NavLinks from "./NavLinks";
+import TeamListItem from "./TeamListItem";
+import AddTeamButton from "./AddTeamButton";
 
 export default function TeamSelector({
   className,
@@ -70,20 +71,11 @@ export default function TeamSelector({
                       className={animationProps.className}
                       style={animationProps.style}
                     >
-                      <button
-                        type="button"
+                      <TeamListItem
+                        name={item.data.name}
+                        isSelected={isSelected}
                         onClick={() => setSelectedItem(item.data.id)}
-                        className={`group text-lg-m hover:bg-brand-secondary flex h-[52px] w-full items-center gap-3 rounded-[12px] px-4 text-left ${isSelected ? "bg-brand-secondary text-brand-primary" : ""}`}
-                      >
-                        <Chess
-                          className={`group-hover:text-brand-primary h-[20px] w-[20px] flex-shrink-0 ${isSelected ? "text-brand-primary" : "text-[#CBD5E1]"}`}
-                        />
-                        <span
-                          className={`group-hover:text-brand-primary group-hover:text-lg-sb text-lg-r line-clamp-2 ${isSelected ? "text-lg-sb text-brand-primary" : "text-color-primary"}`}
-                        >
-                          {item.data.name}
-                        </span>
-                      </button>
+                      />
                     </li>
                   );
                 })}
@@ -96,18 +88,11 @@ export default function TeamSelector({
                   isMobileMenuOpen,
                 );
                 return (
-                  <div className="">
-                    <button
-                      type="button"
-                      className={`${animationProps.className} group text-md-sb text-brand-primary border-brand-primary hover:bg-brand-primary flex h-[42px] w-full justify-center rounded-[8px] border align-middle hover:text-white`}
-                      style={animationProps.style}
-                    >
-                      <span className="flex items-center gap-1">
-                        <PlusIcon className="text-brand-primary h-4 w-4 group-hover:text-white" />
-                        팀 추가하기
-                      </span>
-                    </button>
-                  </div>
+                  <AddTeamButton
+                    size="md"
+                    className={animationProps.className}
+                    style={animationProps.style}
+                  />
                 );
               })()}
             </div>
@@ -178,33 +163,16 @@ export default function TeamSelector({
             const isSelected = selectedItem === group.id;
             return (
               <li key={group.id}>
-                <button
-                  type="button"
+                <TeamListItem
+                  name={group.name}
+                  isSelected={isSelected}
                   onClick={() => onSelectItem?.(group.id)}
-                  className={`group text-lg-m hover:bg-brand-secondary flex h-[52px] w-full items-center gap-3 rounded-[12px] px-4 text-left ${isSelected ? "bg-brand-secondary text-brand-primary" : ""}`}
-                >
-                  <Chess
-                    className={`group-hover:text-brand-primary h-[20px] w-[20px] flex-shrink-0 ${isSelected ? "text-brand-primary" : "text-[#CBD5E1]"}`}
-                  />
-                  <span
-                    className={`text-lg-r group-hover:text-brand-primary group-hover:text-lg-sb line-clamp-2 ${isSelected ? "text-lg-sb text-brand-primary" : "text-color-primary"}`}
-                  >
-                    {group.name}
-                  </span>
-                </button>
+                />
               </li>
             );
           })}
         </ul>
-        <button
-          type="button"
-          className="group text-md-sb text-brand-primary border-brand-primary hover:bg-brand-primary flex h-[33px] w-full justify-center rounded-[8px] border align-middle hover:text-white"
-        >
-          <span className="flex items-center gap-1">
-            <PlusIcon className="text-brand-primary h-4 w-4 group-hover:text-white" />
-            팀 추가하기
-          </span>
-        </button>
+        <AddTeamButton size="sm" />
       </div>
     </div>
   );
