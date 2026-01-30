@@ -22,11 +22,12 @@ module.exports = {
           cyan: "#06B6D4",
           pink: "#EC4899",
           rose: "#F43F5E",
+          orange: "#F97316",
         },
 
         /* Background */
         background: {
-          primary: "#FFFFFF",
+          primary: "#0F172A",
           secondary: "#F1F5F9",
           tertiary: "#E2E8F0",
           inverse: "#FFFFFF",
@@ -46,6 +47,7 @@ module.exports = {
         "color-default": "#64748B",
         "color-inverse": "#FFFFFF",
         "color-disabled": "#94A3B8",
+        "border-primary": "#F8FAFC",
 
         /* Status */
         status: {
@@ -54,8 +56,8 @@ module.exports = {
 
         /* Icon */
         icon: {
-          primary: "#E2E8F0",
-          inverse: "#E2E8F0",
+          primary: "#64748B",
+          inverse: "#F8FAFC",
           brand: "#74A1FB",
         },
       },
