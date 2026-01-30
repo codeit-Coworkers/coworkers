@@ -101,19 +101,17 @@ export default function CalendarTime({ selectedTime, onSelectTime }: Props) {
   return (
     <>
       <style>{`
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 8px; /* 너비를 조금 넓히고 */
-      }
-      .custom-scrollbar::-webkit-scrollbar-thumb {
-        background-color: #94A3B8;
-        border-radius: 10px;
-        border: 2px solid white; 
-        background-clip: padding-box;
-      }
-      .custom-scrollbar::-webkit-scrollbar-track {
-        background-color: transparent;
-      }
-    `}</style>
+        /* 1. Chrome, Safari, Edge (Webkit) */
+        .custom-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* 2. Firefox */
+        .custom-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+        }
+      `}</style>
 
       {/* 전체 컨테이너 */}
       <div className="border-border-primary box-border flex h-44 w-[288px] gap-3.5 rounded-[20px] border bg-white p-3 shadow-sm">
