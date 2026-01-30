@@ -3,7 +3,6 @@ import GnbFooter from "./GnbFooter";
 import NavLinks from "./NavLinks";
 import TeamSelector from "./TeamSelector";
 import UserArea from "./UserArea";
-import GnbMobileMenu from "./GnbMobileMenu";
 import FoldIcon from "@/assets/fold-true.svg";
 import UnFoldIcon from "@/assets/fold-false.svg";
 
@@ -34,16 +33,11 @@ export default function Gnb() {
           <UserArea onMenuOpen={setIsMobileMenuOpen} isFolded={isFolded} />
         </div>
         <div>
-          <GnbMobileMenu
-            className="md:hidden"
-            isMobileMenuOpen={isMobileMenuOpen}
-            setIsMobileMenuOpen={setIsMobileMenuOpen}
-          />
           <TeamSelector
-            className="hidden md:block"
-            selectedItem={selectedItem}
             onSelectItem={setSelectedItem}
             isFolded={isFolded}
+            isMobileMenuOpen={isMobileMenuOpen}
+            setIsMobileMenuOpen={setIsMobileMenuOpen}
           />
           <NavLinks
             className="hidden md:block"
