@@ -20,4 +20,8 @@ export const testRoutes = [
     path: "/test/badge",
     element: <TestBadge />,
   },
+  {
+    path: "/test/gnb",
+    element: <TestGnb />,
+  },
 ];
