@@ -6,11 +6,8 @@ import Layout from "@/components/layout/Layout";
 
 export const router = createBrowserRouter([
   {
-    element: <Layout />,
-    children: [
-      { path: "/", element: <Home /> },
-      { path: "/user", element: <User /> },
-    ],
+    path: "/",
+    element: <Home />,
   },
   {
     path: "/user/:id",
@@ -18,4 +15,9 @@ export const router = createBrowserRouter([
   },
 
   ...testRoutes,
+
+  {
+    element: <Layout />,
+    children: [{ path: "/user", element: <User /> }],
+  },
 ]);
