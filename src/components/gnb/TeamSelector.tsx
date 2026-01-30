@@ -19,6 +19,7 @@ export default function TeamSelector({
 
   const isTeamSelected = typeof selectedItem === "number";
 
+  // 접혔을 때
   if (isFolded) {
     const firstGroupId = MOCK_GROUPS[0]?.id;
     return (
@@ -35,6 +36,7 @@ export default function TeamSelector({
       </div>
     );
   }
+
   return (
     <div className={`px-4 py-6 ${className}`}>
       <button

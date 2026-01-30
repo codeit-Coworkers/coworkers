@@ -3,27 +3,13 @@ import NavLinks from "./NavLinks";
 import Close from "@/assets/close.svg";
 import Chess from "@/assets/chess.svg";
 import PlusIcon from "@/assets/plus.svg";
-import { MOCK_GROUPS } from "@/components/gnb/mocks/groups";
-import type { Group } from "@/types/group";
-
-const ITEM_DELAY = 200; // 각 항목 간 딜레이 (ms)
-
-// 모바일 메뉴 아이템 타입 정의
-type MobileMenuItem =
-  | { type: "team"; data: Group }
-  | { type: "addTeamButton" }
-  | { type: "navLinks" };
-
-// 전체 아이템 순서 정의 - 이 배열 순서가 애니메이션 순서
-const mobileMenuItems: MobileMenuItem[] = [
-  ...MOCK_GROUPS.map((group) => ({ type: "team" as const, data: group })),
-  { type: "addTeamButton" as const },
-  { type: "navLinks" as const },
-];
-
-// 특정 타입 아이템의 인덱스 찾기
-const getItemIndex = (type: Exclude<MobileMenuItem["type"], "team">) =>
-  mobileMenuItems.findIndex((item) => item.type === type);
+import {
+  ITEM_DELAY,
+  mobileMenuItems,
+  getItemIndex,
+  getAnimationProps,
+  type MobileMenuItem,
+} from "./utils/menuSlideDown";
 
 export default function GnbMobileMenu({
   className,
@@ -44,15 +30,6 @@ export default function GnbMobileMenu({
       item.type === "team",
   );
 
-  const getAnimationProps = (index: number) => {
-    if (!isMobileMenuOpen) return {};
-
-    return {
-      className: "opacity-0 animate-[fadeDown_0.5s_ease-out_forwards]",
-      style: { animationDelay: `${index * ITEM_DELAY}ms` },
-    };
-  };
-
   return (
     <div
       className={`bg-background-primary fixed top-0 z-50 h-screen w-full transition-transform duration-300 ${
@@ -65,7 +42,7 @@ export default function GnbMobileMenu({
           <ul className="mb-2 min-w-0 space-y-2 overflow-hidden">
             {teamItems.map((item, index) => {
               const isSelected = selectedItem === item.data.id;
-              const animationProps = getAnimationProps(index);
+              const animationProps = getAnimationProps(index, isMobileMenuOpen);
 
               return (
                 <li
@@ -96,6 +73,7 @@ export default function GnbMobileMenu({
           {(() => {
             const animationProps = getAnimationProps(
               getItemIndex("addTeamButton"),
+              isMobileMenuOpen,
             );
             return (
               <div className="">

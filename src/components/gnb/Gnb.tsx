@@ -8,12 +8,17 @@ import FoldIcon from "@/assets/fold-true.svg";
 import UnFoldIcon from "@/assets/fold-false.svg";
 
 export default function Gnb() {
+  // TODO: 나중에 전역 상태/Context로 교체
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // 사이드바 접힙/펼치기
+  const [isFolded, setIsFolded] = useState(false);
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<number | "board" | null>(
     null,
   );
-
-  const [isFolded, setIsFolded] = useState(false);
 
   const handleFoldToggle = () => setIsFolded(!isFolded);
 
