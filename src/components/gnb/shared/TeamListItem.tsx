@@ -5,7 +5,6 @@ interface TeamListItemProps {
   isSelected: boolean;
   onClick: () => void;
   className?: string;
-  style?: React.CSSProperties;
 }
 
 export default function TeamListItem({
@@ -13,14 +12,12 @@ export default function TeamListItem({
   isSelected,
   onClick,
   className,
-  style,
 }: TeamListItemProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={`group text-lg-m hover:bg-brand-secondary flex h-[52px] w-full items-center gap-3 rounded-[12px] px-4 text-left ${isSelected ? "bg-brand-secondary text-brand-primary" : ""} ${className ?? ""}`}
-      style={style}
     >
       <Chess
         className={`group-hover:text-brand-primary h-[20px] w-[20px] flex-shrink-0 ${isSelected ? "text-brand-primary" : "text-[#CBD5E1]"}`}

@@ -1,0 +1,96 @@
+import { useState } from "react";
+import Close from "@/assets/close.svg";
+import { useIsMobile } from "@/hooks/useMediaQuery";
+import TeamSelector from "./TeamSelector.tsx.bak";
+import AddTeamButton from "./AddTeamButton";
+import NavLinks from "./NavLinks.tsx.bak";
+import {
+  ITEM_DELAY,
+  getItemIndex,
+  menuSlideDownProps,
+} from "./utils/menuSlideDown";
+
+interface HeaderMenusProps {
+  className?: string;
+  isMobileMenuOpen?: boolean;
+  setIsMobileMenuOpen?: (isOpen: boolean) => void | undefined;
+  isFolded?: boolean;
+}
+
+export default function HeaderMenus({
+  className,
+  isMobileMenuOpen = false,
+  setIsMobileMenuOpen,
+  isFolded = false,
+}: HeaderMenusProps) {
+  const [selectedItem, setSelectedItem] = useState<number | "board" | null>(
+    null,
+  );
+  const selectedBoard = selectedItem === "board";
+  const isMobile = useIsMobile();
+
+  // 모바일
+  if (isMobile) {
+    const addTeamAnimationProps = menuSlideDownProps(
+      getItemIndex("addTeamButton"),
+      isMobileMenuOpen,
+    );
+
+    return (
+      <div
+        className={`bg-background-primary fixed top-0 z-50 h-screen w-full transition-transform duration-300 ${
+          isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
+        } ${className ?? ""}`}
+      >
+        <div className="relative px-[16px] py-[68px]">
+          {/* 팀 목록 */}
+          <div className="px-0 py-6">
+            <TeamSelector
+              isMobileMenuOpen={isMobileMenuOpen}
+              selectedItem={selectedItem}
+              onSelectItem={(id) => setSelectedItem(id)}
+            />
+            <AddTeamButton
+              size="md"
+              className={addTeamAnimationProps.className}
+              style={addTeamAnimationProps.style}
+            />
+          </div>
+          <NavLinks
+            isMobileMenuOpen={isMobileMenuOpen}
+            animationDelay={getItemIndex("navLinks") * ITEM_DELAY}
+            isSelected={selectedBoard}
+            onSelect={() => setSelectedItem("board")}
+          />
+
+          <button
+            type="button"
+            className="absolute top-4 right-4"
+            onClick={() => setIsMobileMenuOpen?.(false)}
+          >
+            <Close />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // PC
+  return (
+    <div className={className}>
+      <TeamSelector
+        isFolded={isFolded}
+        selectedItem={selectedItem}
+        onSelectItem={(id) => setSelectedItem(id)}
+      />
+      <div className={isFolded ? "mt-2 px-2" : "px-4"}>
+        <AddTeamButton size="sm" />
+      </div>
+      <NavLinks
+        isSelected={selectedBoard}
+        onSelect={() => setSelectedItem("board")}
+        isFolded={isFolded}
+      />
+    </div>
+  );
+}

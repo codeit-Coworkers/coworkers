@@ -2,10 +2,10 @@ import Logo from "@/assets/logo.svg";
 import LogoMobile from "@/assets/logo-mobile.svg";
 import GnbMenu from "@/assets/gnb-menu.svg";
 import { Link } from "react-router-dom";
-import GnbUserProfile from "./GnbUserProfile";
+import GnbUserProfile from "./shared/GnbUserProfile";
 
 type UserAreaProps = {
-  onMenuOpen: (isOpen: boolean) => void;
+  onMenuOpen?: (isOpen: boolean) => void;
   isFolded?: boolean;
 };
 
@@ -33,7 +33,7 @@ export default function UserArea({
           <button
             type="button"
             aria-label="모바일 메뉴 열기"
-            onClick={() => onMenuOpen(true)}
+            onClick={() => onMenuOpen?.(true)}
           >
             <GnbMenu className="h-[24px] w-[24px]" />
           </button>

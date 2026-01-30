@@ -21,7 +21,7 @@ export const getItemIndex = (type: Exclude<MobileMenuItem["type"], "team">) =>
   mobileMenuItems.findIndex((item) => item.type === type);
 
 // 애니메이션 props 생성
-export const getAnimationProps = (index: number, isOpen: boolean) => {
+export const menuSlideDownProps = (index: number, isOpen: boolean) => {
   if (!isOpen) return {};
 
   return {

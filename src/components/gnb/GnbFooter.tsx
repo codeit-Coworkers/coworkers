@@ -1,4 +1,4 @@
-import GnbUserProfile from "./GnbUserProfile";
+import GnbUserProfile from "./shared/GnbUserProfile";
 
 type GnbFooterProps = {
   className?: string;
