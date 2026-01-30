@@ -8,7 +8,7 @@ import {
   menuSlideDownProps,
 } from "../utils/menuSlideDown";
 // 임시 상태 관리 훅
-import { useSelectedLink } from "../useSelectedLink";
+import { useGnbStore } from "../useGnbStore";
 interface MobileHeaderMenusProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,7 +18,7 @@ export default function MobileHeaderMenus({
   isOpen,
   onClose,
 }: MobileHeaderMenusProps) {
-  const { selectedItem, setSelectedItem } = useSelectedLink();
+  const { selectedItem, setSelectedItem } = useGnbStore();
 
   const selectedBoard = selectedItem === "board";
 
@@ -30,7 +30,9 @@ export default function MobileHeaderMenus({
   return (
     <div
       className={`bg-background-primary fixed top-0 z-50 h-screen w-full transition-transform duration-300 ${
-        isOpen ? "translate-y-0" : "-translate-y-full"
+        isOpen
+          ? "translate-y-0 opacity-100"
+          : "pointer-events-none z-[-1] -translate-y-full opacity-0"
       }`}
     >
       <div className="relative px-[16px] py-[68px]">
@@ -40,6 +42,7 @@ export default function MobileHeaderMenus({
             selectedItem={selectedItem}
             onSelectItem={(id) => setSelectedItem(id)}
           />
+
           <AddTeamButton
             size="md"
             className={addTeamAnimationProps.className}

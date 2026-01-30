@@ -1,33 +1,25 @@
 import DesktopTeamSelector from "./DesktopTeamSelector";
 import AddTeamButton from "../shared/AddTeamButton";
 import DesktopNavLinks from "./DesktopNavLinks";
+import { useGnbStore } from "../useGnbStore";
 
-// 임시 상태 관리 훅
-import { useSelectedLink } from "../useSelectedLink";
-
-interface DesktopHeaderMenusProps {
-  isFolded: boolean;
-}
-
-export default function DesktopHeaderMenus({
-  isFolded,
-}: DesktopHeaderMenusProps) {
-  const { selectedItem, setSelectedItem } = useSelectedLink();
+export default function DesktopHeaderMenus() {
+  const isFolded = useGnbStore((state) => state.isFolded);
+  // 임시 상태 관리 훅
+  const { selectedItem, setSelectedItem } = useGnbStore();
 
   const selectedBoard = selectedItem === "board";
 
   return (
     <div>
       <DesktopTeamSelector
-        isFolded={isFolded}
         selectedItem={selectedItem}
         onSelectItem={(id) => setSelectedItem(id)}
       />
-      <div className={isFolded ? "mt-2 px-2" : "px-4"}>
+      <div className={isFolded ? "hidden" : "mb-6 px-4"}>
         <AddTeamButton size="sm" />
       </div>
       <DesktopNavLinks
-        isFolded={isFolded}
         isSelected={selectedBoard}
         onSelect={() => setSelectedItem("board")}
       />

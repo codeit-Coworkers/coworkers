@@ -1,12 +1,10 @@
 import Logo from "@/assets/logo.svg";
 import LogoMobile from "@/assets/logo-mobile.svg";
 import { Link } from "react-router-dom";
+import { useGnbStore } from "../useGnbStore";
 
-interface DesktopUserAreaProps {
-  isFolded: boolean;
-}
-
-export default function DesktopUserArea({ isFolded }: DesktopUserAreaProps) {
+export default function DesktopUserArea() {
+  const isFolded = useGnbStore((state) => state.isFolded);
   if (isFolded) {
     return (
       <div className="flex h-[96px] items-center justify-center">

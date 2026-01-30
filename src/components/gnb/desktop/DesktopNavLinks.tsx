@@ -1,16 +1,16 @@
 import BoardIcon from "@/assets/board.svg";
+import { useGnbStore } from "../useGnbStore";
 
 interface DesktopNavLinksProps {
-  isFolded: boolean;
   isSelected: boolean;
   onSelect: () => void;
 }
 
 export default function DesktopNavLinks({
-  isFolded,
   isSelected,
   onSelect,
 }: DesktopNavLinksProps) {
+  const isFolded = useGnbStore((state) => state.isFolded);
   if (isFolded) {
     return (
       <div className="mt-2 flex justify-center">

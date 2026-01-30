@@ -3,18 +3,18 @@ import Chess from "@/assets/chess.svg";
 import ArrowDown from "@/assets/arrow-down.svg";
 import { MOCK_GROUPS } from "@/components/gnb/mocks/groups";
 import TeamListItem from "../shared/TeamListItem";
+import { useGnbStore } from "../useGnbStore";
 
 interface DesktopTeamSelectorProps {
-  isFolded: boolean;
   selectedItem: number | "board" | null;
   onSelectItem: (item: number) => void;
 }
 
 export default function DesktopTeamSelector({
-  isFolded,
   selectedItem,
   onSelectItem,
 }: DesktopTeamSelectorProps) {
+  const isFolded = useGnbStore((state) => state.isFolded);
   const [isOpen, setIsOpen] = useState(true);
   const isTeamSelected = typeof selectedItem === "number";
 
@@ -36,7 +36,7 @@ export default function DesktopTeamSelector({
   }
 
   return (
-    <div className="px-4 py-6">
+    <div className="px-4 pt-6 pb-0">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -46,7 +46,7 @@ export default function DesktopTeamSelector({
           className={`group-hover:text-brand-primary h-[20px] w-[20px] text-[#CBD5E1] ${isOpen ? "text-brand-primary" : "text-[#CBD5E1]"}`}
         />
         <span
-          className={`text-lg-sb group-hover:text-brand-primary flex-1 text-left ${isOpen ? "text-brand-primary" : "text-color-disabled"}`}
+          className={`text-lg-sb group-hover:text-brand-primary flex-1 text-left ${isOpen ? "text-brand-primary" : "text-color-disabled"} transition-opacity duration-1000 ${isFolded ? "opacity-0" : "opacity-100"}`}
         >
           팀 선택
         </span>

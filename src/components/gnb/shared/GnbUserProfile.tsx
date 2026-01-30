@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import UserProfileMobile from "@/assets/user-mobile.svg";
 import UserProfile from "@/assets/user.svg";
+import { useGnbStore } from "../useGnbStore";
 
 interface User {
   id: number;
@@ -11,9 +12,9 @@ interface User {
 
 type UserProfileProps = {
   user?: User | null;
-  isFolded?: boolean;
 };
-export default function GnbUserProfile({ user, isFolded }: UserProfileProps) {
+export default function GnbUserProfile({ user }: UserProfileProps) {
+  const isFolded = useGnbStore((state) => state.isFolded);
   user = {
     id: 1,
     name: "홍길동",
@@ -56,9 +57,9 @@ export default function GnbUserProfile({ user, isFolded }: UserProfileProps) {
           <button
             type="button"
             aria-label="유저 프로필 모달 열기 버튼"
-            className="flex items-center gap-3"
+            className={`flex ${isFolded ? "h-[32px]" : "h-auto"} items-center gap-3`}
           >
-            <span
+            <div
               className={`flex-shrink-0 ${isFolded ? "h-8 w-8" : "h-10 w-10"}`}
             >
               <img
@@ -66,17 +67,17 @@ export default function GnbUserProfile({ user, isFolded }: UserProfileProps) {
                 alt={`${user.name} 프로필 이미지`}
                 className="h-full w-full rounded-[12px] object-cover"
               />
-            </span>
-            {!isFolded && (
-              <div className="flex flex-col gap-1 text-left">
-                <span className="text-lg-m text-color-primary">
-                  {user.name}
-                </span>
-                <span className="text-md-m text-color-disabled">
-                  {user.team}
-                </span>
-              </div>
-            )}
+            </div>
+            <div
+              className={`flex flex-col gap-1 text-left transition-opacity ${isFolded ? "pointer-events-none scale-0 opacity-0" : "scale-100 opacity-100 duration-200"}`}
+            >
+              <span className="text-lg-m text-color-primary block truncate">
+                {user.name}
+              </span>
+              <span className="text-md-m text-color-disabled block truncate">
+                {user.team}
+              </span>
+            </div>
           </button>
         </div>
       </div>
