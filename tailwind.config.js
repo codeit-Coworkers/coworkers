@@ -27,7 +27,7 @@ module.exports = {
 
         /* Background */
         background: {
-          primary: "#FFFFFF",
+          primary: "#0F172A",
           secondary: "#F1F5F9",
           tertiary: "#E2E8F0",
           inverse: "#FFFFFF",
