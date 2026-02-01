@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, ReactNode } from "react";
+import {
+  useState,
+  ReactNode,
+  useId,
+  InputHTMLAttributes,
+  TextareaHTMLAttributes,
+} from "react";
 import Searchicon from "../../../assets/search.svg";
 import PasswordVisibilityFalse from "../../../assets/password-visibility-false.svg";
 import PasswordVisibilityTrue from "../../../assets/password-visibility-true.svg";
@@ -32,8 +38,13 @@ const inputVariantClassMap: Record<InputVariant, string> = {
 };
 
 /* 3. Props */
+/**
+ * @interface InputProps
+ * @extends {Omit<InputHTMLAttributes<HTMLInputElement> & TextareaHTMLAttributes<HTMLTextAreaElement>, "size">}
+ */
 interface InputProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>,
+  InputHTMLAttributes<HTMLInputElement> &
+    TextareaHTMLAttributes<HTMLTextAreaElement>,
   "size"
 > {
   label?: string;
@@ -43,7 +54,11 @@ interface InputProps extends Omit<
   rightElement?: ReactNode;
 }
 
-/* 4. Component */
+/**
+ * Coworkers 공통 인풋 컴포넌트
+ * * @description 라벨 클릭 시 인풋 포커스 연결 기능이 포함되어 있습니다.
+ * @param {InputProps} props - 인풋 속성
+ */
 export const Input = ({
   label,
   size = "auth",
@@ -52,24 +67,29 @@ export const Input = ({
   withSearchIcon = false,
   rightElement,
   className = "",
+  id,
   ...props
 }: InputProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const generatedId = useId();
+  const inputId = id || generatedId;
+
   const isPassword = type === "password";
   const isContent = size === "content";
-
   const Tag = isContent ? "textarea" : "input";
 
   return (
     <div className="flex w-full flex-col gap-1">
       {label && (
-        <label className="text-lg-m text-color-secondary truncate text-left">
+        <label
+          htmlFor={inputId}
+          className="text-lg-m text-color-secondary cursor-pointer truncate text-left"
+        >
           {label}
         </label>
       )}
 
       <div className="relative w-full">
-        {/* 검색 아이콘: z-index 추가 및 content일 때 위치 조정 */}
         {withSearchIcon && (
           <Searchicon
             className={`absolute left-3 z-10 h-4 w-4 ${
@@ -80,6 +100,7 @@ export const Input = ({
 
         <Tag
           {...props}
+          id={inputId}
           type={
             !isContent
               ? isPassword && showPassword
@@ -98,7 +119,6 @@ export const Input = ({
           }}
         />
 
-        {/* 비밀번호 토글: z-index 추가 */}
         {isPassword && !rightElement && !isContent && (
           <button
             type="button"
@@ -113,7 +133,6 @@ export const Input = ({
           </button>
         )}
 
-        {/* 커스텀 오른쪽 요소: z-index 추가 */}
         {rightElement && (
           <div className="absolute top-1/2 right-2 z-10 -translate-y-1/2">
             {rightElement}
