@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ArrowDown from "@/assets/arrow-down.svg";
 import User from "@/assets/user.svg";
 import Kebab from "@/assets/kebab.svg";
@@ -8,9 +9,19 @@ import Set from "@/assets/set.svg";
  * 드롭다운 옵션 타입
  *
  * @property {string} label - 화면에 표시될 텍스트
- * @property {string} value - 옵션을 식별하기 위한 값
+ * @property {string} value - 옵션을 식별하기 위한 값(React key 및 선택 식별에 사용)
+ * @property {string} [link] - 선택 시 이동할 라우트 경로 (react-router-dom 사용)
+ * @property {() => void} [action] - 선택 시 실행할 커스텀 액션
+ *
+ * @remarks
+ * - `action`과 `link`가 모두 있는 경우, **action이 우선 실행**됩니다.
  */
-export type Option = { label: string; value: string };
+export type Option = {
+  label: string;
+  value: string;
+  link?: string;
+  action?: () => void;
+};
 
 /**
  * 기본 옵션 프리셋 목록
@@ -97,7 +108,7 @@ type DropdownProps = {
 };
 
 /**
- * 공용 Dropdown 컴포넌트 (프리셋 + 커스텀 옵션 + 다양한 트리거 지원)
+ * 공용 Dropdown 컴포넌트 (프리셋 + 커스텀 옵션 + 다양한 트리거 + 링크/액션 지원)
  *
  * ## 역할
  * - 옵션 목록을 선택할 수 있는 드롭다운 UI를 제공합니다.
@@ -106,12 +117,16 @@ type DropdownProps = {
  *
  * ## 동작 방식
  * - 트리거 클릭 → 목록 열기/닫기
- * - 옵션 클릭 → (선택 유지 옵션에 따라) 선택 상태 반영 + `onSelect` 호출 + 닫기
+ * - 옵션 클릭 → 선택 처리(`keepSelected`) + `onSelect` 호출 + (필요 시) `action/link` 실행 + 닫기
  * - 컴포넌트 외부 클릭 → 자동 닫힘
  *
  * ## 옵션 우선순위
  * 1) `options` (커스텀 옵션)
  * 2) `DEFAULT_LIST[optionsKey]` (프리셋 옵션)
+ *
+ * ## 선택 시 실행 우선순위
+ * 1) `item.action()` 실행
+ * 2) `item.link`가 있으면 `navigate(item.link)` 이동
  *
  * ## 사용 예시
  * @example
@@ -123,20 +138,20 @@ type DropdownProps = {
  * />
  *
  * @example
- * // 2) 아이콘 트리거 + 선택 유지 안함 (메뉴)
+ * // 2) 커스텀 옵션 + 라우팅 이동
  * <Dropdown
- *   optionsKey="edit"
- *   trigger="kebab"
+ *   trigger="user"
+ *   options={[
+ *     { label: "마이페이지", value: "mypage", link: "/mypage" },
+ *     { label: "로그아웃", value: "logout", action: () => logout() },
+ *   ]}
  *   keepSelected={false}
- *   onSelect={(item) => {
- *     if (item.value === "삭제하기") console.log("delete");
- *   }}
  * />
  *
  * ## 주의사항
- * - 이 컴포넌트는 내부적으로 `document.addEventListener("click", ...)`를 사용합니다.
- *   (브라우저 환경에서만 동작)
- * - 현재는 단일 선택(single select) 구조이며, 멀티 선택은 지원하지 않습니다.
+ * - 이 컴포넌트는 내부적으로 `document.addEventListener("click", ...)`를 사용합니다. (브라우저 환경)
+ * - `useNavigate()`를 사용하므로 **react-router-dom 환경에서만** 정상 동작합니다.
+ * - 단일 선택(single select) 구조이며 멀티 선택은 지원하지 않습니다.
  */
 export default function Dropdown({
   optionsKey = "newest",
@@ -157,6 +172,9 @@ export default function Dropdown({
 
   /** 외부 클릭 감지를 위한 루트 요소 ref */
   const rootRef = useRef<HTMLDivElement>(null);
+
+  /** react-router-dom 네비게이션 함수 */
+  const navigate = useNavigate();
 
   /** 최종 옵션: 커스텀 옵션이 있으면 우선, 없으면 프리셋 사용 */
   const finalOptions = options ?? DEFAULT_LIST[optionsKey];
@@ -179,11 +197,22 @@ export default function Dropdown({
   /**
    * 옵션 선택 처리
    *
+   * - keepSelected가 true면 선택 상태를 저장합니다.
+   * - onSelect 콜백을 호출합니다.
+   * - item.action이 있으면 실행하고, 없으면 item.link로 이동합니다.
+   *
    * @param {Option} item - 선택된 옵션
    */
   const handleSelect = (item: Option) => {
     if (keepSelected) setSelected(item);
     onSelect?.(item);
+
+    if (item.action) {
+      item.action();
+    } else if (item.link) {
+      navigate(item.link);
+    }
+
     setOpen(false);
   };
 
