@@ -35,4 +35,8 @@ export const testRoutes = [
     path: "/test/calendar",
     element: <TestCalendar />,
   },
+  {
+    path: "/test/dropdown",
+    element: <TestDropdown />,
+  },
 ];
