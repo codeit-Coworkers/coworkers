@@ -80,7 +80,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhb
   "monthDay": 2
 }
 
+
+### 할 일 항목 조회
+GET https://fe-project-cowokers.vercel.app/20-3/groups/3810/task-lists/5284/tasks?date=2026-03-02
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMDI1NTY5LCJleHAiOjE3NzAwMjkxNjksImlzcyI6InNwLWNvd29ya2VycyJ9.l89Ud6dkkwbWONmMHBAthDGqian-nQFhvl1sZaQwvtE
+
 ### 할 일 항목 조회
 GET https://fe-project-cowokers.vercel.app/20-3/groups/3810/tasks?date=2026-03-02
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMDE4NDQ4LCJleHAiOjE3NzAwMjIwNDgsImlzcyI6InNwLWNvd29ya2VycyJ9.bNlhgSaBkG8gtLtrkLMQn4SsUutKnr7FSq8pXAdu4M4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMDI1NTY5LCJleHAiOjE3NzAwMjkxNjksImlzcyI6InNwLWNvd29ya2VycyJ9.l89Ud6dkkwbWONmMHBAthDGqian-nQFhvl1sZaQwvtE
