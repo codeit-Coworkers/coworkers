@@ -4,7 +4,7 @@ import TestButton from "@/pages/test/TestButton";
 import TestBadge from "@/pages/test/TestBadge";
 import TestTodo from "@/pages/test/TestTodo";
 import TestCalendar from "@/pages/test/TestCalendar";
-import TestPostCard from "@/pages/test/TestPostCard";
+import TestChip from "@/pages/test/TestChip";
 
 export const testRoutes = [
   {
@@ -24,6 +24,10 @@ export const testRoutes = [
     element: <TestBadge />,
   },
   {
+    path: "/test/chip",
+    element: <TestChip />,
+  },
+  {
     path: "/test/todo",
     element: <TestTodo />,
   },
@@ -32,7 +36,7 @@ export const testRoutes = [
     element: <TestCalendar />,
   },
   {
-    path: "/test/postcard",
-    element: <TestPostCard />,
+    path: "/test/dropdown",
+    element: <TestDropdown />,
   },
 ];
