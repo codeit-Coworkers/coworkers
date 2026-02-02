@@ -47,7 +47,7 @@ module.exports = {
         "color-default": "#64748B",
         "color-inverse": "#FFFFFF",
         "color-disabled": "#94A3B8",
-        "border-primary": "#F8FAFC",
+        "border-primary": "#E2E8F0",
 
         /* Status */
         status: {
@@ -118,9 +118,19 @@ module.exports = {
             transform: "translateY(0)",
           },
         },
+        marqueeAnimation: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
+        progressPulse: {
+          "0%, 100%": { filter: "brightness(1.0)" },
+          "50%": { filter: "brightness(1.2)" },
+        },
       },
       animation: {
         fadeDown: "fadeDown 0.5s ease-out forwards",
+        marqueeAnimation: "marqueeAnimation 90s linear infinite",
+        "progress-pulse": "progressPulse 4s ease-in-out infinite",
       },
     },
   },
