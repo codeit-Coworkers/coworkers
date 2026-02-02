@@ -50,6 +50,15 @@ export default function TestIndex() {
               📅 Calendar & TimePicker
             </Link>
           </li>
+
+          <li>
+            <Link
+              to="/test/postcard"
+              className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:border-gray-300 hover:bg-gray-100"
+            >
+              📝 PostCard (자유게시판)
+            </Link>
+          </li>
         </ul>
       </div>
     </div>

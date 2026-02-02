@@ -4,6 +4,7 @@ import TestButton from "@/pages/test/TestButton";
 import TestBadge from "@/pages/test/TestBadge";
 import TestTodo from "@/pages/test/TestTodo";
 import TestCalendar from "@/pages/test/TestCalendar";
+import TestPostCard from "@/pages/test/TestPostCard";
 
 export const testRoutes = [
   {
@@ -29,5 +30,9 @@ export const testRoutes = [
   {
     path: "/test/calendar",
     element: <TestCalendar />,
+  },
+  {
+    path: "/test/postcard",
+    element: <TestPostCard />,
   },
 ];
