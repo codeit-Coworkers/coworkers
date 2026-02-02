@@ -1,0 +1,3 @@
+// 임시 사용 토큰
+export const TASKIFY_ACCESS_TOKEN =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMDE4NDQ4LCJleHAiOjE3NzAwMjIwNDgsImlzcyI6InNwLWNvd29ya2VycyJ9.bNlhgSaBkG8gtLtrkLMQn4SsUutKnr7FSq8pXAdu4M4";
