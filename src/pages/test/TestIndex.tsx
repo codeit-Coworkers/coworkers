@@ -38,8 +38,9 @@ export default function TestIndex() {
             <Link
               to="/test/todo"
               className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:border-gray-300 hover:bg-gray-100"
-            />
-            todo
+            >
+              todo
+            </Link>
           </li>
 
           <li>
@@ -52,10 +53,18 @@ export default function TestIndex() {
           </li>
           <li>
             <Link
+              to="/test/toast"
+              className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:border-gray-300 hover:bg-gray-100"
+            >
+              Toast
+            </Link>
+          </li>
+          <li>
+            <Link
               to="/test/dropdown"
               className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:border-gray-300 hover:bg-gray-100"
             >
-              Dorpdown
+              Dropdown
             </Link>
           </li>
         </ul>
