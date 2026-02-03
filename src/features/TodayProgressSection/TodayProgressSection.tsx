@@ -12,16 +12,19 @@ type TodayProgressSectionProps = {
       userId: number;
       userImage: string;
       userName: string;
+      role: string;
     }[];
   };
   allTasks: {
     doneAt: string | null;
   }[];
+  isAdmin?: boolean;
 };
 
 export default function TodayProgressSection({
   groupData,
   allTasks,
+  isAdmin = false,
 }: TodayProgressSectionProps) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,7 +45,7 @@ export default function TodayProgressSection({
   const progressPercentage = Math.round((doneCount / allTasksCount) * 100);
 
   return (
-    <div className="md: bg-background-inverse relative rounded-[20px]">
+    <div className="md: bg-background-inverse relative rounded-[20px] shadow-[0_15px_50px_-12px_rgba(0,0,0,0.05)]">
       {/* header */}
       <div className="flex w-full items-center justify-between px-[26px] pt-[20px] pb-[34px] md:pt-[30px] lg:pt-[32px] lg:pr-[84px] lg:pb-[37px]">
         <div className="flex items-center gap-2">
@@ -68,29 +71,31 @@ export default function TodayProgressSection({
             </div>
           </div>
         </div>
-        <div>
-          <button
-            type="button"
-            className="right-[38px] bottom-[36px] z-1 lg:absolute"
-          >
-            {/* <OptionIcon /> */}
-            <Dropdown
-              optionsKey="edit"
-              listAlign="left"
-              trigger="set"
-              options={[
-                { label: "수정하기", value: "edit", action: handleEdit },
-                { label: "삭제하기", value: "delete", action: handleDelete },
-              ]}
-            />
-          </button>
-          <Modal
-            isOpen={isDeleteModalOpen}
-            onClose={() => setIsDeleteModalOpen(false)}
-          >
-            <DangerModal onClose={() => setIsDeleteModalOpen(false)} />
-          </Modal>
-        </div>
+        {isAdmin && (
+          <div>
+            <button
+              type="button"
+              className="right-[38px] bottom-[36px] z-1 lg:absolute"
+            >
+              {/* <OptionIcon /> */}
+              <Dropdown
+                optionsKey="edit"
+                listAlign="left"
+                trigger="set"
+                options={[
+                  { label: "수정하기", value: "edit", action: handleEdit },
+                  { label: "삭제하기", value: "delete", action: handleDelete },
+                ]}
+              />
+            </button>
+            <Modal
+              isOpen={isDeleteModalOpen}
+              onClose={() => setIsDeleteModalOpen(false)}
+            >
+              <DangerModal onClose={() => setIsDeleteModalOpen(false)} />
+            </Modal>
+          </div>
+        )}
       </div>
 
       {/* content */}

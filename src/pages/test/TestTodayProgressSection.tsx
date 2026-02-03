@@ -1,6 +1,7 @@
-import TodayProgressSection from "@/features/TodayProgressSection";
+import TodayProgressSection from "@/features/TodayProgressSection/TodayProgressSection";
 import { useGroup } from "@/api/userGroups";
 import { useAllTasks } from "@/api/tasks";
+import { useUser } from "@/api/user";
 
 // 목업 그룹 데이터 (API 실패 시 폴백용)
 const mockGroupData = {
@@ -11,21 +12,25 @@ const mockGroupData = {
       userId: 1,
       userImage: "https://picsum.photos/seed/user1/100/100",
       userName: "김관리자",
+      role: "ADMIN",
     },
     {
       userId: 2,
       userImage: "https://picsum.photos/seed/user2/100/100",
       userName: "이멤버",
+      role: "MEMBER",
     },
     {
       userId: 3,
       userImage: "https://picsum.photos/seed/user3/100/100",
       userName: "박개발",
+      role: "MEMBER",
     },
     {
       userId: 4,
       userImage: "https://picsum.photos/seed/user4/100/100",
       userName: "최디자인",
+      role: "MEMBER",
     },
   ],
 };
@@ -42,6 +47,7 @@ const mockTasks = [
 export default function TestProgressSection() {
   const { data: apiGroupData, isLoading: groupLoading } = useGroup(3810);
   const { data: apiTasks, isLoading: allTasksLoading } = useAllTasks(3810);
+  const { data: user } = useUser();
 
   if (groupLoading || allTasksLoading) {
     return <div>로딩 중...</div>;
@@ -51,9 +57,18 @@ export default function TestProgressSection() {
   const groupData = apiGroupData ?? mockGroupData;
   const allTasks = apiTasks ?? mockTasks;
 
+  // 현재 그룹에서 관리자인지 확인
+  const isAdmin =
+    user?.memberships.find((member) => member.groupId === groupData.id)
+      ?.role === "ADMIN";
+
   return (
     <div>
-      <TodayProgressSection groupData={groupData} allTasks={allTasks} />
+      <TodayProgressSection
+        groupData={groupData}
+        allTasks={allTasks}
+        isAdmin={isAdmin}
+      />
     </div>
   );
 }
