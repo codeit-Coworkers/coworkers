@@ -64,6 +64,7 @@ module.exports = {
 
       fontSize: {
         "4xl-m": ["40px", { lineHeight: "48px", fontWeight: "500" }],
+        "4xl-b": ["40px", { lineHeight: "48px", fontWeight: "700" }],
 
         "3xl-b": ["32px", { lineHeight: "38px", fontWeight: "700" }],
         "3xl-sb": ["32px", { lineHeight: "38px", fontWeight: "600" }],

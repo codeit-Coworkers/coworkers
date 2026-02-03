@@ -26,16 +26,16 @@ export default function TodayProgressSection({
   const progressPercentage = Math.round((doneCount / allTasksCount) * 100);
 
   return (
-    <div>
+    <div className="md: bg-background-inverse relative rounded-[20px]">
       {/* header */}
-      <div className="flex w-full items-center justify-between px-[26px] pt-[20px] pb-[34px]">
+      <div className="flex w-full items-center justify-between px-[26px] pt-[20px] pb-[34px] md:pt-[30px] lg:pt-[32px] lg:pr-[84px] lg:pb-[37px]">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl-b">{groupData.name || "경영관리 팀"}</h2>
+          <h2 className="text-xl-b md:text-2xl-b">{groupData.name}</h2>
           <div className="border-border-primary align-center bg-background-inverse flex gap-[6px] rounded-[8px] border p-1 pr-[8px]">
             <div className="flex">
               {groupData.members.slice(0, 3).map((member, index) => (
                 <div
-                  className="border-color-inverse relative -ml-[7px] h-[20px] w-[20px] overflow-hidden rounded-[6px] border first:ml-0"
+                  className="border-color-inverse relative -ml-[7px] h-[20px] w-[20px] overflow-hidden rounded-[6px] border first:ml-0 md:h-[24px] md:w-[24px]"
                   style={{ zIndex: 3 - index }}
                   key={member.userId}
                 >
@@ -47,40 +47,47 @@ export default function TodayProgressSection({
                 </div>
               ))}
             </div>
-            <div className="text-sm-m text-color-default leading-[20px]">
+            <div className="text-sm-m text-color-default leading-[20px] md:leading-[24px]">
               {groupData.members.length}
             </div>
           </div>
         </div>
         <div>
-          <button type="button">
-            <OptionIcon className="h-[20px] w-[20px]" />
+          <button
+            type="button"
+            className="right-[38px] bottom-[36px] lg:absolute"
+          >
+            <OptionIcon className="h-[20px] w-[20px] md:h-[24px] md:w-[24px]" />
           </button>
         </div>
       </div>
       {/* content */}
-      <div className="flex items-center justify-between px-[26px]">
+      <div className="flex items-center justify-between px-[26px] lg:pr-[84px]">
         <div>
-          <h3 className="text-xs-m text-color-disabled">오늘의 진행 상황</h3>
-          <strong className="text-brand-primary text-3xl-b">
+          <h3 className="text-xs-m text-color-disabled md:text-md-m">
+            오늘의 진행 상황
+          </h3>
+          <strong className="text-brand-primary text-3xl-b md:text-4xl-b">
             {progressPercentage}%
           </strong>
         </div>
         <div className="flex gap-[32px]">
           <div className="before:bg-border-primary relative text-center before:absolute before:top-0 before:right-[-16px] before:h-full before:w-px">
             <p className="text-xs-m text-color-disabled">오늘의 할 일</p>
-            <p className="text-2xl-b text-color-default mt-1">
+            <p className="text-2xl-b text-color-default md:text-3xl-b mt-1">
               {allTasksCount}
             </p>
           </div>
           <div className="text-center">
             <p className="text-xs-m text-color-disabled">완료🙌</p>
-            <p className="text-2xl-b text-brand-primary mt-1">{doneCount}</p>
+            <p className="text-2xl-b text-brand-primary md:text-3xl-b mt-1">
+              {doneCount}
+            </p>
           </div>
         </div>
       </div>
       {/* progress bar */}
-      <div className="relative mt-3 flex px-[26px]">
+      <div className="relative mt-3 flex px-[26px] pb-[30px] md:mt-4 md:pb-[34px] lg:mt-4 lg:pr-[84px] lg:pb-[34px]">
         <div
           className="relative h-[20px] w-full overflow-hidden rounded-full"
           role="progressbar"
