@@ -20,7 +20,7 @@ export default function AddTeamButton({
       <button
         type="button"
         onClick={onClick}
-        className={`group text-md-sb text-brand-primary border-brand-primary hover:bg-brand-primary flex w-full justify-center rounded-[8px] border align-middle hover:text-white ${heightClass} ${className ?? ""}`}
+        className={`group text-md-sb text-brand-primary border-brand-primary hover:bg-brand-primary flex w-full justify-center rounded-[8px] border hover:text-white ${heightClass} ${className ?? ""}`}
         style={style}
       >
         <span className="flex items-center gap-1">
