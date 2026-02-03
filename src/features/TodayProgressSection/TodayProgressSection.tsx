@@ -14,10 +14,8 @@ export default function TodayProgressSection({
 }: TodayProgressSectionProps) {
   // 데이터 조회
   const { data: groupData } = useGroup(groupId);
-  const { data: allTasks } = useAllTasks(groupId);
+  const { data: allTasks } = useAllTasks(groupId, "2026-03-02");
   const { data: user } = useUser();
-
-  console.log(user);
 
   // 관리자 여부 확인
   const isAdmin =

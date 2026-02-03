@@ -14,8 +14,8 @@ POST https://fe-project-cowokers.vercel.app/20-3/auth/signin
 Content-Type: application/json
 
 {
-  "email": "testuser125@test.com",
-  "password": "testuser125@"
+  "email": "testuser123@test.com",
+  "password": "testuser123@"
 }
 
 ### 회원정보 수정
@@ -58,7 +58,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhb
 ### 그룹(팀) 목록 조회
 GET https://fe-project-cowokers.vercel.app/20-3/user/groups
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMDA2MjQ2LCJleHAiOjE3NzAwMDk4NDYsImlzcyI6InNwLWNvd29ya2VycyJ9.DJSdiCdQGUQs4xEa6Ag7bRkgpaMhEIXzFU-D8o1rOzw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMTQzNDMwLCJleHAiOjE3NzAxNDcwMzAsImlzcyI6InNwLWNvd29ya2VycyJ9.NQhQf87dM0pAUIAdpl5Rs27JFAIKN3_7CY67H5Ov1Qg
 
 
 ### 그룹(팀) 삭제
@@ -93,7 +93,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhb
 ### 할 일 항목 조회
 GET https://fe-project-cowokers.vercel.app/20-3/groups/3810/task-lists/5284/tasks?date=2026-03-02
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMDU5MzYzLCJleHAiOjE3NzAwNjI5NjMsImlzcyI6InNwLWNvd29ya2VycyJ9.TsL7YZ0M2pbss5m70IVM4JHmG7Ky5EOlAN5rAROwdpU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMTQzNDMwLCJleHAiOjE3NzAxNDcwMzAsImlzcyI6InNwLWNvd29ya2VycyJ9.NQhQf87dM0pAUIAdpl5Rs27JFAIKN3_7CY67H5Ov1Qg
 
 ### 할 일 항목 조회
 GET https://fe-project-cowokers.vercel.app/20-3/groups/3810/tasks?date=2026-03-02
