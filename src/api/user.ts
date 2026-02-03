@@ -1,30 +1,51 @@
+// ========================================
+// User API
+// Swagger: user
+// ========================================
+
 import { User } from "@/types/user";
+import { GroupSummaryServer } from "@/types/group";
 import { BASE_URL } from "./config";
 import { TASKIFY_ACCESS_TOKEN } from "./auth";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { fetchClient } from "@/lib/fetchClient";
 
 // 현재 로그인한 사용자 조회
 export async function getUser(): Promise<User> {
-  const response = await fetch(`${BASE_URL}/user`, {
+  return await fetchClient(`${BASE_URL}/user`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
     },
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch user");
-  }
-
-  return response.json();
 }
 
 // react-query를 활용한 사용자 조회 훅
 export function useUser() {
-  return useQuery<User>({
+  return useSuspenseQuery<User>({
     queryKey: ["user"],
     queryFn: () => getUser(),
     staleTime: 1000 * 60 * 5, // 5분
+  });
+}
+
+// 그룹 목록 조회 (사용자가 속한 그룹)
+export async function getGroups(): Promise<GroupSummaryServer[]> {
+  return await fetchClient(`${BASE_URL}/user/groups`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
+    },
+  });
+}
+
+// react-query를 활용한 그룹 목록 조회 훅
+export function useGroups() {
+  return useSuspenseQuery<GroupSummaryServer[]>({
+    queryKey: ["groups"],
+    queryFn: getGroups,
+    staleTime: 1000 * 10, // 10초
   });
 }

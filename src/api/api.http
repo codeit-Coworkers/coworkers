@@ -14,8 +14,8 @@ POST https://fe-project-cowokers.vercel.app/20-3/auth/signin
 Content-Type: application/json
 
 {
-  "email": "testuser123@test.com",
-  "password": "testuser123@"
+  "email": "testuser125@test.com",
+  "password": "testuser125@"
 }
 
 ### 회원정보 수정

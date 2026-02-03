@@ -1,7 +1,13 @@
-import { TaskServer } from "@/types/taskList";
+// ========================================
+// Task API
+// Swagger: task
+// ========================================
+
+import { TaskServer } from "@/types/task";
 import { BASE_URL } from "./config";
 import { TASKIFY_ACCESS_TOKEN } from "./auth";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { fetchClient } from "@/lib/fetchClient";
 
 // Tasks 목록 조회(그룹 전체 항목)
 export async function getAllTasks(
@@ -13,24 +19,18 @@ export async function getAllTasks(
     url.searchParams.append("date", date);
   }
 
-  const response = await fetch(url, {
+  return await fetchClient(url.toString(), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
     },
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch Alltasks");
-  }
-
-  return response.json();
 }
 
 // react-query를 활용한 Tasks 목록 조회 훅(그룹 전체 항목)
 export function useAllTasks(groupId: number, date?: string) {
-  return useQuery<TaskServer[]>({
+  return useSuspenseQuery<TaskServer[]>({
     queryKey: ["allTasks", groupId, date],
     queryFn: () => getAllTasks(groupId, date),
     staleTime: 1000 * 60 * 5,

@@ -1,5 +1,18 @@
-import type { GroupMemberServer } from "./member";
-import type { TaskListServer } from "./taskList";
+// ========================================
+// Group Types
+// ========================================
+
+import type { TaskListServer } from "./tasklist";
+
+// 그룹 멤버
+export interface GroupMemberServer {
+  role: "ADMIN" | "MEMBER";
+  userImage: string;
+  userEmail: string;
+  userName: string;
+  groupId: number;
+  userId: number;
+}
 
 // 그룹 목록 아이템
 export interface GroupSummaryServer {
