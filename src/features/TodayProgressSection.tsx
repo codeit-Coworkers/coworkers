@@ -1,16 +1,18 @@
-import { GroupMemberServer } from "@/types/member";
 import OptionIcon from "@/assets/set.svg";
-import { Task } from "@/types/taskList";
-
-type GroupDataProps = {
-  name: string;
-  id: number;
-  members: GroupMemberServer[];
-};
 
 type TodayProgressSectionProps = {
-  groupData: GroupDataProps;
-  allTasks: Task[];
+  groupData: {
+    name: string;
+    id: number;
+    members: {
+      userId: number;
+      userImage: string;
+      userName: string;
+    }[];
+  };
+  allTasks: {
+    doneAt: string | null;
+  }[];
 };
 
 export default function TodayProgressSection({
