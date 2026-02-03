@@ -5,7 +5,7 @@ import AlertIcon from "@/assets/alert-white.svg";
  * Coworkers 프로젝트의 공통 알림(Toast) 컴포넌트입니다.
  * * @description
  * - 화면 하단에 고정되어 사용자에게 변경사항 알림 및 저장 액션을 제공합니다.
- * - Desktop(max-w: 868px)과 Mobile(w: 100% - 32px)에 최적화된 Responsive UI를 지원합니다.
+ * - Desktop(max-w: 868px)과 Mobile(w: 100% - 32px)에 최적화된 반응형 UI를 지원합니다.
  * - 웹/태블릿 환경에서는 아이콘이 노출되며, 모바일 환경(sm 미만)에서는 텍스트 공간 확보를 위해 아이콘이 숨겨집니다.
  * * @component
  * @param {Object} props - Toast 컴포넌트의 Props
@@ -31,6 +31,9 @@ interface ToastProps {
 const Toast = ({ message, onSave, onClose, duration = 5000 }: ToastProps) => {
   const [isExiting, setIsExiting] = useState<boolean>(false);
 
+  /**
+   * 토스트를 닫기 전 애니메이션을 실행하고 onClose 콜백을 호출합니다.
+   */
   const handleClose = useCallback(() => {
     setIsExiting(true);
     setTimeout(onClose, 300);
@@ -46,22 +49,22 @@ const Toast = ({ message, onSave, onClose, duration = 5000 }: ToastProps) => {
 
   return (
     <div
-      className={`text-color-inverse flex items-center justify-between bg-[#718AFF] shadow-lg transition-all duration-300 ease-in-out ${isExiting ? "translate-y-2 opacity-0" : "translate-y-0 opacity-100"} w-[calc(100vw-32px)] max-w-217 rounded-2xl px-3 py-3 sm:w-full sm:px-6 sm:py-4`}
+      className={`fixed bottom-8 left-1/2 z-50 flex -translate-x-1/2 items-center justify-between bg-[#718AFF] shadow-lg transition-all duration-300 ease-in-out ${
+        isExiting ? "translate-y-2 opacity-0" : "translate-y-0 opacity-100"
+      } w-[calc(100vw-32px)] max-w-217 rounded-2xl px-3 py-3 sm:w-full sm:px-6 sm:py-4`}
     >
       <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
         <div className="hidden shrink-0 sm:block">
-          <AlertIcon width="24" height="24" className="text-color-inverse" />
+          <AlertIcon width="24" height="24" className="text-white" />
         </div>
-
-        <span className="text-sm-sb sm:text-lg-sb font-semibold whitespace-nowrap">
+        <span className="text-sm font-semibold whitespace-nowrap text-white sm:text-lg">
           {message}
         </span>
       </div>
 
-      {/* 오른쪽: 액션 버튼 */}
       <button
         onClick={onSave}
-        className="bg-color-inverse text-brand-primary hover:bg-opacity-90 text-xs-sb sm:text-md-sb ml-2 h-9 w-auto max-w-35.25 min-w-25 shrink-0 rounded-lg px-2 text-center font-semibold transition-colors sm:h-10 sm:min-w-31.25 sm:px-4"
+        className="hover:bg-opacity-90 sm:text-md ml-2 h-9 w-auto min-w-25 shrink-0 rounded-lg bg-white px-2 text-center text-xs font-bold text-[#718AFF] transition-colors sm:h-10 sm:min-w-31.25 sm:px-4"
       >
         변경사항 저장하기
       </button>
