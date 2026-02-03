@@ -64,7 +64,7 @@ const Toast = ({ message, onSave, onClose, duration = 5000 }: ToastProps) => {
 
       <button
         onClick={onSave}
-        className="hover:bg-opacity-90 sm:text-md bg-background-inverse text-xs-sb text-brand-primary ml-2 h-9 w-auto min-w-25 shrink-0 rounded-lg px-2 text-center transition-colors sm:h-10 sm:min-w-31.25 sm:px-4"
+        className="hover:bg-opacity-90 bg-background-inverse text-md-sb text-brand-primary ml-2 h-9 w-auto min-w-25 shrink-0 rounded-lg px-2 text-center transition-colors sm:h-10 sm:min-w-31.25 sm:px-4"
       >
         변경사항 저장하기
       </button>
