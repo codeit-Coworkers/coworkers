@@ -1,4 +1,8 @@
-import OptionIcon from "@/assets/set.svg";
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import Dropdown from "@/components/common/Dropdown/Dropdown";
+import Modal from "@/components/common/Modal/Modal";
+import DangerModal from "@/components/common/Modal/Contents/DangerModal";
 
 type TodayProgressSectionProps = {
   groupData: {
@@ -19,6 +23,18 @@ export default function TodayProgressSection({
   groupData,
   allTasks,
 }: TodayProgressSectionProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleEdit = () => {
+    navigate(`${location.pathname}/edit`);
+  };
+
+  const handleDelete = () => {
+    setIsDeleteModalOpen(true);
+  };
+
   const allTasksCount = allTasks.length;
 
   const doneCount = allTasks.filter((task) => task.doneAt).length;
@@ -55,10 +71,25 @@ export default function TodayProgressSection({
         <div>
           <button
             type="button"
-            className="right-[38px] bottom-[36px] lg:absolute"
+            className="right-[38px] bottom-[36px] z-1 lg:absolute"
           >
-            <OptionIcon className="h-[20px] w-[20px] md:h-[24px] md:w-[24px]" />
+            {/* <OptionIcon /> */}
+            <Dropdown
+              optionsKey="edit"
+              listAlign="center"
+              trigger="set"
+              options={[
+                { label: "수정하기", value: "edit", action: handleEdit },
+                { label: "삭제하기", value: "delete", action: handleDelete },
+              ]}
+            />
           </button>
+          <Modal
+            isOpen={isDeleteModalOpen}
+            onClose={() => setIsDeleteModalOpen(false)}
+          >
+            <DangerModal onClose={() => setIsDeleteModalOpen(false)} />
+          </Modal>
         </div>
       </div>
       {/* content */}
