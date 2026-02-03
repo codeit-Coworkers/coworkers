@@ -4,10 +4,25 @@
 
 :root {
   --spacing: 0.25rem;
-  --font-pretendard: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
-    Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
-    "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol", sans-serif;
+  --font-pretendard:
+    "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    sans-serif;
 }
 
 @import "./reset.css";
+
+@layer base {
+  *,
+  a,
+  button,
+  input,
+  textarea,
+  select {
+    transition-property:
+      color, background-color, border-color, opacity, box-shadow, transform;
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+  }
+}
