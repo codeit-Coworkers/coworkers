@@ -49,22 +49,22 @@ const Toast = ({ message, onSave, onClose, duration = 5000 }: ToastProps) => {
 
   return (
     <div
-      className={`fixed bottom-8 left-1/2 z-50 flex -translate-x-1/2 items-center justify-between bg-[#718AFF] shadow-lg transition-all duration-300 ease-in-out ${
+      className={`bg-brand-primary fixed bottom-8 left-1/2 z-50 flex -translate-x-1/2 items-center justify-between shadow-lg transition-all duration-300 ease-in-out ${
         isExiting ? "translate-y-2 opacity-0" : "translate-y-0 opacity-100"
       } w-[calc(100vw-32px)] max-w-217 rounded-2xl px-3 py-3 sm:w-full sm:px-6 sm:py-4`}
     >
       <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
         <div className="hidden shrink-0 sm:block">
-          <AlertIcon width="24" height="24" className="text-white" />
+          <AlertIcon width="24" height="24" className="text-color-inverse" />
         </div>
-        <span className="text-sm font-semibold whitespace-nowrap text-white sm:text-lg">
+        <span className="text-color-inverse sm:text-lg-sb text-sm whitespace-nowrap">
           {message}
         </span>
       </div>
 
       <button
         onClick={onSave}
-        className="hover:bg-opacity-90 sm:text-md ml-2 h-9 w-auto min-w-25 shrink-0 rounded-lg bg-white px-2 text-center text-xs font-bold text-[#718AFF] transition-colors sm:h-10 sm:min-w-31.25 sm:px-4"
+        className="hover:bg-opacity-90 sm:text-md bg-background-inverse text-xs-sb text-brand-primary ml-2 h-9 w-auto min-w-25 shrink-0 rounded-lg px-2 text-center transition-colors sm:h-10 sm:min-w-31.25 sm:px-4"
       >
         변경사항 저장하기
       </button>
