@@ -1,4 +1,6 @@
 import BestPostCarousel from "@/features/boards/components/BestPostCarousel";
+import { Input } from "@/components/common/Input/Input";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 // 테스트용 더미 데이터
 const MOCK_BEST_POSTS = [
@@ -53,13 +55,46 @@ const MOCK_BEST_POSTS = [
  * 자유게시판 페이지
  */
 export default function Boards() {
+  const isMobile = useIsMobile(); // < 768px
+
   const handleMoreClick = () => {
     console.log("더보기 클릭");
   };
 
+  // 마진 클래스: 데스크톱 87/30, 태블릿 77/29, 모바일 25/20
+  const headerMarginClass = isMobile
+    ? "mt-[25px] mb-[20px]"
+    : "mt-[77px] mb-[29px] lg:mt-[87px] lg:mb-[30px]";
+
+  // 제목 크기: 데스크톱/태블릿 24px, 모바일 20px
+  const titleClass = isMobile ? "text-xl-b" : "text-2xl-b";
+
   return (
-    <div className="bg-background-primary min-h-screen p-6">
-      <div className="mx-auto max-w-[1120px]">
+    <div className="!bg-background-primary min-h-screen">
+      <div className="mx-auto max-w-[1120px] px-4 md:px-6">
+        {/* 헤더: 자유게시판 + 검색창 */}
+        <header
+          className={`${headerMarginClass} ${
+            isMobile
+              ? "flex flex-col gap-5"
+              : "flex items-center justify-between"
+          }`}
+        >
+          <h1 className={`${titleClass} text-color-primary`}>자유게시판</h1>
+
+          {/* 검색창 */}
+          <div className={isMobile ? "w-full" : "w-[420px]"}>
+            <Input
+              variant="search"
+              withSearchIcon
+              placeholder="검색어를 입력해주세요"
+              className={`!rounded-[1000px] !border-2 ${
+                isMobile ? "!h-[48px]" : "!h-[56px]"
+              }`}
+            />
+          </div>
+        </header>
+
         {/* 베스트 게시글 캐러셀 */}
         <BestPostCarousel
           posts={MOCK_BEST_POSTS}
