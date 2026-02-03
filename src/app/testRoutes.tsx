@@ -5,6 +5,7 @@ import TestBadge from "@/pages/test/TestBadge";
 import TestTodo from "@/pages/test/TestTodo";
 import TestCalendar from "@/pages/test/TestCalendar";
 import TestChip from "@/pages/test/TestChip";
+import TestDropdown from "@/pages/test/TestDropdown";
 
 export const testRoutes = [
   {
