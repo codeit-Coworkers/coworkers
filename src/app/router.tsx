@@ -3,6 +3,7 @@ import Home from "@/pages/Home";
 import User from "@/pages/User";
 import Index from "@/pages/Index";
 import { testRoutes } from "./testRoutes";
+import Layout from "@/components/layout/Layout";
 
 export const router = createBrowserRouter([
   {
@@ -19,4 +20,9 @@ export const router = createBrowserRouter([
   },
 
   ...testRoutes,
+
+  {
+    element: <Layout />,
+    children: [{ path: "/user", element: <User /> }],
+  },
 ]);

@@ -4,6 +4,10 @@ import TestButton from "@/pages/test/TestButton";
 import TestBadge from "@/pages/test/TestBadge";
 import TestTodo from "@/pages/test/TestTodo";
 import TestCalendar from "@/pages/test/TestCalendar";
+import TestInput from "@/pages/test/TestInput";
+import TestToast from "@/pages/test/TestToast";
+import TestChip from "@/pages/test/TestChip";
+import TestDropdown from "@/pages/test/TestDropdown";
 
 export const testRoutes = [
   {
@@ -23,11 +27,31 @@ export const testRoutes = [
     element: <TestBadge />,
   },
   {
+    path: "/test/chip",
+    element: <TestChip />,
+  },
+  {
     path: "/test/todo",
     element: <TestTodo />,
   },
   {
     path: "/test/calendar",
     element: <TestCalendar />,
+  },
+  {
+    path: "/test/calendar",
+    element: <TestCalendar />,
+  },
+  {
+    path: "/test/input",
+    element: <TestInput />,
+  },
+  {
+    path: "/test/toast",
+    element: <TestToast />,
+  },
+  {
+    path: "/test/dropdown",
+    element: <TestDropdown />,
   },
 ];
