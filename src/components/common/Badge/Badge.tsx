@@ -1,3 +1,11 @@
+// SVG 아이콘 컴포넌트 import
+import ProgressDone from "@/assets/progress-done.svg?react";
+import ProgressDoneSmall from "@/assets/progress-done-small.svg?react";
+import ProgressOngoing from "@/assets/progress-ongoing.svg?react";
+import ProgressOngoingSmall from "@/assets/progress-ongoing-small.svg?react";
+import ProgressStart from "@/assets/progress-start.svg?react";
+import ProgressStartSmall from "@/assets/progress-start-small.svg?react";
+
 export interface BadgeProps {
   /**
    * Badge 상태
@@ -25,6 +33,13 @@ export interface BadgeProps {
   total: number;
 }
 
+// 아이콘 컴포넌트 맵핑
+const ICON_MAP = {
+  done: { small: ProgressDoneSmall, large: ProgressDone },
+  ongoing: { small: ProgressOngoingSmall, large: ProgressOngoing },
+  start: { small: ProgressStartSmall, large: ProgressStart },
+} as const;
+
 /**
  * Badge 컴포넌트
  *
@@ -40,11 +55,8 @@ export interface BadgeProps {
  * ```
  */
 export default function Badge({ state, size, current, total }: BadgeProps) {
-  // 아이콘 경로 결정
-  const getIconPath = () => {
-    const sizePrefix = size === "small" ? "-small" : "";
-    return `/src/assets/progress-${state}${sizePrefix}.svg`;
-  };
+  // 아이콘 컴포넌트 결정
+  const IconComponent = ICON_MAP[state][size];
 
   // 스타일 결정
   const isZero = current === 0 && total === 0;
@@ -67,13 +79,11 @@ export default function Badge({ state, size, current, total }: BadgeProps) {
       className={`bg-background-inverse inline-flex flex-row items-center justify-center gap-1 ${roundedClass} ${widthClass} ${heightClass} ${paddingClass}`}
     >
       {/* 아이콘 */}
-      <img
-        src={getIconPath()}
-        alt={`${state} icon`}
+      <IconComponent
         width={16}
         height={16}
-        className="flex-shrink-0"
-        style={{ display: "block" }}
+        className="block flex-shrink-0"
+        aria-hidden="true"
       />
 
       {/* 숫자 텍스트 */}
