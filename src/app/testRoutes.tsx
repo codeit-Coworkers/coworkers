@@ -4,10 +4,11 @@ import TestButton from "@/pages/test/TestButton";
 import TestBadge from "@/pages/test/TestBadge";
 import TestTodo from "@/pages/test/TestTodo";
 import TestCalendar from "@/pages/test/TestCalendar";
-import TestTodayProgressSection from "@/pages/test/TestTodayProgressSection";
-import TestDropdown from "@/pages/test/TestDropdown";
+import TestInput from "@/pages/test/TestInput";
 import TestToast from "@/pages/test/TestToast";
 import TestChip from "@/pages/test/TestChip";
+import TestDropdown from "@/pages/test/TestDropdown";
+import TestTodayProgressSection from "@/pages/test/TestTodayProgressSection";
 
 export const testRoutes = [
   {
@@ -39,8 +40,12 @@ export const testRoutes = [
     element: <TestCalendar />,
   },
   {
-    path: "/test/progress-section",
-    element: <TestTodayProgressSection />,
+    path: "/test/calendar",
+    element: <TestCalendar />,
+  },
+  {
+    path: "/test/input",
+    element: <TestInput />,
   },
   {
     path: "/test/toast",
@@ -49,5 +54,9 @@ export const testRoutes = [
   {
     path: "/test/dropdown",
     element: <TestDropdown />,
+  },
+  {
+    path: "/test/todayprogresssection",
+    element: <TestTodayProgressSection />,
   },
 ];

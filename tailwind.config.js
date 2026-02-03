@@ -23,11 +23,12 @@ module.exports = {
           pink: "#EC4899",
           rose: "#F43F5E",
           orange: "#F97316",
+          yellow: "#EAB308",
         },
 
         /* Background */
         background: {
-          primary: "#0F172A",
+          primary: "#FFFFFF",
           secondary: "#F1F5F9",
           tertiary: "#E2E8F0",
           inverse: "#FFFFFF",

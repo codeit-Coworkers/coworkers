@@ -76,7 +76,7 @@ export default function TodayProgressSection({
             {/* <OptionIcon /> */}
             <Dropdown
               optionsKey="edit"
-              listAlign="center"
+              listAlign="left"
               trigger="set"
               options={[
                 { label: "수정하기", value: "edit", action: handleEdit },
@@ -92,6 +92,7 @@ export default function TodayProgressSection({
           </Modal>
         </div>
       </div>
+
       {/* content */}
       <div className="flex items-center justify-between px-[26px] lg:pr-[84px]">
         <div>
