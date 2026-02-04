@@ -8,6 +8,7 @@ import TestInput from "@/pages/test/TestInput";
 import TestToast from "@/pages/test/TestToast";
 import TestChip from "@/pages/test/TestChip";
 import TestDropdown from "@/pages/test/TestDropdown";
+import TestModal from "@/pages/test/TestModal";
 
 export const testRoutes = [
   {
@@ -53,5 +54,9 @@ export const testRoutes = [
   {
     path: "/test/dropdown",
     element: <TestDropdown />,
+  },
+  {
+    path: "/test/modal",
+    element: <TestModal />,
   },
 ];
