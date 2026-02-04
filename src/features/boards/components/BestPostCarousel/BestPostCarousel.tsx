@@ -47,8 +47,12 @@ export default function BestPostCarousel({
   // 현재 페이지 상태
   const [currentPage, setCurrentPage] = useState(0);
 
+  // 화면 크기 변경 시 currentPage가 범위를 초과할 수 있으므로 유효한 값으로 clamp
+  const maxPage = Math.max(0, totalPages - 1);
+  const validCurrentPage = Math.min(currentPage, maxPage);
+
   // 현재 페이지에 표시할 카드들
-  const startIndex = currentPage * cardsPerPage;
+  const startIndex = validCurrentPage * cardsPerPage;
   const visiblePosts = posts.slice(startIndex, startIndex + cardsPerPage);
 
   // 페이지 이동
@@ -115,7 +119,7 @@ export default function BestPostCarousel({
           {/* 점 (가운데) */}
           <CarouselDots
             total={totalPages}
-            current={currentPage}
+            current={validCurrentPage}
             onPageChange={setCurrentPage}
           />
 
@@ -124,8 +128,8 @@ export default function BestPostCarousel({
             <CarouselArrows
               onPrev={handlePrev}
               onNext={handleNext}
-              disablePrev={currentPage === 0}
-              disableNext={currentPage === totalPages - 1}
+              disablePrev={validCurrentPage === 0}
+              disableNext={validCurrentPage === maxPage}
             />
           </div>
         </div>
