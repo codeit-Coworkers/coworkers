@@ -60,6 +60,8 @@ export const testRoutes = [
   {
     path: "/test/modal",
     element: <TestModal />,
+  },
+  {
     path: "/test/todayprogresssection",
     element: <TestTodayProgressSection />,
   },
