@@ -6,8 +6,32 @@ import CalendarTime from "../../Calendar/CalendarTime";
 import getDateTime from "@/utils/dateTime";
 import { useClickOutside } from "@/hooks/useClickOutside";
 
+/**
+ * 요일 표시용 상수 배열
+ * - 반복 요일 선택 UI에서 사용됩니다.
+ */
 const weekDays: string[] = ["일", "월", "화", "수", "목", "금", "토"];
 
+/**
+ * 할 일 생성 모달 콘텐츠 컴포넌트
+ *
+ * ## 역할
+ * - 할 일(Task)을 생성하기 위한 입력 폼 UI를 제공합니다.
+ * - 시작 날짜/시간 선택(Calendar)과 반복 설정(Dropdown)을 포함합니다.
+ *
+ * ## 주요 기능
+ * - 제목/메모 입력 (Input 컴포넌트 사용)
+ * - 시작 날짜 선택 (`CalendarDate`)
+ * - 시작 시간 선택 (`CalendarTime`)
+ * - 반복 설정 선택 (`Dropdown` - optionsKey="repeat")
+ * - 반복 설정이 "주 반복" 또는 "월 반복"인 경우 요일 선택 UI 표시
+ *
+ * ## 동작 방식
+ * - 날짜 입력 클릭 시 날짜 캘린더 레이어가 열립니다.
+ * - 시간 입력 클릭 시 시간 선택 레이어가 열리고, 날짜 레이어는 닫힙니다.
+ * - 캘린더 레이어 바깥을 클릭하면 `useClickOutside`로 레이어가 닫힙니다.
+ * - 반복 설정 dropdown 선택값에 따라 반복 요일 UI가 조건부로 렌더링됩니다.
+ */
 export default function TaskCreateModal() {
   const [date, setDate] = useState<Date | null>(null);
   const [time, setTime] = useState<string | null>(null);
