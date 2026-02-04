@@ -55,6 +55,10 @@ const DEFAULT_LIST = {
     { label: "마이 히스토리", value: "마이 히스토리" },
     { label: "로그아웃", value: "로그아웃" },
   ],
+  taskList: [
+    { label: "목록 수정", value: "목록 수정" },
+    { label: "목록 삭제", value: "목록 삭제" },
+  ],
 };
 
 type OptionsKey = keyof typeof DEFAULT_LIST;
