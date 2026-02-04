@@ -22,6 +22,18 @@ interface BestPostCarouselProps {
   onMoreClick?: () => void;
 }
 
+// Breakpoint별 설정
+type Breakpoint = "mobile" | "tablet" | "desktop";
+
+const CAROUSEL_CONFIG: Record<
+  Breakpoint,
+  { cardsPerPage: number; cardSize: "small" | "large"; titleClass: string }
+> = {
+  mobile: { cardsPerPage: 1, cardSize: "small", titleClass: "text-2lg-b" },
+  tablet: { cardsPerPage: 2, cardSize: "small", titleClass: "text-xl-b" },
+  desktop: { cardsPerPage: 3, cardSize: "large", titleClass: "text-xl-b" },
+};
+
 /**
  * 베스트 게시글 캐러셀 컴포넌트
  *
@@ -29,6 +41,9 @@ interface BestPostCarouselProps {
  * 데스크톱: 3개 카드 (large)
  * 태블릿: 2개 카드 (small)
  * 모바일: 1개 카드 (small)
+ *
+ * breakpoint 변경 시 key가 바뀌어 컴포넌트가 리마운트되며,
+ * 이를 통해 currentPage가 자동으로 0으로 초기화됩니다.
  */
 export default function BestPostCarousel({
   posts,
@@ -37,22 +52,40 @@ export default function BestPostCarousel({
   const isMobile = useIsMobile(); // < 768px
   const isTablet = useIsMobile("lg"); // < 1024px
 
-  // 화면 크기에 따른 카드 개수 및 사이즈
-  const cardsPerPage = isMobile ? 1 : isTablet ? 2 : 3;
-  const cardSize = isMobile || isTablet ? "small" : "large";
+  // breakpoint 식별 - 변경 시 컴포넌트 리마운트
+  const breakpoint: Breakpoint = isMobile
+    ? "mobile"
+    : isTablet
+      ? "tablet"
+      : "desktop";
+
+  return (
+    <BestPostCarouselInner
+      key={breakpoint}
+      posts={posts}
+      onMoreClick={onMoreClick}
+      breakpoint={breakpoint}
+    />
+  );
+}
+
+/** 실제 캐러셀 로직을 담은 내부 컴포넌트 */
+function BestPostCarouselInner({
+  posts,
+  onMoreClick,
+  breakpoint,
+}: BestPostCarouselProps & { breakpoint: Breakpoint }) {
+  const { cardsPerPage, cardSize, titleClass } = CAROUSEL_CONFIG[breakpoint];
 
   // 총 페이지 수
   const totalPages = Math.ceil(posts.length / cardsPerPage);
+  const maxPage = Math.max(0, totalPages - 1);
 
-  // 현재 페이지 상태
+  // 현재 페이지 상태 (breakpoint 변경 시 리마운트되어 0으로 초기화됨)
   const [currentPage, setCurrentPage] = useState(0);
 
-  // 화면 크기 변경 시 currentPage가 범위를 초과할 수 있으므로 유효한 값으로 clamp
-  const maxPage = Math.max(0, totalPages - 1);
-  const validCurrentPage = Math.min(currentPage, maxPage);
-
   // 현재 페이지에 표시할 카드들
-  const startIndex = validCurrentPage * cardsPerPage;
+  const startIndex = currentPage * cardsPerPage;
   const visiblePosts = posts.slice(startIndex, startIndex + cardsPerPage);
 
   // 페이지 이동
@@ -61,11 +94,8 @@ export default function BestPostCarousel({
   };
 
   const handleNext = () => {
-    setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1));
+    setCurrentPage((prev) => Math.min(maxPage, prev + 1));
   };
-
-  // 제목 크기 (모바일: 18px, 그 외: 20px)
-  const titleClass = isMobile ? "text-2lg-b" : "text-xl-b";
 
   return (
     <section className="bg-background-secondary rounded-xl p-6">
@@ -119,7 +149,7 @@ export default function BestPostCarousel({
           {/* 점 (가운데) */}
           <CarouselDots
             total={totalPages}
-            current={validCurrentPage}
+            current={currentPage}
             onPageChange={setCurrentPage}
           />
 
@@ -128,8 +158,8 @@ export default function BestPostCarousel({
             <CarouselArrows
               onPrev={handlePrev}
               onNext={handleNext}
-              disablePrev={validCurrentPage === 0}
-              disableNext={validCurrentPage === maxPage}
+              disablePrev={currentPage === 0}
+              disableNext={currentPage === maxPage}
             />
           </div>
         </div>
