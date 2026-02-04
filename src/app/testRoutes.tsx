@@ -9,6 +9,8 @@ import TestToast from "@/pages/test/TestToast";
 import TestChip from "@/pages/test/TestChip";
 import TestDropdown from "@/pages/test/TestDropdown";
 import TestModal from "@/pages/test/TestModal";
+import TestTodayProgressSection from "@/pages/test/TestTodayProgressSection";
+import TestErrorBoundary from "@/pages/test/TestErrorBoundary";
 
 export const testRoutes = [
   {
@@ -58,5 +60,11 @@ export const testRoutes = [
   {
     path: "/test/modal",
     element: <TestModal />,
+    path: "/test/todayprogresssection",
+    element: <TestTodayProgressSection />,
+  },
+  {
+    path: "/test/error-boundary",
+    element: <TestErrorBoundary />,
   },
 ];

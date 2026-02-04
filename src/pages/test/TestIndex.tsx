@@ -82,6 +82,10 @@ export default function TestIndex() {
               className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:border-gray-300 hover:bg-gray-100"
             >
               Modal
+              to="/test/error-boundary"
+              className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:border-gray-300 hover:bg-gray-100"
+            >
+              ErrorBoundary
             </Link>
           </li>
         </ul>

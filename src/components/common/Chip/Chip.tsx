@@ -48,9 +48,9 @@ export default function Chip({ state, size, count, children }: ChipProps) {
   const textSizeClass = size === "small" ? "text-sm-m" : "text-lg-m";
   const gapClass = size === "small" ? "gap-1" : "gap-1.5"; // gap-1 = 4px, gap-1.5 = 6px
 
-  // state별 스타일
-  const getStateStyles = () => {
-    switch (state) {
+  // state별 스타일 (명시적 인자 전달)
+  const getStateStyles = (currentState: ChipProps["state"]) => {
+    switch (currentState) {
       case "default":
         return {
           bg: "bg-background-inverse",
@@ -82,7 +82,7 @@ export default function Chip({ state, size, count, children }: ChipProps) {
     }
   };
 
-  const { bg, border, labelColor, countColor } = getStateStyles();
+  const { bg, border, labelColor, countColor } = getStateStyles(state); //명시적 인자 전달
 
   return (
     <button
