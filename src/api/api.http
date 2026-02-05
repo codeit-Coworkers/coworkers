@@ -47,23 +47,23 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1NCwidGVhb
 
 POST https://fe-project-cowokers.vercel.app/20-3/groups
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzY5ODQzMTkyLCJleHAiOjE3Njk4NDY3OTIsImlzcyI6InNwLWNvd29ya2VycyJ9.TfDzeY6JWrDgp5CyqqmJmY_ldP4NlinfbsDlkrjz53c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjY3NDY1LCJleHAiOjE3NzAyNzEwNjUsImlzcyI6InNwLWNvd29ya2VycyJ9._rE3LKavX8hKPXG1hpM23qpfBBlHc-wCcNn-ulZSrKc
 
 {
   "image": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=400&h=400&fit=crop",
-  "name": "팀 베타"
+  "name": "요한이의 작업실"
 }
 
 ### 그룹(팀) 목록 조회
-GET https://fe-project-cowokers.vercel.app/20-3/groups/3810
+GET https://fe-project-cowokers.vercel.app/20-3/groups/3818
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjE5MjIwLCJleHAiOjE3NzAyMjI4MjAsImlzcyI6InNwLWNvd29ya2VycyJ9.98Ut1Ivd3Cz-ekrXH8i8DeKUyEU2v3Jh1I7KhR71-9I
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjg5NzM2LCJleHAiOjE3NzAyOTMzMzYsImlzcyI6InNwLWNvd29ya2VycyJ9.bBD7lRSWCHRGHYsl7ThDYf09wr6xfBPq1cxMKavTcLE
 
 
 ### 그룹(팀) 목록 조회
 GET https://fe-project-cowokers.vercel.app/20-3/user/groups
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjE5MjIwLCJleHAiOjE3NzAyMjI4MjAsImlzcyI6InNwLWNvd29ya2VycyJ9.98Ut1Ivd3Cz-ekrXH8i8DeKUyEU2v3Jh1I7KhR71-9I
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjY3NDY1LCJleHAiOjE3NzAyNzEwNjUsImlzcyI6InNwLWNvd29ya2VycyJ9._rE3LKavX8hKPXG1hpM23qpfBBlHc-wCcNn-ulZSrKc
 
 
 ### 그룹(팀) 삭제
@@ -73,31 +73,31 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhb
 
 
 ### 목록(상태) 생성
-POST https://fe-project-cowokers.vercel.app/20-3/groups/3810/task-lists
+POST https://fe-project-cowokers.vercel.app/20-3/groups/3818/task-lists
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjE5MjIwLCJleHAiOjE3NzAyMjI4MjAsImlzcyI6InNwLWNvd29ya2VycyJ9.98Ut1Ivd3Cz-ekrXH8i8DeKUyEU2v3Jh1I7KhR71-9I
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjY3NDY1LCJleHAiOjE3NzAyNzEwNjUsImlzcyI6InNwLWNvd29ya2VycyJ9._rE3LKavX8hKPXG1hpM23qpfBBlHc-wCcNn-ulZSrKc
 
 {
-  "name": "코드잇 수료"
+  "name": "목록 4"
 }
 
 ### 목록(상태) 불러오기
-GET https://fe-project-cowokers.vercel.app/20-3/groups/3810/task-lists
+GET https://fe-project-cowokers.vercel.app/20-3/groups/3818/task-lists
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjE5MjIwLCJleHAiOjE3NzAyMjI4MjAsImlzcyI6InNwLWNvd29ya2VycyJ9.98Ut1Ivd3Cz-ekrXH8i8DeKUyEU2v3Jh1I7KhR71-9I
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjY3NDY1LCJleHAiOjE3NzAyNzEwNjUsImlzcyI6InNwLWNvd29ya2VycyJ9._rE3LKavX8hKPXG1hpM23qpfBBlHc-wCcNn-ulZSrKc
 
 
 
 ### 목록(상태) 삭제
 DELETE https://fe-project-cowokers.vercel.app/20-3/groups/3810/task-lists/5294
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjE5MjIwLCJleHAiOjE3NzAyMjI4MjAsImlzcyI6InNwLWNvd29ya2VycyJ9.98Ut1Ivd3Cz-ekrXH8i8DeKUyEU2v3Jh1I7KhR71-9I
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjY3NDY1LCJleHAiOjE3NzAyNzEwNjUsImlzcyI6InNwLWNvd29ya2VycyJ9._rE3LKavX8hKPXG1hpM23qpfBBlHc-wCcNn-ulZSrKc
 
 
 ### 할 일 항목 생성
 POST https://fe-project-cowokers.vercel.app/20-3/groups/3810/task-lists/5284/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjA5OTIzLCJleHAiOjE3NzAyMTM1MjMsImlzcyI6InNwLWNvd29ya2VycyJ9.vAiFGhDi9twR7mpFcBjmuqHGDyFcl-tSgmtIivj7uqI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjY3NDY1LCJleHAiOjE3NzAyNzEwNjUsImlzcyI6InNwLWNvd29ya2VycyJ9._rE3LKavX8hKPXG1hpM23qpfBBlHc-wCcNn-ulZSrKc
 
 {
   "name": "기능 구현(Card, Component, List)",
@@ -111,7 +111,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhb
 ### 할 일 항목 조회
 GET https://fe-project-cowokers.vercel.app/20-3/groups/3810/task-lists/5284/tasks?date=2026-03-02
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMTQzNDMwLCJleHAiOjE3NzAxNDcwMzAsImlzcyI6InNwLWNvd29ya2VycyJ9.NQhQf87dM0pAUIAdpl5Rs27JFAIKN3_7CY67H5Ov1Qg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjY3NDY1LCJleHAiOjE3NzAyNzEwNjUsImlzcyI6InNwLWNvd29ya2VycyJ9._rE3LKavX8hKPXG1hpM23qpfBBlHc-wCcNn-ulZSrKc
 
 
 ### 할 일 목록:RECURRING 생성
@@ -128,10 +128,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhb
 
 
 ### 할 일 항목 조회
-GET https://fe-project-cowokers.vercel.app/20-3/groups/3810/tasks?date=2026-03-02
+GET https://fe-project-cowokers.vercel.app/20-3/groups/3818/tasks?date=2026-02-07
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMDU5MzYzLCJleHAiOjE3NzAwNjI5NjMsImlzcyI6InNwLWNvd29ya2VycyJ9.TsL7YZ0M2pbss5m70IVM4JHmG7Ky5EOlAN5rAROwdpU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjcxMzEwLCJleHAiOjE3NzAyNzQ5MTAsImlzcyI6InNwLWNvd29ya2VycyJ9.Krtuyz_0owgpEEaIsttGIaO3Wi7f5zDF0qu9wV3f2rw
 
+### 할 일 목록 조회
+GET https://fe-project-cowokers.vercel.app/20-3/groups/3818/task-lists/5308/tasks?date=2026-02-05
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjcxMzEwLCJleHAiOjE3NzAyNzQ5MTAsImlzcyI6InNwLWNvd29ya2VycyJ9.Krtuyz_0owgpEEaIsttGIaO3Wi7f5zDF0qu9wV3f2rw
 
 
 ### 그룹에 유저 생성
@@ -143,23 +147,32 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhb
   "userEmail": "testuser126@test.com"
 }
 
+
 ### 할 일 생성:todo
-POST https://fe-project-cowokers.vercel.app/20-3/groups/3810/task-lists/5296/tasks
+POST https://fe-project-cowokers.vercel.app/20-3/groups/3818/task-lists/5310/tasks
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjIyODc2LCJleHAiOjE3NzAyMjY0NzYsImlzcyI6InNwLWNvd29ya2VycyJ9.jmKejxx4pj-4mx8sZ4I3eiXDmIOAmc0Rb8bViwxYbcg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjg5NzM2LCJleHAiOjE3NzAyOTMzMzYsImlzcyI6InNwLWNvd29ya2VycyJ9.bBD7lRSWCHRGHYsl7ThDYf09wr6xfBPq1cxMKavTcLE
 
 {
-  "name": "회원가입 페이지 구현",
-  "description": "회원가입 페이지 구현",
-  "startDate": "2026-02-04T20:00:00Z",
+  "name": "내일 날짜로 할 일 생성 테스트",
+  "description": "내일 날짜로 할 일 생성 테스트 내일 날짜로 할 일 생성 테스트",
+  "startDate": "2026-02-06T10:00:00Z",
   "frequencyType": "ONCE"
 }
 
-### 할 일 수정:todo
-PATCH https://fe-project-cowokers.vercel.app/20-3/groups/3810/task-lists/5295/tasks/29360
+
+### 할 일 조회:todo
+GET https://fe-project-cowokers.vercel.app/20-3/groups/3818/task-lists/5309/tasks/29375
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjE5MjIwLCJleHAiOjE3NzAyMjI4MjAsImlzcyI6InNwLWNvd29ya2VycyJ9.98Ut1Ivd3Cz-ekrXH8i8DeKUyEU2v3Jh1I7KhR71-9I
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjg5NzM2LCJleHAiOjE3NzAyOTMzMzYsImlzcyI6InNwLWNvd29ya2VycyJ9.bBD7lRSWCHRGHYsl7ThDYf09wr6xfBPq1cxMKavTcLE
+
+
+### 할 일 수정:todo
+PATCH https://fe-project-cowokers.vercel.app/20-3/groups/3810/task-lists/5309/tasks/29379
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMjg5NzM2LCJleHAiOjE3NzAyOTMzMzYsImlzcyI6InNwLWNvd29ya2VycyJ9.bBD7lRSWCHRGHYsl7ThDYf09wr6xfBPq1cxMKavTcLE
 
 {
   "done": true
 }
+

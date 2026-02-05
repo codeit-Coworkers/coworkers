@@ -3,9 +3,21 @@ import Dropdown from "@/components/common/Dropdown/Dropdown";
 import Todo from "@/components/common/Todo/todo";
 import AddListIcon from "@/assets/plus.svg";
 import { useGroup } from "@/api/group";
+import Modal from "@/components/common/Modal/Modal";
+import { useState } from "react";
+import ListCreateModal from "@/components/common/Modal/Contents/ListCreateModal";
 
 export default function TaskColumn() {
-  const { data: groupData } = useGroup(3810);
+  const { data: groupData } = useGroup(3818);
+
+  console.log(groupData);
+
+  /** 현재 모달 열림 여부 */
+  const [isOpen, setIsOpen] = useState(false);
+
+  /** 모달 열기, 닫기 */
+  const handleModalOpen = () => setIsOpen(true);
+  const handleModalClose = () => setIsOpen(false);
 
   const taskLists = groupData?.taskLists ?? [];
 
@@ -48,14 +60,15 @@ export default function TaskColumn() {
               <span className="text-color-primary text-md-m">할 일</span>
               <button
                 type="button"
-                className="flex h-[24px] w-[24px] items-center justify-center rounded-[8px] border-1 border-[#CBD5E1]"
+                className="bg-background-primary flex h-[24px] w-[24px] items-center justify-center rounded-[8px] border-1 border-[#CBD5E1]"
+                onClick={handleModalOpen}
               >
                 <AddListIcon className="text-color-disabled h-[16px] w-[16px]" />
               </button>
             </div>
 
             {todoLists.map((taskList) => (
-              <div key={taskList.id} className="pt-[12px] lg:pt-[20px]">
+              <div key={taskList.id} className="mt-[12px] lg:mt-[20px]">
                 <div className="border-border-primary rounded-[12px] border-1 pt-[16px] pr-[16px] pb-[24px] pl-[20px]">
                   <div className="flex items-center justify-between gap-1">
                     <p className="text-color-primary text-md-sb truncate">
@@ -97,14 +110,15 @@ export default function TaskColumn() {
               <span className="text-color-primary text-md-m">진행중</span>
               <button
                 type="button"
-                className="flex h-[24px] w-[24px] items-center justify-center rounded-[8px] border-1 border-[#CBD5E1]"
+                className="bg-background-primary flex h-[24px] w-[24px] items-center justify-center rounded-[8px] border-1 border-[#CBD5E1]"
+                onClick={handleModalOpen}
               >
                 <AddListIcon className="text-color-disabled h-[16px] w-[16px]" />
               </button>
             </div>
 
             {inProgressLists.map((taskList) => (
-              <div key={taskList.id} className="pt-[12px] lg:pt-[20px]">
+              <div key={taskList.id} className="mt-[12px] lg:mt-[20px]">
                 <div className="border-border-primary rounded-[12px] border-1 pt-[16px] pr-[16px] pb-[24px] pl-[20px]">
                   <div className="flex items-center justify-between gap-1">
                     <p className="text-color-primary text-md-sb truncate">
@@ -146,14 +160,15 @@ export default function TaskColumn() {
               <span className="text-color-primary text-md-m">완료</span>
               <button
                 type="button"
-                className="flex h-[24px] w-[24px] items-center justify-center rounded-[8px] border-1 border-[#CBD5E1]"
+                className="bg-background-primary flex h-[24px] w-[24px] items-center justify-center rounded-[8px] border-1 border-[#CBD5E1]"
+                onClick={handleModalOpen}
               >
                 <AddListIcon className="text-color-disabled h-[16px] w-[16px]" />
               </button>
             </div>
 
             {doneLists.map((taskList) => (
-              <div key={taskList.id} className="pt-[12px] lg:pt-[20px]">
+              <div key={taskList.id} className="mt-[12px] lg:mt-[20px]">
                 <div className="border-border-primary rounded-[12px] border-1 pt-[14px] pr-[12px] pb-[14px] pl-[20px]">
                   <div className="flex items-center justify-between gap-1">
                     <p className="text-color-primary text-md-sb truncate">
@@ -181,6 +196,9 @@ export default function TaskColumn() {
           </div>
         </div>
       </div>
+      <Modal isOpen={isOpen} onClose={handleModalClose}>
+        <ListCreateModal onClose={handleModalClose} />
+      </Modal>
     </div>
   );
 }
