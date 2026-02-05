@@ -229,14 +229,25 @@ export default function Boards() {
 
         {/* 전체 게시글 섹션 */}
         <section className={sectionGapClass}>
-          {/* 헤더: 전체 + 드롭다운 */}
+          {/* 헤더: 전체 + 글쓰기 버튼(모바일/태블릿) + 드롭다운 */}
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-xl-b text-color-primary">전체</h2>
-            <Dropdown
-              optionsKey="newest"
-              defaultLabel="최신순"
-              onSelect={handleSortChange}
-            />
+            <div className="flex items-center gap-3">
+              {/* 글쓰기 버튼 (모바일/태블릿만) */}
+              {(isMobile || isTablet) && (
+                <Link
+                  to="/boards/write"
+                  className="rounded-xl bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-600"
+                >
+                  글쓰기
+                </Link>
+              )}
+              <Dropdown
+                optionsKey="newest"
+                defaultLabel="최신순"
+                onSelect={handleSortChange}
+              />
+            </div>
           </div>
 
           {/* 게시글 목록 */}
@@ -266,7 +277,7 @@ export default function Boards() {
       </div>
 
       {/* 플로팅 글쓰기 버튼 (데스크톱만) */}
-      {!isTablet && (
+      {!isMobile && !isTablet && (
         <Link
           to="/boards/write"
           className="fixed right-[120px] bottom-[76px] flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 shadow-lg transition-colors hover:bg-blue-600"
