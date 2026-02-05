@@ -13,7 +13,19 @@ function Scene() {
   useFrame(() => {
     if (meshRef.current) {
       const scrollY = typeof window !== "undefined" ? window.scrollY : 0;
-      meshRef.current.rotation.x = scrollY * 0.01;
+      const width = typeof window !== "undefined" ? window.innerWidth : 1024;
+
+      let speedFactor = 0.01;
+
+      if (width < 768) {
+        speedFactor = 0.009;
+      } else if (width < 1024) {
+        speedFactor = 0.09;
+      } else {
+        speedFactor = 0.05;
+      }
+
+      meshRef.current.rotation.x = scrollY * speedFactor;
     }
   });
 
@@ -43,7 +55,6 @@ function Scene() {
           roughness={0.3}
           metalness={0.8}
         />
-        {/* 폰트가 깨진다면 기본 폰트를 사용하거나 폰트 경로를 지정하세요 */}
         <Text position={[0, 0, 11]} fontSize={16} color="white">
           시작하기
         </Text>
