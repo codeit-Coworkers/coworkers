@@ -238,16 +238,19 @@ export default function BoardDetail() {
           {/* 하트 버튼 (데스크톱만) - 카드 오른쪽 26px 떨어짐, 위에서 251px */}
           {!isTablet && (
             <div className="absolute top-[251px] left-[calc(900px+26px)]">
-              {/* 좋아요 버튼 - 64px 동그라미, 그림자 없음 */}
-              <button
-                type="button"
-                className="flex h-16 w-16 flex-col items-center justify-center gap-1 rounded-full bg-white"
-              >
-                <HeartIcon className="h-6 w-6 text-slate-400" />
+              <div className="flex flex-col items-center gap-2">
+                {/* 하트 원 - 64px, 테두리만 */}
+                <button
+                  type="button"
+                  className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-slate-200 bg-white"
+                >
+                  <HeartIcon className="h-6 w-6 text-slate-400" />
+                </button>
+                {/* 숫자 */}
                 <span className="text-sm text-slate-500">
                   {formatLikeCount(MOCK_ARTICLE.likeCount)}
                 </span>
-              </button>
+              </div>
             </div>
           )}
         </div>
