@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Toast from "@/components/common/Toast/toast";
+import Toast from "@/components/common/Toast/Toast";
 
 const ToastTestPage = () => {
   const [showToast, setShowToast] = useState<boolean>(false);
