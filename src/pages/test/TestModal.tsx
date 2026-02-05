@@ -1,9 +1,10 @@
-import InviteModal from "@/components/common/Modal/Contents/InviteModal";
+// import InviteModal from "@/components/common/Modal/Contents/InviteModal";
 // import ListCreateModal from "@/components/common/Modal/Contents/ListCreateModal";
 // import DangerModal from "@/components/common/Modal/Contents/DangerModal";
 // import PasswordResetModal from "@/components/common/Modal/Contents/PasswordResetModal";
 // import PasswordUpdateModal from "@/components/common/Modal/Contents/PasswordUpdateModal";
 // import LogoutModal from "@/components/common/Modal/Contents/LogoutModal";
+import TaskCreateModal from "@/components/common/Modal/Contents/TaskCreateModal";
 import Modal from "@/components/common/Modal/Modal";
 import ModalButton from "@/components/common/Modal/ModalButton";
 import { useState } from "react";
@@ -49,9 +50,9 @@ export default function TestModal() {
       <ModalButton buttonText="모달 열기" onClick={handleModalOpen} />
 
       {/* 초대 모달 테스트 */}
-      <Modal isOpen={isOpen} onClose={handleModalClose}>
+      {/* <Modal isOpen={isOpen} onClose={handleModalClose}>
         <InviteModal onClose={handleModalClose} />
-      </Modal>
+      </Modal> */}
 
       {/* 리스트 생성 모달 테스트 */}
       {/* <Modal isOpen={isOpen} onClose={handleModalClose}>
@@ -77,6 +78,10 @@ export default function TestModal() {
       {/* <Modal isOpen={isOpen} onClose={handleModalClose}>
         <LogoutModal onClose={handleModalClose} />
       </Modal> */}
+
+      <Modal isOpen={isOpen} onClose={handleModalClose}>
+        <TaskCreateModal />
+      </Modal>
     </div>
   );
 }
