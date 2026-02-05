@@ -93,9 +93,9 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-background-primary flex flex-col items-end rounded-t-[24px] md:items-center md:rounded-[24px]"
+        className={`bg-background-primary flex w-full flex-col items-center rounded-t-[24px] md:w-[384px] md:items-center md:rounded-[24px]`}
       >
-        <div className="flex flex-col gap-2 text-center">
+        <div className="flex w-full flex-col gap-2 text-center">
           <div className="px-5 py-3">{children}</div>
         </div>
       </div>
