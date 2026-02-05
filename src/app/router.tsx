@@ -9,6 +9,21 @@ import { GlobalErrorFallback } from "@/providers/boundary";
 
 export const router = createBrowserRouter([
   {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/user/:id",
+    element: <User />,
+  },
+
+  ...testRoutes,
+
+  {
+    element: <Layout />,
+    children: [
+      { path: "/user", element: <User /> },
+      { path: "/boards", element: <Boards /> },
     errorElement: <GlobalErrorFallback />,
     children: [
       {

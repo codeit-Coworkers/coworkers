@@ -8,6 +8,10 @@ import { useIsMobile } from "@/hooks/useMediaQuery";
 // 정렬 타입
 type SortType = "최신순" | "좋아요 많은순";
 
+import BestPostCarousel from "@/features/boards/components/BestPostCarousel";
+import { Input } from "@/components/common/Input/Input";
+import { useIsMobile } from "@/hooks/useMediaQuery";
+
 // 테스트용 더미 데이터
 const MOCK_BEST_POSTS = [
   {
@@ -194,6 +198,8 @@ export default function Boards() {
 
   return (
     <div className="!bg-background-primary min-h-screen pb-20">
+  return (
+    <div className="!bg-background-primary min-h-screen">
       <div className="mx-auto max-w-[1120px] px-4 md:px-6">
         {/* 헤더: 자유게시판 + 검색창 */}
         <header
@@ -253,6 +259,12 @@ export default function Boards() {
             ))}
           </div>
         </section>
+        {/* 일반 게시글 목록 영역 (추후 구현) */}
+        <div className="border-border-primary bg-background-secondary mt-8 rounded-lg border p-8 text-center">
+          <p className="text-color-secondary">
+            게시글 목록이 여기에 표시됩니다.
+          </p>
+        </div>
       </div>
     </div>
   );
