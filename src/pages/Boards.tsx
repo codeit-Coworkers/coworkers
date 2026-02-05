@@ -215,7 +215,7 @@ export default function Boards() {
               variant="search"
               withSearchIcon
               placeholder="검색어를 입력해주세요"
-              className={`!rounded-[1000px] !border-2 ${
+              className={`focus:!border-brand-primary !rounded-[1000px] !border-2 focus:!outline-none ${
                 isMobile ? "!h-[48px]" : "!h-[56px]"
               }`}
             />
@@ -252,30 +252,33 @@ export default function Boards() {
           </div>
 
           {/* 게시글 목록 */}
-          <div className={gridClass}>
-            {sortedPosts.map((post) => (
-              <Link key={post.id} to={`/boards/${post.id}`}>
-                <PostCard
-                  state="default"
-                  size={cardSize}
-                  title={post.title}
-                  content={post.content}
-                  author={post.author}
-                  date={post.date}
-                  likeCount={post.likeCount}
-                  imageUrl={post.imageUrl}
-                  fullWidth={isMobile || isTablet}
-                />
-              </Link>
-            ))}
-          </div>
+          {sortedPosts.length > 0 ? (
+            <div className={gridClass}>
+              {sortedPosts.map((post) => (
+                <Link key={post.id} to={`/boards/${post.id}`}>
+                  <PostCard
+                    state="default"
+                    size={cardSize}
+                    title={post.title}
+                    content={post.content}
+                    author={post.author}
+                    date={post.date}
+                    likeCount={post.likeCount}
+                    imageUrl={post.imageUrl}
+                    fullWidth={isMobile || isTablet}
+                  />
+                </Link>
+              ))}
+            </div>
+          ) : (
+            /* 게시글이 없을 때 */
+            <div className="border-border-primary bg-background-secondary mt-4 rounded-lg border p-8 text-center">
+              <p className="text-color-secondary">
+                게시글 목록이 여기에 표시됩니다.
+              </p>
+            </div>
+          )}
         </section>
-        {/* 일반 게시글 목록 영역 (추후 구현) */}
-        <div className="border-border-primary bg-background-secondary mt-8 rounded-lg border p-8 text-center">
-          <p className="text-color-secondary">
-            게시글 목록이 여기에 표시됩니다.
-          </p>
-        </div>
       </div>
 
       {/* 플로팅 글쓰기 버튼 (데스크톱만) */}
