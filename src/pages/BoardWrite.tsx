@@ -1,4 +1,5 @@
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { Input } from "@/components/common/Input/Input";
 
 /**
  * 게시글 쓰기 페이지
@@ -16,8 +17,17 @@ export default function BoardWrite() {
       ? "px-10 pt-16 pb-8"
       : "px-[60px] pt-[84px] pb-10";
 
-  // 텍스트 크기
-  const titleSize = isMobile ? "text-lg" : "text-xl";
+  // 반응형 스타일
+  const titleBottomPadding = isMobile ? "mb-8" : "mb-10"; // 32px / 40px
+  const labelSize = isMobile ? "text-md-b" : "text-lg-b"; // 14px / 16px
+  const asteriskPadding = isMobile ? "ml-1" : "ml-1.5"; // 4px / 6px
+  const labelBottomPadding = isMobile ? "mb-2" : "mb-3"; // 8px / 12px
+  const titleInputBottomPadding = isMobile ? "mb-6" : "mb-8"; // 24px / 32px
+  const contentBottomPadding = isMobile ? "mb-2" : "mb-3"; // 8px / 12px
+  const imageBoxSize = isMobile ? "w-20 h-20" : "w-[120px] h-[120px]"; // 80x80 / 120x120
+  const iconTextGap = isMobile ? "gap-1" : "gap-4"; // 4px / 16px
+  const imageBottomPadding = isMobile ? "mb-12" : "mb-[57px]"; // 48px / 57px
+  const contentHeight = isMobile ? 200 : 240;
 
   return (
     <div className="bg-background-secondary min-h-screen pb-20">
@@ -30,66 +40,84 @@ export default function BoardWrite() {
           <article
             className={`bg-background-primary rounded-[20px] ${cardWidth} ${cardPadding} ${isTablet ? "mx-auto" : ""}`}
           >
-            {/* 제목 */}
-            <h1 className={`${titleSize} mb-8 font-bold text-slate-800`}>
+            {/* 게시글 쓰기 제목 */}
+            <h1
+              className={`text-xl-b text-color-primary ${titleBottomPadding}`}
+            >
               게시글 쓰기
             </h1>
 
             {/* 제목 입력란 */}
-            <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-slate-800">
-                제목 <span className="text-red-500">*</span>
+            <div className={titleInputBottomPadding}>
+              <label
+                className={`${labelSize} text-color-primary ${labelBottomPadding} block`}
+              >
+                제목
+                <span className={`text-status-danger ${asteriskPadding}`}>
+                  *
+                </span>
               </label>
-              {/* 인풋 컴포넌트는 나중에 추가 */}
-              <div className="rounded-lg bg-slate-100 p-4 text-slate-400">
-                제목을 입력해주세요.
-              </div>
+              <Input
+                size="title"
+                variant="default"
+                placeholder="제목을 입력해주세요"
+                className="!border-border-primary w-full"
+              />
             </div>
 
             {/* 내용 입력란 */}
-            <div className="mb-6">
-              <label className="mb-2 block text-sm font-medium text-slate-800">
-                내용 <span className="text-red-500">*</span>
+            <div className={contentBottomPadding}>
+              <label
+                className={`${labelSize} text-color-primary ${labelBottomPadding} block`}
+              >
+                내용
+                <span className={`text-status-danger ${asteriskPadding}`}>
+                  *
+                </span>
               </label>
-              {/* 인풋 컴포넌트는 나중에 추가 */}
-              <div className="min-h-[200px] rounded-lg bg-slate-100 p-4 text-slate-400">
-                내용을 입력하세요
-              </div>
+              <Input
+                size="content"
+                variant="default"
+                placeholder="내용을 입력하세요"
+                className="!border-border-primary w-full"
+                style={{ height: contentHeight }}
+              />
             </div>
 
             {/* 이미지 업로드 */}
-            <div className="mb-8">
-              <label className="mb-2 block text-sm font-medium text-slate-800">
+            <div className={imageBottomPadding}>
+              <label
+                className={`${labelSize} text-color-primary ${labelBottomPadding} block`}
+              >
                 이미지
               </label>
-              <div className="flex items-center justify-center rounded-lg border-2 border-dashed border-slate-300 p-8">
-                <div className="text-center">
-                  <div className="mb-2 text-slate-400">
-                    <svg
-                      width="48"
-                      height="48"
-                      viewBox="0 0 48 48"
-                      fill="none"
-                      className="mx-auto"
-                    >
-                      <circle cx="24" cy="24" r="24" fill="#E2E8F0" />
-                      <path
-                        d="M24 20V28M20 24H28"
-                        stroke="#94A3B8"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </div>
-                  <p className="text-sm text-slate-400">0/5</p>
-                </div>
-              </div>
+              <button
+                type="button"
+                className={`border-border-primary rounded-xl border ${imageBoxSize} flex flex-col items-center justify-center ${iconTextGap} bg-background-primary hover:bg-background-secondary transition-colors`}
+              >
+                {/* 이미지 아이콘 */}
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="text-slate-400"
+                >
+                  <path
+                    d="M21 19V5C21 3.9 20.1 3 19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19ZM8.5 13.5L11 16.51L14.5 12L19 18H5L8.5 13.5Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                {/* 이미지 개수 */}
+                <span className="text-color-default text-sm">0/5</span>
+              </button>
             </div>
 
             {/* 등록하기 버튼 */}
             <button
               type="button"
-              className="w-full rounded-lg bg-blue-500 py-4 font-medium text-white transition-colors hover:bg-blue-600"
+              className="bg-brand-primary w-full rounded-xl py-3.5 font-semibold text-white transition-colors hover:opacity-90"
             >
               등록하기
             </button>

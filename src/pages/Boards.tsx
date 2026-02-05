@@ -191,9 +191,10 @@ export default function Boards() {
   const cardSize = isMobile ? "small" : "large";
 
   // 그리드 레이아웃: 데스크톱 2열, 태블릿/모바일 1열
-  const gridClass = isTablet
-    ? "flex flex-col gap-4"
-    : "grid grid-cols-2 gap-x-4 gap-y-5";
+  const gridClass =
+    isMobile || isTablet
+      ? "flex flex-col gap-4"
+      : "grid grid-cols-2 gap-x-4 gap-y-5";
 
   return (
     <div className="!bg-background-primary min-h-screen pb-20">
@@ -263,6 +264,7 @@ export default function Boards() {
                   date={post.date}
                   likeCount={post.likeCount}
                   imageUrl={post.imageUrl}
+                  fullWidth={isMobile || isTablet}
                 />
               </Link>
             ))}
