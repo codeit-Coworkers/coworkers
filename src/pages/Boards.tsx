@@ -5,6 +5,15 @@ import PostCard from "@/features/boards/components/PostCard";
 import { Input } from "@/components/common/Input/Input";
 import Dropdown from "@/components/common/Dropdown/Dropdown";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+
+// 정렬 타입
+type SortType = "최신순" | "좋아요 많은순";
+
+import BestPostCarousel from "@/features/boards/components/BestPostCarousel";
+import PostCard from "@/features/boards/components/PostCard";
+import { Input } from "@/components/common/Input/Input";
+import Dropdown from "@/components/common/Dropdown/Dropdown";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 import PlusIcon from "@/assets/plus.svg";
 
 // 정렬 타입
@@ -196,6 +205,8 @@ export default function Boards() {
 
   return (
     <div className="!bg-background-primary min-h-screen pb-20">
+  return (
+    <div className="!bg-background-primary min-h-screen pb-20">
       <div className="mx-auto max-w-[1120px] px-4 md:px-6">
         {/* 헤더: 자유게시판 + 검색창 */}
         <header
@@ -256,6 +267,26 @@ export default function Boards() {
             ))}
           </div>
         </section>
+              <PostCard
+                key={post.id}
+                state="default"
+                size={cardSize}
+                title={post.title}
+                content={post.content}
+                author={post.author}
+                date={post.date}
+                likeCount={post.likeCount}
+                imageUrl={post.imageUrl}
+              />
+            ))}
+          </div>
+        </section>
+        {/* 일반 게시글 목록 영역 (추후 구현) */}
+        <div className="border-border-primary bg-background-secondary mt-8 rounded-lg border p-8 text-center">
+          <p className="text-color-secondary">
+            게시글 목록이 여기에 표시됩니다.
+          </p>
+        </div>
       </div>
 
       {/* 플로팅 글쓰기 버튼 (데스크톱만) */}
