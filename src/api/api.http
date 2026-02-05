@@ -58,7 +58,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhb
 ### 그룹(팀) 목록 조회
 GET https://fe-project-cowokers.vercel.app/20-3/user/groups
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMTQzNDMwLCJleHAiOjE3NzAxNDcwMzAsImlzcyI6InNwLWNvd29ya2VycyJ9.NQhQf87dM0pAUIAdpl5Rs27JFAIKN3_7CY67H5Ov1Qg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMzA4NTI4LCJleHAiOjE3NzAzMTIxMjgsImlzcyI6InNwLWNvd29ya2VycyJ9.yu6_IEJfE2DcNDIoTXdoimvGPYYy5a7BR4iAE3uU57U
 
 
 ### 그룹(팀) 삭제

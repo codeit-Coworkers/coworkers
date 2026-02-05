@@ -10,6 +10,7 @@ import TestChip from "@/pages/test/TestChip";
 import TestDropdown from "@/pages/test/TestDropdown";
 import TestTodayProgressSection from "@/pages/test/TestTodayProgressSection";
 import TestErrorBoundary from "@/pages/test/TestErrorBoundary";
+import TestTeamMemberSection from "@/pages/test/TestTeamMemberSection";
 
 export const testRoutes = [
   {
@@ -63,5 +64,9 @@ export const testRoutes = [
   {
     path: "/test/error-boundary",
     element: <TestErrorBoundary />,
+  },
+  {
+    path: "/test/team-member-section",
+    element: <TestTeamMemberSection />,
   },
 ];
