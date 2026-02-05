@@ -47,11 +47,17 @@ export default function TaskCreateModal() {
 
   const [selectDay, setSelectDay] = useState<Option | null>(null);
 
-  const formattedDate = date
-    ? `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
-    : "";
+  const formattedDate = date ? getDateTime(date).dateString : "";
 
   const { dateString, timeString } = getDateTime();
+
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+
+  const toggleDay = (day: string) => {
+    setSelectedDays((prev) =>
+      prev.includes(day) ? prev.filter((item) => item !== day) : [...prev, day],
+    );
+  };
 
   return (
     <div className="p-5">
@@ -66,7 +72,7 @@ export default function TaskCreateModal() {
           <Input
             size="search"
             className="border-none ring-1 ring-[#e2e8f0]"
-            placeholder="할 일 제목를 입력해주세요."
+            placeholder="할 일 제목을 입력해주세요."
           />
         </div>
         <div className="mb-5 flex flex-col text-left">
@@ -129,6 +135,7 @@ export default function TaskCreateModal() {
               defaultLabel="반복 안함"
               onSelect={(item) => {
                 setSelectDay(item);
+                setSelectedDays([]);
               }}
             />
           </div>
@@ -141,7 +148,12 @@ export default function TaskCreateModal() {
                 {weekDays.map((item) => (
                   <li
                     key={item}
-                    className="text-color-default hover:bg-brand-primary hover:text-background-primary flex cursor-pointer items-center justify-center rounded-[12px] border-1 border-solid border-[#e2e8f0] px-[11px] py-[11px]"
+                    onClick={() => toggleDay(item)}
+                    className={
+                      selectedDays.includes(item)
+                        ? "bg-brand-primary text-color-inverse hover:bg-brand-primary hover:text-background-primary flex cursor-pointer items-center justify-center rounded-[12px] border-1 border-solid border-[#e2e8f0] px-[11px] py-[11px]"
+                        : "hover:bg-brand-primary hover:text-background-primary flex cursor-pointer items-center justify-center rounded-[12px] border-1 border-solid border-[#e2e8f0] px-[11px] py-[11px]"
+                    }
                   >
                     {item}
                   </li>
