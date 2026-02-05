@@ -37,7 +37,10 @@ export const router = createBrowserRouter([
       ...testRoutes,
       {
         element: <Layout />,
-        children: [{ path: "/user", element: <User /> }],
+        children: [
+          { path: "/user", element: <User /> },
+          { path: "/boards", element: <Boards /> },
+        ],
       },
       {
         path: "*",
