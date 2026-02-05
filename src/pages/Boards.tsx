@@ -149,7 +149,8 @@ const MOCK_POSTS = [
  */
 export default function Boards() {
   const isMobile = useIsMobile(); // < 768px
-  const isTablet = useIsMobile("lg"); // < 1024px
+  const isTabletOrSmaller = useIsMobile("lg"); // < 1024px
+  const isTablet = !isMobile && isTabletOrSmaller;
 
   // 정렬 상태
   const [sortType, setSortType] = useState<SortType>("최신순");
