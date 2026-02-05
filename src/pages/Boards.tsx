@@ -1,16 +1,14 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import BestPostCarousel from "@/features/boards/components/BestPostCarousel";
 import PostCard from "@/features/boards/components/PostCard";
 import { Input } from "@/components/common/Input/Input";
 import Dropdown from "@/components/common/Dropdown/Dropdown";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import PlusIcon from "@/assets/plus.svg";
 
 // 정렬 타입
 type SortType = "최신순" | "좋아요 많은순";
-
-import BestPostCarousel from "@/features/boards/components/BestPostCarousel";
-import { Input } from "@/components/common/Input/Input";
-import { useIsMobile } from "@/hooks/useMediaQuery";
 
 // 테스트용 더미 데이터
 const MOCK_BEST_POSTS = [
@@ -197,8 +195,6 @@ export default function Boards() {
     : "grid grid-cols-2 gap-x-4 gap-y-5";
 
   return (
-    <div className="!bg-background-primary min-h-screen pb-20">
-  return (
     <div className="!bg-background-primary min-h-screen">
       <div className="mx-auto max-w-[1120px] px-4 md:px-6">
         {/* 헤더: 자유게시판 + 검색창 */}
@@ -245,17 +241,18 @@ export default function Boards() {
           {/* 게시글 목록 */}
           <div className={gridClass}>
             {sortedPosts.map((post) => (
-              <PostCard
-                key={post.id}
-                state="default"
-                size={cardSize}
-                title={post.title}
-                content={post.content}
-                author={post.author}
-                date={post.date}
-                likeCount={post.likeCount}
-                imageUrl={post.imageUrl}
-              />
+              <Link key={post.id} to={`/boards/${post.id}`}>
+                <PostCard
+                  state="default"
+                  size={cardSize}
+                  title={post.title}
+                  content={post.content}
+                  author={post.author}
+                  date={post.date}
+                  likeCount={post.likeCount}
+                  imageUrl={post.imageUrl}
+                />
+              </Link>
             ))}
           </div>
         </section>
@@ -266,6 +263,16 @@ export default function Boards() {
           </p>
         </div>
       </div>
+
+      {/* 플로팅 글쓰기 버튼 (데스크톱만) */}
+      {!isTablet && (
+        <Link
+          to="/boards/write"
+          className="fixed right-[120px] bottom-[76px] flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 shadow-lg transition-colors hover:bg-blue-600"
+        >
+          <PlusIcon className="h-6 w-6 text-white" />
+        </Link>
+      )}
     </div>
   );
 }
