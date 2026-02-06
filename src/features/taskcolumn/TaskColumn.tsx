@@ -6,18 +6,14 @@ import { useGroup } from "@/api/group";
 import Modal from "@/components/common/Modal/Modal";
 import { useState } from "react";
 import ListCreateModal from "@/components/common/Modal/Contents/ListCreateModal";
+import ListEditModal from "@/components/common/Modal/Contents/ListEditModal";
+import ListDeleteModal from "@/components/common/Modal/Contents/ListDeleteModal";
+import { TaskListServer } from "@/types/tasklist";
 
 export default function TaskColumn() {
   const { data: groupData } = useGroup(3818);
 
   console.log(groupData);
-
-  /** 현재 모달 열림 여부 */
-  const [isOpen, setIsOpen] = useState(false);
-
-  /** 모달 열기, 닫기 */
-  const handleModalOpen = () => setIsOpen(true);
-  const handleModalClose = () => setIsOpen(false);
 
   const taskLists = groupData?.taskLists ?? [];
 
@@ -41,6 +37,24 @@ export default function TaskColumn() {
     );
   });
 
+  type ModalType = "ListCreate" | "ListEdit" | "ListDelete" | null;
+  const [modalType, setModalType] = useState<ModalType>(null);
+  const [selectedTaskList, setSelectedTaskList] =
+    useState<TaskListServer | null>(null);
+
+  //  모달 열기
+  const openModal = (
+    type: ModalType,
+    selectedTaskList: TaskListServer | null = null,
+  ) => {
+    if (selectedTaskList) {
+      setSelectedTaskList(selectedTaskList);
+    }
+    setModalType(type);
+  };
+  // 모달 닫기
+  const closeModal = () => setModalType(null);
+
   return (
     <div>
       <div style={{ width: "842px", margin: "50px auto" }}>
@@ -61,7 +75,7 @@ export default function TaskColumn() {
               <button
                 type="button"
                 className="bg-background-primary flex h-[24px] w-[24px] items-center justify-center rounded-[8px] border-1 border-[#CBD5E1]"
-                onClick={handleModalOpen}
+                onClick={() => openModal("ListCreate")}
               >
                 <AddListIcon className="text-color-disabled h-[16px] w-[16px]" />
               </button>
@@ -83,7 +97,18 @@ export default function TaskColumn() {
                       />
                       <button type="button">
                         <Dropdown
-                          optionsKey="taskList"
+                          options={[
+                            {
+                              value: "수정하기",
+                              label: "수정하기",
+                              action: () => openModal("ListEdit", taskList),
+                            },
+                            {
+                              value: "삭제하기",
+                              label: "삭제하기",
+                              action: () => openModal("ListDelete", taskList),
+                            },
+                          ]}
                           listAlign="center"
                           trigger="kebab"
                         />
@@ -111,7 +136,7 @@ export default function TaskColumn() {
               <button
                 type="button"
                 className="bg-background-primary flex h-[24px] w-[24px] items-center justify-center rounded-[8px] border-1 border-[#CBD5E1]"
-                onClick={handleModalOpen}
+                onClick={() => openModal("ListCreate")}
               >
                 <AddListIcon className="text-color-disabled h-[16px] w-[16px]" />
               </button>
@@ -133,7 +158,18 @@ export default function TaskColumn() {
                       />
                       <button type="button">
                         <Dropdown
-                          optionsKey="taskList"
+                          options={[
+                            {
+                              value: "수정하기",
+                              label: "수정하기",
+                              action: () => openModal("ListEdit", taskList),
+                            },
+                            {
+                              value: "삭제하기",
+                              label: "삭제하기",
+                              action: () => openModal("ListDelete", taskList),
+                            },
+                          ]}
                           listAlign="center"
                           trigger="kebab"
                         />
@@ -161,7 +197,7 @@ export default function TaskColumn() {
               <button
                 type="button"
                 className="bg-background-primary flex h-[24px] w-[24px] items-center justify-center rounded-[8px] border-1 border-[#CBD5E1]"
-                onClick={handleModalOpen}
+                onClick={() => openModal("ListCreate")}
               >
                 <AddListIcon className="text-color-disabled h-[16px] w-[16px]" />
               </button>
@@ -183,7 +219,18 @@ export default function TaskColumn() {
                       />
                       <button type="button">
                         <Dropdown
-                          optionsKey="taskList"
+                          options={[
+                            {
+                              value: "수정하기",
+                              label: "수정하기",
+                              action: () => openModal("ListEdit", taskList),
+                            },
+                            {
+                              value: "삭제하기",
+                              label: "삭제하기",
+                              action: () => openModal("ListDelete", taskList),
+                            },
+                          ]}
                           listAlign="center"
                           trigger="kebab"
                         />
@@ -196,8 +243,24 @@ export default function TaskColumn() {
           </div>
         </div>
       </div>
-      <Modal isOpen={isOpen} onClose={handleModalClose}>
-        <ListCreateModal onClose={handleModalClose} />
+      {/* 목록 추가 모달 */}
+      <Modal isOpen={modalType === "ListCreate"} onClose={closeModal}>
+        <ListCreateModal onClose={closeModal} />
+      </Modal>
+      {/* 목록 수정 모달 */}
+      <Modal isOpen={modalType === "ListEdit"} onClose={closeModal}>
+        <ListEditModal
+          key={selectedTaskList?.id}
+          selectedTaskList={selectedTaskList}
+          onClose={closeModal}
+        />
+      </Modal>
+      {/* 목록 삭제 모달 */}
+      <Modal isOpen={modalType === "ListDelete"} onClose={closeModal}>
+        <ListDeleteModal
+          selectedTaskList={selectedTaskList}
+          onClose={closeModal}
+        />
       </Modal>
     </div>
   );
