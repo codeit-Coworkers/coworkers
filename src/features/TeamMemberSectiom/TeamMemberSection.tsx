@@ -1,19 +1,45 @@
-import { useDeleteMember, useGroup } from "@/api/group";
+import { useGroup } from "@/api/group";
 import Dropdown from "@/components/common/Dropdown/Dropdown";
 import InviteModal from "@/components/common/Modal/Contents/InviteModal";
+import ProfileModal from "./ProfileModal";
 import Modal from "@/components/common/Modal/Modal";
 import { useState } from "react";
+import RemoveMemberModal from "./RemoveMemberModal";
+
+type Member = {
+  userId: number;
+  userName: string;
+  userEmail: string;
+  userImage: string;
+};
 
 export default function TeamMemberSection() {
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+
+  const [selectedRemoveMember, setSelectedRemoveMember] =
+    useState<Member | null>(null);
+
   /** 현재 모달 열림 여부 */
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isDangerOpen, setIsDangerOpen] = useState(false);
 
   /** 모달 열기, 닫기 */
   const handleModalOpen = () => setIsOpen(true);
   const handleModalClose = () => setIsOpen(false);
+  const handleProfileModalOpen = (member: Member) => {
+    setSelectedMember(member);
+    setIsProfileOpen(true);
+  };
+  const handleProfileModalClose = () => setIsProfileOpen(false);
+
+  const handleDangerModalOpen = (member: Member) => {
+    setSelectedRemoveMember(member);
+    setIsDangerOpen(true);
+  };
+  const handleDangerModalClose = () => setIsDangerOpen(false);
 
   const { data: groupData } = useGroup(3810);
-  const { mutate: removeMember } = useDeleteMember(3810);
 
   const members = groupData?.members || [];
   const memberCount = members.length;
@@ -55,6 +81,10 @@ export default function TeamMemberSection() {
                   <a
                     href="#;"
                     className="flex items-center justify-between gap-[12px]"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleProfileModalOpen(member);
+                    }}
                   >
                     <div className="bg-brand-primary h-[32px] w-[32px] flex-shrink-0 overflow-hidden rounded-[8px]">
                       <img
@@ -71,7 +101,10 @@ export default function TeamMemberSection() {
                         {member.userEmail}
                       </p>
                     </div>
-                    <div className="flex flex-shrink-0 items-center">
+                    <div
+                      className="flex flex-shrink-0 items-center"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <button type="button">
                         <Dropdown
                           listAlign="center"
@@ -80,7 +113,7 @@ export default function TeamMemberSection() {
                             {
                               label: "멤버 내보내기",
                               value: "멤버 내보내기",
-                              action: () => removeMember(member.userId),
+                              action: () => handleDangerModalOpen(member),
                             },
                           ]}
                         />
@@ -95,6 +128,20 @@ export default function TeamMemberSection() {
         {/* 초대 모달 */}
         <Modal isOpen={isOpen} onClose={handleModalClose}>
           <InviteModal onClose={handleModalClose} />
+        </Modal>
+        {/* 프로필 모달 */}
+        <Modal isOpen={isProfileOpen} onClose={handleProfileModalClose}>
+          <ProfileModal
+            onClose={handleProfileModalClose}
+            selectedMember={selectedMember}
+          />
+        </Modal>
+        {/* 팀 추방 모달 */}
+        <Modal isOpen={isDangerOpen} onClose={handleDangerModalClose}>
+          <RemoveMemberModal
+            onClose={handleDangerModalClose}
+            selectedRemoveMember={selectedRemoveMember}
+          />
         </Modal>
       </div>
     </>
