@@ -33,7 +33,8 @@ const MOCK_ARTICLE = {
  */
 export default function BoardDetail() {
   const isMobile = useIsMobile(); // < 768px
-  const isTablet = useIsMobile("lg"); // < 1024px
+  const isTabletOrSmaller = useIsMobile("lg"); // < 1024px
+  const isTablet = !isMobile && isTabletOrSmaller;
 
   // 댓글 상태
   const [comments, setComments] = useState<Comment[]>([]);
@@ -83,7 +84,7 @@ export default function BoardDetail() {
         className={`${isMobile ? "px-4 pt-6" : isTablet ? "mx-auto pt-10" : "ml-[184px] pt-14"}`}
       >
         {/* 메인 카드 + 하트 버튼 컨테이너 */}
-        <div className={`relative ${isTablet ? "" : "w-fit"}`}>
+        <div className={`relative ${isMobile || isTablet ? "" : "w-fit"}`}>
           {/* 메인 카드 */}
           <article
             className={`bg-background-primary rounded-[20px] ${cardWidth} ${cardPadding} ${isTablet ? "mx-auto" : ""}`}
@@ -134,7 +135,7 @@ export default function BoardDetail() {
             )}
 
             {/* 좋아요 (데스크톱에서는 플로팅, 태블릿/모바일에서는 인라인) */}
-            {isTablet && (
+            {(isMobile || isTablet) && (
               <div className="mt-10 flex items-center justify-end gap-1">
                 <HeartIcon className="h-4 w-[18px] text-slate-400" />
                 <span className={`${metaSize} text-slate-400`}>
@@ -236,7 +237,7 @@ export default function BoardDetail() {
           </article>
 
           {/* 하트 버튼 (데스크톱만) - 카드 오른쪽 26px 떨어짐, 위에서 251px */}
-          {!isTablet && (
+          {!isMobile && !isTablet && (
             <div className="absolute top-[251px] left-[calc(900px+26px)]">
               <div className="flex flex-col items-center gap-2">
                 {/* 하트 원 - 64px, 테두리만 */}

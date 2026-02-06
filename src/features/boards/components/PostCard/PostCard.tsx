@@ -45,6 +45,13 @@ export interface PostCardProps {
    * 이미지 URL (있으면 이미지 표시)
    */
   imageUrl?: string;
+
+  /**
+   * 전체 너비 사용 여부 (기본: false)
+   * - true: w-full (부모 컨테이너 너비에 맞춤)
+   * - false: 고정 크기 사용
+   */
+  fullWidth?: boolean;
 }
 
 // 카드 크기 스타일 맵
@@ -76,9 +83,15 @@ export default function PostCard({
   date,
   likeCount,
   imageUrl,
+  fullWidth = false,
 }: PostCardProps) {
   // 카드 크기 스타일
   const cardSizeStyles = SIZE_MAP[state][size];
+
+  // fullWidth가 true면 w-full 사용, false면 고정 크기 유지
+  const widthClass = fullWidth
+    ? cardSizeStyles.replace(/w-\[\d+px\]/, "w-full")
+    : cardSizeStyles;
 
   // 이미지 크기
   const imageSize =
@@ -123,7 +136,7 @@ export default function PostCard({
   if (state === "best") {
     return (
       <article
-        className={`bg-background-inverse flex flex-col ${chipGap} rounded-[20px] ${cardSizeStyles}`}
+        className={`bg-background-inverse flex flex-col ${chipGap} rounded-[20px] ${widthClass}`}
       >
         {/* 인기 칩 */}
         <div className="bg-background-secondary flex h-[30px] w-[72px] items-center justify-center gap-1 rounded-xl">
@@ -182,7 +195,7 @@ export default function PostCard({
   // Default 카드 레이아웃
   return (
     <article
-      className={`bg-background-inverse flex flex-col rounded-[20px] ${cardSizeStyles} ${contentAuthorGap}`}
+      className={`bg-background-inverse flex flex-col rounded-[20px] ${widthClass} ${contentAuthorGap}`}
     >
       {/* 제목 + 본문 + 이미지 */}
       <div className="flex flex-1 items-start gap-2">

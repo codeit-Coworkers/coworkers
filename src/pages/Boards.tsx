@@ -5,15 +5,6 @@ import PostCard from "@/features/boards/components/PostCard";
 import { Input } from "@/components/common/Input/Input";
 import Dropdown from "@/components/common/Dropdown/Dropdown";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-
-// 정렬 타입
-type SortType = "최신순" | "좋아요 많은순";
-
-import BestPostCarousel from "@/features/boards/components/BestPostCarousel";
-import PostCard from "@/features/boards/components/PostCard";
-import { Input } from "@/components/common/Input/Input";
-import Dropdown from "@/components/common/Dropdown/Dropdown";
-import { useIsMobile } from "@/hooks/useMediaQuery";
 import PlusIcon from "@/assets/plus.svg";
 
 // 정렬 타입
@@ -158,7 +149,8 @@ const MOCK_POSTS = [
  */
 export default function Boards() {
   const isMobile = useIsMobile(); // < 768px
-  const isTablet = useIsMobile("lg"); // < 1024px
+  const isTabletOrSmaller = useIsMobile("lg"); // < 1024px
+  const isTablet = !isMobile && isTabletOrSmaller;
 
   // 정렬 상태
   const [sortType, setSortType] = useState<SortType>("최신순");
@@ -199,12 +191,11 @@ export default function Boards() {
   const cardSize = isMobile ? "small" : "large";
 
   // 그리드 레이아웃: 데스크톱 2열, 태블릿/모바일 1열
-  const gridClass = isTablet
-    ? "flex flex-col gap-4"
-    : "grid grid-cols-2 gap-x-4 gap-y-5";
+  const gridClass =
+    isMobile || isTablet
+      ? "flex flex-col gap-4"
+      : "grid grid-cols-2 gap-x-4 gap-y-5";
 
-  return (
-    <div className="!bg-background-primary min-h-screen pb-20">
   return (
     <div className="!bg-background-primary min-h-screen pb-20">
       <div className="mx-auto max-w-[1120px] px-4 md:px-6">
@@ -224,7 +215,7 @@ export default function Boards() {
               variant="search"
               withSearchIcon
               placeholder="검색어를 입력해주세요"
-              className={`!rounded-[1000px] !border-2 ${
+              className={`focus:!border-brand-primary !rounded-[1000px] !border-2 focus:!outline-none ${
                 isMobile ? "!h-[48px]" : "!h-[56px]"
               }`}
             />
@@ -239,58 +230,59 @@ export default function Boards() {
 
         {/* 전체 게시글 섹션 */}
         <section className={sectionGapClass}>
-          {/* 헤더: 전체 + 드롭다운 */}
+          {/* 헤더: 전체 + 글쓰기 버튼(모바일/태블릿) + 드롭다운 */}
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-xl-b text-color-primary">전체</h2>
-            <Dropdown
-              optionsKey="newest"
-              defaultLabel="최신순"
-              onSelect={handleSortChange}
-            />
+            <div className="flex items-center gap-3">
+              {/* 글쓰기 버튼 (모바일/태블릿만) */}
+              {(isMobile || isTablet) && (
+                <Link
+                  to="/boards/write"
+                  className="rounded-xl bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-600"
+                >
+                  글쓰기
+                </Link>
+              )}
+              <Dropdown
+                optionsKey="newest"
+                defaultLabel="최신순"
+                onSelect={handleSortChange}
+              />
+            </div>
           </div>
 
           {/* 게시글 목록 */}
-          <div className={gridClass}>
-            {sortedPosts.map((post) => (
-              <Link key={post.id} to={`/boards/${post.id}`}>
-                <PostCard
-                  state="default"
-                  size={cardSize}
-                  title={post.title}
-                  content={post.content}
-                  author={post.author}
-                  date={post.date}
-                  likeCount={post.likeCount}
-                  imageUrl={post.imageUrl}
-                />
-              </Link>
-            ))}
-          </div>
+          {sortedPosts.length > 0 ? (
+            <div className={gridClass}>
+              {sortedPosts.map((post) => (
+                <Link key={post.id} to={`/boards/${post.id}`}>
+                  <PostCard
+                    state="default"
+                    size={cardSize}
+                    title={post.title}
+                    content={post.content}
+                    author={post.author}
+                    date={post.date}
+                    likeCount={post.likeCount}
+                    imageUrl={post.imageUrl}
+                    fullWidth={isMobile || isTablet}
+                  />
+                </Link>
+              ))}
+            </div>
+          ) : (
+            /* 게시글이 없을 때 */
+            <div className="border-border-primary bg-background-secondary mt-4 rounded-lg border p-8 text-center">
+              <p className="text-color-secondary">
+                게시글 목록이 여기에 표시됩니다.
+              </p>
+            </div>
+          )}
         </section>
-              <PostCard
-                key={post.id}
-                state="default"
-                size={cardSize}
-                title={post.title}
-                content={post.content}
-                author={post.author}
-                date={post.date}
-                likeCount={post.likeCount}
-                imageUrl={post.imageUrl}
-              />
-            ))}
-          </div>
-        </section>
-        {/* 일반 게시글 목록 영역 (추후 구현) */}
-        <div className="border-border-primary bg-background-secondary mt-8 rounded-lg border p-8 text-center">
-          <p className="text-color-secondary">
-            게시글 목록이 여기에 표시됩니다.
-          </p>
-        </div>
       </div>
 
       {/* 플로팅 글쓰기 버튼 (데스크톱만) */}
-      {!isTablet && (
+      {!isMobile && !isTablet && (
         <Link
           to="/boards/write"
           className="fixed right-[120px] bottom-[76px] flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 shadow-lg transition-colors hover:bg-blue-600"
