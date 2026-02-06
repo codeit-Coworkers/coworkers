@@ -1,10 +1,10 @@
 import { useGroup } from "@/api/group";
-import Dropdown from "@/components/common/Dropdown/Dropdown";
 import InviteModal from "@/components/common/Modal/Contents/InviteModal";
 import ProfileModal from "./ProfileModal";
 import Modal from "@/components/common/Modal/Modal";
 import { useState } from "react";
 import RemoveMemberModal from "./RemoveMemberModal";
+import MemberItem from "./MemberItem";
 
 type Member = {
   userId: number;
@@ -13,36 +13,28 @@ type Member = {
   userImage: string;
 };
 
+/** 모달 종류: invite(초대), profile(프로필), remove(추방), null(닫힘) */
+type ModalType = "invite" | "profile" | "remove" | null;
+
 export default function TeamMemberSection() {
-  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
-
-  const [selectedRemoveMember, setSelectedRemoveMember] =
-    useState<Member | null>(null);
-
-  /** 현재 모달 열림 여부 */
-  const [isOpen, setIsOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isDangerOpen, setIsDangerOpen] = useState(false);
-
-  /** 모달 열기, 닫기 */
-  const handleModalOpen = () => setIsOpen(true);
-  const handleModalClose = () => setIsOpen(false);
-  const handleProfileModalOpen = (member: Member) => {
-    setSelectedMember(member);
-    setIsProfileOpen(true);
-  };
-  const handleProfileModalClose = () => setIsProfileOpen(false);
-
-  const handleDangerModalOpen = (member: Member) => {
-    setSelectedRemoveMember(member);
-    setIsDangerOpen(true);
-  };
-  const handleDangerModalClose = () => setIsDangerOpen(false);
-
+  // 데이터 요청
   const { data: groupData } = useGroup(3810);
 
   const members = groupData?.members || [];
   const memberCount = members.length;
+
+  const [modalType, setModalType] = useState<ModalType>(null);
+
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+
+  /** 모달 열기 - member가 있으면 선택된 멤버도 함께 저장 */
+  const openModal = (type: ModalType, member?: Member) => {
+    setModalType(type);
+    if (member) setSelectedMember(member);
+  };
+
+  /** 모달 닫기 */
+  const closeModal = () => setModalType(null);
 
   return (
     <>
@@ -67,80 +59,40 @@ export default function TeamMemberSection() {
             </p>
             <button
               type="button"
-              onClick={handleModalOpen}
+              onClick={() => openModal("invite")}
               className="text-brand-primary text-md-sb"
             >
               초대하기 +
             </button>
           </div>
-          {/* 컨텐츠 */}
+          {/* 멤버 리스트 */}
           <div className="mt-[24px]">
             <ul>
               {members.map((member) => (
-                <li key={member.userId} className="mt-[18px] first:mt-0">
-                  <a
-                    href="#;"
-                    className="flex items-center justify-between gap-[12px]"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleProfileModalOpen(member);
-                    }}
-                  >
-                    <div className="bg-brand-primary h-[32px] w-[32px] flex-shrink-0 overflow-hidden rounded-[8px]">
-                      <img
-                        src={member.userImage}
-                        alt={member.userName + " 프로필 이미지"}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-color-primary text-sm-sb truncate">
-                        {member.userName}
-                      </p>
-                      <p className="text-xs-r text-color-secondary truncate">
-                        {member.userEmail}
-                      </p>
-                    </div>
-                    <div
-                      className="flex flex-shrink-0 items-center"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <button type="button">
-                        <Dropdown
-                          listAlign="center"
-                          trigger="kebab"
-                          options={[
-                            {
-                              label: "멤버 내보내기",
-                              value: "멤버 내보내기",
-                              action: () => handleDangerModalOpen(member),
-                            },
-                          ]}
-                        />
-                      </button>
-                    </div>
-                  </a>
-                </li>
+                <MemberItem
+                  key={member.userId}
+                  member={member}
+                  onProfileOpen={() => openModal("profile", member)}
+                  onRemoveOpen={() => openModal("remove", member)}
+                />
               ))}
             </ul>
           </div>
         </div>
+
         {/* 초대 모달 */}
-        <Modal isOpen={isOpen} onClose={handleModalClose}>
-          <InviteModal onClose={handleModalClose} />
+        <Modal isOpen={modalType === "invite"} onClose={closeModal}>
+          <InviteModal onClose={closeModal} />
         </Modal>
         {/* 프로필 모달 */}
-        <Modal isOpen={isProfileOpen} onClose={handleProfileModalClose}>
-          <ProfileModal
-            onClose={handleProfileModalClose}
-            selectedMember={selectedMember}
-          />
+        <Modal isOpen={modalType === "profile"} onClose={closeModal}>
+          <ProfileModal onClose={closeModal} selectedMember={selectedMember} />
         </Modal>
         {/* 팀 추방 모달 */}
-        <Modal isOpen={isDangerOpen} onClose={handleDangerModalClose}>
+        <Modal isOpen={modalType === "remove"} onClose={closeModal}>
           <RemoveMemberModal
-            onClose={handleDangerModalClose}
-            selectedRemoveMember={selectedRemoveMember}
+            onClose={closeModal}
+            selectedRemoveMember={selectedMember}
           />
         </Modal>
       </div>

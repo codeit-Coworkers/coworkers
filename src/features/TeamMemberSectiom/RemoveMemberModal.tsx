@@ -27,7 +27,7 @@ export default function RemoveMemberModal({
         </div>
         <div className="mt-2 flex flex-col gap-2">
           <h2 className="text-lg-m text-color-primary">
-            {selectedRemoveMember?.userName} 님을 추방하시겠습니까?
+            {selectedRemoveMember?.userName}님을 추방하시겠습니까?
           </h2>
         </div>
         <div className="mt-7 flex flex-row justify-center gap-2">

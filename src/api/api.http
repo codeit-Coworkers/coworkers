@@ -105,7 +105,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhb
 ### 그룹에 유저 생성
 POST https://fe-project-cowokers.vercel.app/20-3/groups/3810/member
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMDQ3MjY0LCJleHAiOjE3NzAwNTA4NjQsImlzcyI6InNwLWNvd29ya2VycyJ9.-PjSPPHoyVfVQjzUrDtUBa-EP0vKAoVl5cKBfsDkIeo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mjc1MCwidGVhbUlkIjoiMjAtMyIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMzY1NjkzLCJleHAiOjE3NzAzNjkyOTMsImlzcyI6InNwLWNvd29ya2VycyJ9.ktIKBIXKb8l_tcnJWa3A7POWxEdHuQff6vgR7UH5m_I
 
 {
   "userEmail": "testuser126@test.com"
