@@ -1,14 +1,7 @@
-import Badge from "@/components/common/Badge/Badge";
-import Dropdown from "@/components/common/Dropdown/Dropdown";
-import Todo from "@/components/common/Todo/todo";
-import AddListIcon from "@/assets/plus.svg";
 import { useGroup } from "@/api/group";
-import Modal from "@/components/common/Modal/Modal";
-import { useState } from "react";
-import ListCreateModal from "@/components/common/Modal/Contents/ListCreateModal";
-import ListEditModal from "@/components/common/Modal/Contents/ListEditModal";
-import ListDeleteModal from "@/components/common/Modal/Contents/ListDeleteModal";
-import { TaskListServer } from "@/types/tasklist";
+import TaskCard from "./components/TaskCard";
+import TaskColumnModals from "./components/TaskColumnModals";
+import { useTaskColumnModals } from "./components/useTaskColumnModals";
 
 export default function TaskColumn() {
   const { data: groupData } = useGroup(3818);
@@ -37,23 +30,8 @@ export default function TaskColumn() {
     );
   });
 
-  type ModalType = "ListCreate" | "ListEdit" | "ListDelete" | null;
-  const [modalType, setModalType] = useState<ModalType>(null);
-  const [selectedTaskList, setSelectedTaskList] =
-    useState<TaskListServer | null>(null);
-
-  //  모달 열기
-  const openModal = (
-    type: ModalType,
-    selectedTaskList: TaskListServer | null = null,
-  ) => {
-    if (selectedTaskList) {
-      setSelectedTaskList(selectedTaskList);
-    }
-    setModalType(type);
-  };
-  // 모달 닫기
-  const closeModal = () => setModalType(null);
+  const { modalType, selectedTaskList, openModal, closeModal } =
+    useTaskColumnModals();
 
   return (
     <div>
@@ -72,60 +50,16 @@ export default function TaskColumn() {
           <div className="bg-background-primary rounded-[12px] lg:w-[270px]">
             <div className="bg-background-tertiary flex items-center justify-between rounded-[12px] py-[10px] pr-[8px] pl-[20px]">
               <span className="text-color-primary text-md-m">할 일</span>
-              <button
-                type="button"
-                className="bg-background-primary flex h-[24px] w-[24px] items-center justify-center rounded-[8px] border-1 border-[#CBD5E1]"
-                onClick={() => openModal("ListCreate")}
-              >
-                <AddListIcon className="text-color-disabled h-[16px] w-[16px]" />
-              </button>
             </div>
 
             {todoLists.map((taskList) => (
-              <div key={taskList.id} className="mt-[12px] lg:mt-[20px]">
-                <div className="border-border-primary rounded-[12px] border-1 pt-[16px] pr-[16px] pb-[24px] pl-[20px]">
-                  <div className="flex items-center justify-between gap-1">
-                    <p className="text-color-primary text-md-sb truncate">
-                      {taskList.name}
-                    </p>
-                    <div className="flex items-center">
-                      <Badge
-                        state="start"
-                        size="small"
-                        current={taskList.tasks.filter((t) => t.doneAt).length}
-                        total={taskList.tasks.length}
-                      />
-                      <button type="button">
-                        <Dropdown
-                          options={[
-                            {
-                              value: "수정하기",
-                              label: "수정하기",
-                              action: () => openModal("ListEdit", taskList),
-                            },
-                            {
-                              value: "삭제하기",
-                              label: "삭제하기",
-                              action: () => openModal("ListDelete", taskList),
-                            },
-                          ]}
-                          listAlign="center"
-                          trigger="kebab"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="mt-[16px]">
-                    {taskList.tasks.map((task) => (
-                      <Todo
-                        key={task.id}
-                        content={task.name}
-                        isCompleted={!!task.doneAt}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <TaskCard
+                key={taskList.id}
+                taskList={taskList}
+                badgeState="start"
+                onEdit={() => openModal("ListEdit", taskList)}
+                onDelete={() => openModal("ListDelete", taskList)}
+              />
             ))}
           </div>
 
@@ -133,60 +67,16 @@ export default function TaskColumn() {
           <div className="bg-background-primary mt-[16px] rounded-[12px] lg:mt-0 lg:w-[270px]">
             <div className="bg-background-tertiary flex items-center justify-between rounded-[12px] py-[10px] pr-[8px] pl-[20px]">
               <span className="text-color-primary text-md-m">진행중</span>
-              <button
-                type="button"
-                className="bg-background-primary flex h-[24px] w-[24px] items-center justify-center rounded-[8px] border-1 border-[#CBD5E1]"
-                onClick={() => openModal("ListCreate")}
-              >
-                <AddListIcon className="text-color-disabled h-[16px] w-[16px]" />
-              </button>
             </div>
 
             {inProgressLists.map((taskList) => (
-              <div key={taskList.id} className="mt-[12px] lg:mt-[20px]">
-                <div className="border-border-primary rounded-[12px] border-1 pt-[16px] pr-[16px] pb-[24px] pl-[20px]">
-                  <div className="flex items-center justify-between gap-1">
-                    <p className="text-color-primary text-md-sb truncate">
-                      {taskList.name}
-                    </p>
-                    <div className="flex items-center">
-                      <Badge
-                        state="ongoing"
-                        size="small"
-                        current={taskList.tasks.filter((t) => t.doneAt).length}
-                        total={taskList.tasks.length}
-                      />
-                      <button type="button">
-                        <Dropdown
-                          options={[
-                            {
-                              value: "수정하기",
-                              label: "수정하기",
-                              action: () => openModal("ListEdit", taskList),
-                            },
-                            {
-                              value: "삭제하기",
-                              label: "삭제하기",
-                              action: () => openModal("ListDelete", taskList),
-                            },
-                          ]}
-                          listAlign="center"
-                          trigger="kebab"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="mt-[16px]">
-                    {taskList.tasks.map((task) => (
-                      <Todo
-                        key={task.id}
-                        content={task.name}
-                        isCompleted={!!task.doneAt}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <TaskCard
+                key={taskList.id}
+                taskList={taskList}
+                badgeState="ongoing"
+                onEdit={() => openModal("ListEdit", taskList)}
+                onDelete={() => openModal("ListDelete", taskList)}
+              />
             ))}
           </div>
 
@@ -194,74 +84,25 @@ export default function TaskColumn() {
           <div className="bg-background-primary mt-[16px] rounded-[12px] lg:mt-0 lg:w-[270px]">
             <div className="bg-background-tertiary flex items-center justify-between rounded-[12px] py-[10px] pr-[8px] pl-[20px]">
               <span className="text-color-primary text-md-m">완료</span>
-              <button
-                type="button"
-                className="bg-background-primary flex h-[24px] w-[24px] items-center justify-center rounded-[8px] border-1 border-[#CBD5E1]"
-                onClick={() => openModal("ListCreate")}
-              >
-                <AddListIcon className="text-color-disabled h-[16px] w-[16px]" />
-              </button>
             </div>
 
             {doneLists.map((taskList) => (
-              <div key={taskList.id} className="mt-[12px] lg:mt-[20px]">
-                <div className="border-border-primary rounded-[12px] border-1 pt-[14px] pr-[12px] pb-[14px] pl-[20px]">
-                  <div className="flex items-center justify-between gap-1">
-                    <p className="text-color-primary text-md-sb truncate">
-                      {taskList.name}
-                    </p>
-                    <div className="flex items-center">
-                      <Badge
-                        state="done"
-                        size="small"
-                        current={taskList.tasks.filter((t) => t.doneAt).length}
-                        total={taskList.tasks.length}
-                      />
-                      <button type="button">
-                        <Dropdown
-                          options={[
-                            {
-                              value: "수정하기",
-                              label: "수정하기",
-                              action: () => openModal("ListEdit", taskList),
-                            },
-                            {
-                              value: "삭제하기",
-                              label: "삭제하기",
-                              action: () => openModal("ListDelete", taskList),
-                            },
-                          ]}
-                          listAlign="center"
-                          trigger="kebab"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <TaskCard
+                key={taskList.id}
+                taskList={taskList}
+                badgeState="done"
+                onEdit={() => openModal("ListEdit", taskList)}
+                onDelete={() => openModal("ListDelete", taskList)}
+              />
             ))}
           </div>
         </div>
       </div>
-      {/* 목록 추가 모달 */}
-      <Modal isOpen={modalType === "ListCreate"} onClose={closeModal}>
-        <ListCreateModal onClose={closeModal} />
-      </Modal>
-      {/* 목록 수정 모달 */}
-      <Modal isOpen={modalType === "ListEdit"} onClose={closeModal}>
-        <ListEditModal
-          key={selectedTaskList?.id}
-          selectedTaskList={selectedTaskList}
-          onClose={closeModal}
-        />
-      </Modal>
-      {/* 목록 삭제 모달 */}
-      <Modal isOpen={modalType === "ListDelete"} onClose={closeModal}>
-        <ListDeleteModal
-          selectedTaskList={selectedTaskList}
-          onClose={closeModal}
-        />
-      </Modal>
+      <TaskColumnModals
+        modalType={modalType}
+        selectedTaskList={selectedTaskList}
+        closeModal={closeModal}
+      />
     </div>
   );
 }
