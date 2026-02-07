@@ -1,10 +1,10 @@
 // SVG 아이콘 컴포넌트 import
-import ProgressDone from "@/assets/progress-done.svg?react";
-import ProgressDoneSmall from "@/assets/progress-done-small.svg?react";
-import ProgressOngoing from "@/assets/progress-ongoing.svg?react";
-import ProgressOngoingSmall from "@/assets/progress-ongoing-small.svg?react";
-import ProgressStart from "@/assets/progress-start.svg?react";
-import ProgressStartSmall from "@/assets/progress-start-small.svg?react";
+import ProgressDone from "@/assets/progress-done.svg";
+import ProgressDoneSmall from "@/assets/progress-done-small.svg";
+import ProgressOngoing from "@/assets/progress-ongoing.svg";
+import ProgressOngoingSmall from "@/assets/progress-ongoing-small.svg";
+import ProgressStart from "@/assets/progress-start.svg";
+import ProgressStartSmall from "@/assets/progress-start-small.svg";
 
 export interface BadgeProps {
   /**

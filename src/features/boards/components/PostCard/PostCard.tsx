@@ -1,5 +1,5 @@
-import HeartIcon from "../../../../assets/heart.svg";
-import BestIcon from "../../../../assets/best.svg";
+import HeartIcon from "@/assets/heart.svg";
+import BestIcon from "@/assets/best.svg";
 
 export interface PostCardProps {
   /**
@@ -15,11 +15,6 @@ export interface PostCardProps {
    * - 'small': 작은 카드
    */
   size: "large" | "small";
-
-  /**
-   * 이미지 표시 여부
-   */
-  hasImage: boolean;
 
   /**
    * 게시글 제목
@@ -47,42 +42,56 @@ export interface PostCardProps {
   likeCount: number;
 
   /**
-   * 이미지 URL (hasImage가 true일 때 필요)
+   * 이미지 URL (있으면 이미지 표시)
    */
   imageUrl?: string;
+
+  /**
+   * 전체 너비 사용 여부 (기본: false)
+   * - true: w-full (부모 컨테이너 너비에 맞춤)
+   * - false: 고정 크기 사용
+   */
+  fullWidth?: boolean;
 }
+
+// 카드 크기 스타일 맵
+const SIZE_MAP = {
+  best: {
+    large: "w-[350px] h-[210px] pt-6 pb-7 px-5",
+    small: "w-[304px] h-[177px] p-5",
+  },
+  default: {
+    large: "w-[523px] h-[156px] py-5 px-6",
+    small: "w-[340px] h-[140px] p-4",
+  },
+} as const;
 
 /**
  * PostCard 컴포넌트
  *
  * @description
  * 자유게시판 게시글 카드 컴포넌트입니다.
- * state(best/default)와 size(large/small), hasImage(true/false) 조합으로 사용합니다.
+ * state(best/default)와 size(large/small) 조합으로 사용합니다.
+ * imageUrl이 있으면 이미지를 표시합니다.
  */
 export default function PostCard({
   state,
   size,
-  hasImage,
   title,
   content,
   author,
   date,
   likeCount,
   imageUrl,
+  fullWidth = false,
 }: PostCardProps) {
   // 카드 크기 스타일
-  const getCardSizeStyles = () => {
-    if (state === "best") {
-      if (size === "large") {
-        return "w-[350px] h-[210px] pt-6 pb-7 px-5";
-      }
-      return "w-[304px] h-[177px] p-5";
-    }
-    if (size === "large") {
-      return "w-[523px] h-[156px] py-5 px-6";
-    }
-    return "w-[340px] h-[140px] p-4";
-  };
+  const cardSizeStyles = SIZE_MAP[state][size];
+
+  // fullWidth가 true면 w-full 사용, false면 고정 크기 유지
+  const widthClass = fullWidth
+    ? cardSizeStyles.replace(/w-\[\d+px\]/, "w-full")
+    : cardSizeStyles;
 
   // 이미지 크기
   const imageSize =
@@ -127,7 +136,7 @@ export default function PostCard({
   if (state === "best") {
     return (
       <article
-        className={`bg-background-inverse flex flex-col ${chipGap} rounded-[20px] ${getCardSizeStyles()}`}
+        className={`bg-background-inverse flex flex-col ${chipGap} rounded-[20px] ${widthClass}`}
       >
         {/* 인기 칩 */}
         <div className="bg-background-secondary flex h-[30px] w-[72px] items-center justify-center gap-1 rounded-xl">
@@ -150,7 +159,7 @@ export default function PostCard({
                 {content}
               </p>
             </div>
-            {hasImage && imageUrl && (
+            {imageUrl && (
               <img
                 src={imageUrl}
                 alt="게시글 이미지"
@@ -186,7 +195,7 @@ export default function PostCard({
   // Default 카드 레이아웃
   return (
     <article
-      className={`bg-background-inverse flex flex-col rounded-[20px] ${getCardSizeStyles()} ${contentAuthorGap}`}
+      className={`bg-background-inverse flex flex-col rounded-[20px] ${widthClass} ${contentAuthorGap}`}
     >
       {/* 제목 + 본문 + 이미지 */}
       <div className="flex flex-1 items-start gap-2">
@@ -198,7 +207,7 @@ export default function PostCard({
             {content}
           </p>
         </div>
-        {hasImage && imageUrl && (
+        {imageUrl && (
           <img
             src={imageUrl}
             alt="게시글 이미지"

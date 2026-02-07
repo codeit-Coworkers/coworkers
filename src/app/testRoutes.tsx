@@ -8,8 +8,11 @@ import TestInput from "@/pages/test/TestInput";
 import TestToast from "@/pages/test/TestToast";
 import TestChip from "@/pages/test/TestChip";
 import TestDropdown from "@/pages/test/TestDropdown";
+import TestModal from "@/pages/test/TestModal";
 import TestTodayProgressSection from "@/pages/test/TestTodayProgressSection";
 import TestErrorBoundary from "@/pages/test/TestErrorBoundary";
+import TestTeamMemberSection from "@/pages/test/TestTeamMemberSection";
+import TestTaskColumn from "@/pages/test/TestTaskColumn";
 
 export const testRoutes = [
   {
@@ -41,10 +44,6 @@ export const testRoutes = [
     element: <TestCalendar />,
   },
   {
-    path: "/test/calendar",
-    element: <TestCalendar />,
-  },
-  {
     path: "/test/input",
     element: <TestInput />,
   },
@@ -57,6 +56,10 @@ export const testRoutes = [
     element: <TestDropdown />,
   },
   {
+    path: "/test/modal",
+    element: <TestModal />,
+  },
+  {
     path: "/test/todayprogresssection",
     element: <TestTodayProgressSection />,
   },
@@ -64,4 +67,11 @@ export const testRoutes = [
     path: "/test/error-boundary",
     element: <TestErrorBoundary />,
   },
+  {
+    path: "/test/team-member-section",
+    element: <TestTeamMemberSection />
+  },
+  {
+    path: "/test/task-column",
+    element: <TestTaskColumn />,
 ];
