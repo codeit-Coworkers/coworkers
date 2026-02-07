@@ -4,7 +4,7 @@ import { FetchBoundary } from "@/providers/boundary";
 export default function TestProgressSection() {
   return (
     <FetchBoundary>
-      <TodayProgressSection groupId={3810} />
+      <TodayProgressSection groupId={3818} />
     </FetchBoundary>
   );
 }

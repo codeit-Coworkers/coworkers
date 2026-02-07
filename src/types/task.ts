@@ -26,6 +26,7 @@ export interface TaskServer {
   frequency: "DAILY" | "WEEKLY" | "MONTHLY" | "ONCE";
   updatedAt: string;
   doneAt: string | null;
+  startDate: string | null;
   date: string;
   description: string;
   name: string;

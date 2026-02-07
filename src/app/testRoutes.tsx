@@ -11,6 +11,7 @@ import TestDropdown from "@/pages/test/TestDropdown";
 import TestModal from "@/pages/test/TestModal";
 import TestTodayProgressSection from "@/pages/test/TestTodayProgressSection";
 import TestErrorBoundary from "@/pages/test/TestErrorBoundary";
+import TestTaskColumn from "@/pages/test/TestTaskColumn";
 
 export const testRoutes = [
   {
@@ -68,5 +69,9 @@ export const testRoutes = [
   {
     path: "/test/error-boundary",
     element: <TestErrorBoundary />,
+  },
+  {
+    path: "/test/task-column",
+    element: <TestTaskColumn />,
   },
 ];
