@@ -52,6 +52,10 @@ export function getErrorDataByCode(error: unknown) {
     return ERROR_CODE.TypeError;
   }
 
-  // 그 외 에러
-  return ERROR_CODE.default;
+  // 그 외 에러 - 실제 에러 메시지 표시
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  return {
+    code: "ERROR",
+    message: `알 수 없는 오류가 발생했습니다.\n${errorMessage}`,
+  };
 }
