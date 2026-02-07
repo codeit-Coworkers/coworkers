@@ -8,6 +8,7 @@ import NotFound from "@/pages/NotFound";
 import { testRoutes } from "./testRoutes";
 import Layout from "@/components/layout/Layout";
 import { GlobalErrorFallback } from "@/providers/boundary";
+import Team from "@/pages/team";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +27,8 @@ export const router = createBrowserRouter([
         element: <Layout />,
         children: [
           { path: "/user", element: <User /> },
+          { path: "/team", element: <Team /> },
+          { path: "/team/:id", element: <Team /> },
           { path: "/boards", element: <Boards /> },
           { path: "/boards/write", element: <BoardWrite /> },
           { path: "/boards/:articleId", element: <BoardDetail /> },

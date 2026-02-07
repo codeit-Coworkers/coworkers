@@ -69,9 +69,10 @@ export const testRoutes = [
   },
   {
     path: "/test/team-member-section",
-    element: <TestTeamMemberSection />
+    element: <TestTeamMemberSection />,
   },
   {
     path: "/test/task-column",
     element: <TestTaskColumn />,
+  },
 ];
