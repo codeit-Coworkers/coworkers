@@ -11,8 +11,10 @@ import {
   useDeleteArticleComment,
 } from "@/api/articleComment";
 import type { ArticleComment } from "@/types/articleComment";
+import Modal from "@/components/common/Modal/Modal";
 import HeartIcon from "@/assets/heart.svg";
 import HeartFillIcon from "@/assets/heart-fill.svg";
+import AlertIcon from "@/assets/alert.svg";
 import ProfileIcon from "@/assets/icon.svg";
 import EnterIcon from "@/features/boards/assets/enter.svg";
 import Dropdown from "@/components/common/Dropdown/Dropdown";
@@ -45,6 +47,9 @@ function BoardDetailContent({ articleId }: { articleId: number }) {
   const deleteMutation = useDeleteArticle();
   const likeMutation = useToggleLike(articleId);
 
+  // 삭제 모달 상태
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   // 작성자 프로필 이미지 (현재 유저 = 작성자이면 유저 이미지 사용)
   const writerImage =
     currentUser && currentUser.id === article.writer.id
@@ -56,13 +61,14 @@ function BoardDetailContent({ articleId }: { articleId: number }) {
     likeMutation.mutate(article.isLiked);
   };
 
-  // 삭제
-  const handleDelete = () => {
-    if (window.confirm("게시글을 삭제하시겠습니까?")) {
-      deleteMutation.mutate(articleId, {
-        onSuccess: () => navigate("/boards"),
-      });
-    }
+  // 삭제 확인
+  const handleDeleteConfirm = () => {
+    deleteMutation.mutate(articleId, {
+      onSuccess: () => {
+        setIsDeleteModalOpen(false);
+        navigate("/boards");
+      },
+    });
   };
 
   // 케밥 메뉴 옵션
@@ -75,7 +81,7 @@ function BoardDetailContent({ articleId }: { articleId: number }) {
     {
       label: "삭제하기",
       value: "delete",
-      action: handleDelete,
+      action: () => setIsDeleteModalOpen(true),
     },
   ];
 
@@ -224,6 +230,43 @@ function BoardDetailContent({ articleId }: { articleId: number }) {
           )}
         </div>
       </div>
+
+      {/* 게시글 삭제 확인 모달 */}
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+      >
+        <div className="p-5">
+          <div className="mt-2 mb-5 flex w-full justify-center">
+            <AlertIcon />
+          </div>
+          <div className="mt-2 flex flex-col gap-2">
+            <h2 className="text-lg-m text-color-primary">
+              게시글을 삭제하시겠어요?
+            </h2>
+            <p className="text-md-r text-color-primary mb-7">
+              삭제된 게시글은 복구할 수 없습니다.
+            </p>
+          </div>
+          <div className="flex flex-row justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="text-lg-b text-color-default h-[48px] w-[135px] rounded-[12px] border-[1px] border-solid border-[#cbd5e1] text-center"
+            >
+              닫기
+            </button>
+            <button
+              type="button"
+              onClick={handleDeleteConfirm}
+              disabled={deleteMutation.isPending}
+              className="bg-status-danger text-lg-b text-color-inverse h-[48px] w-[135px] rounded-[12px] text-center disabled:opacity-50"
+            >
+              {deleteMutation.isPending ? "삭제 중..." : "삭제하기"}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
@@ -369,6 +412,7 @@ function CommentItem({
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const updateComment = useUpdateArticleComment(articleId);
   const deleteComment = useDeleteArticleComment(articleId);
@@ -381,10 +425,10 @@ function CommentItem({
     );
   };
 
-  const handleDelete = () => {
-    if (window.confirm("댓글을 삭제하시겠습니까?")) {
-      deleteComment.mutate(comment.id);
-    }
+  const handleDeleteConfirm = () => {
+    deleteComment.mutate(comment.id, {
+      onSuccess: () => setIsDeleteModalOpen(false),
+    });
   };
 
   const formatDate = (dateStr: string) => {
@@ -407,78 +451,117 @@ function CommentItem({
     {
       label: "삭제하기",
       value: "delete",
-      action: handleDelete,
+      action: () => setIsDeleteModalOpen(true),
     },
   ];
 
   return (
-    <div className={`flex gap-3 ${commentGap}`}>
-      {/* 프로필 */}
-      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-slate-200">
-        {comment.writer.image ? (
-          <img
-            src={comment.writer.image}
-            alt={comment.writer.nickname}
-            className="h-8 w-8 rounded-lg object-cover"
-          />
-        ) : (
-          <ProfileIcon className="h-5 w-5" />
-        )}
-      </div>
-
-      {/* 댓글 내용 */}
-      <div className="flex-1">
-        <div className="flex items-center justify-between">
-          <span className={`${metaSize} font-medium text-slate-800`}>
-            {comment.writer.nickname}
-          </span>
-          <Dropdown
-            trigger="kebab"
-            options={kebabOptions}
-            keepSelected={false}
-            listAlign="center"
-          />
+    <>
+      <div className={`flex gap-3 ${commentGap}`}>
+        {/* 프로필 */}
+        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-slate-200">
+          {comment.writer.image ? (
+            <img
+              src={comment.writer.image}
+              alt={comment.writer.nickname}
+              className="h-8 w-8 rounded-lg object-cover"
+            />
+          ) : (
+            <ProfileIcon className="h-5 w-5" />
+          )}
         </div>
 
-        {isEditing ? (
-          /* 수정 모드 */
-          <div className="mt-1 flex items-center gap-2">
-            <input
-              type="text"
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleUpdate()}
-              className={`${commentTextSize} flex-1 rounded-lg border border-slate-200 px-3 py-2 text-slate-800 focus:outline-none`}
-              autoFocus
+        {/* 댓글 내용 */}
+        <div className="flex-1">
+          <div className="flex items-center justify-between">
+            <span className={`${metaSize} font-medium text-slate-800`}>
+              {comment.writer.nickname}
+            </span>
+            <Dropdown
+              trigger="kebab"
+              options={kebabOptions}
+              keepSelected={false}
+              listAlign="center"
             />
+          </div>
+
+          {isEditing ? (
+            /* 수정 모드 */
+            <div className="mt-1 flex items-center gap-2">
+              <input
+                type="text"
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleUpdate()}
+                className={`${commentTextSize} flex-1 rounded-lg border border-slate-200 px-3 py-2 text-slate-800 focus:outline-none`}
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={handleUpdate}
+                disabled={updateComment.isPending}
+                className="text-sm-m text-brand-primary hover:text-interaction-hover"
+              >
+                저장
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="text-sm-m text-color-default"
+              >
+                취소
+              </button>
+            </div>
+          ) : (
+            /* 일반 모드 */
+            <p className={`${commentTextSize} mt-1 leading-5 text-slate-800`}>
+              {comment.content}
+            </p>
+          )}
+
+          <span className={`${metaSize} mt-2 block text-slate-400`}>
+            {formatDate(comment.createdAt)}
+          </span>
+        </div>
+      </div>
+
+      {/* 댓글 삭제 확인 모달 */}
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+      >
+        <div className="p-5">
+          <div className="mt-2 mb-5 flex w-full justify-center">
+            <AlertIcon />
+          </div>
+          <div className="mt-2 flex flex-col gap-2">
+            <h2 className="text-lg-m text-color-primary">
+              댓글을 삭제하시겠어요?
+            </h2>
+            <p className="text-md-r text-color-primary mb-7">
+              삭제된 댓글은 복구할 수 없습니다.
+            </p>
+          </div>
+          <div className="flex flex-row justify-center gap-2">
             <button
               type="button"
-              onClick={handleUpdate}
-              disabled={updateComment.isPending}
-              className="text-sm-m text-brand-primary hover:text-interaction-hover"
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="text-lg-b text-color-default h-[48px] w-[135px] rounded-[12px] border-[1px] border-solid border-[#cbd5e1] text-center"
             >
-              저장
+              닫기
             </button>
             <button
               type="button"
-              onClick={() => setIsEditing(false)}
-              className="text-sm-m text-color-default"
+              onClick={handleDeleteConfirm}
+              disabled={deleteComment.isPending}
+              className="bg-status-danger text-lg-b text-color-inverse h-[48px] w-[135px] rounded-[12px] text-center disabled:opacity-50"
             >
-              취소
+              {deleteComment.isPending ? "삭제 중..." : "삭제하기"}
             </button>
           </div>
-        ) : (
-          /* 일반 모드 */
-          <p className={`${commentTextSize} mt-1 leading-5 text-slate-800`}>
-            {comment.content}
-          </p>
-        )}
-
-        <span className={`${metaSize} mt-2 block text-slate-400`}>
-          {formatDate(comment.createdAt)}
-        </span>
-      </div>
-    </div>
+        </div>
+      </Modal>
+    </>
   );
 }
 
