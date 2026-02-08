@@ -1,5 +1,21 @@
-// Server Type (API 응답)
-export interface GroupResponse {
+// ========================================
+// Group Types
+// ========================================
+
+import type { TaskListServer } from "./tasklist";
+
+// 그룹 멤버
+export interface GroupMemberServer {
+  role: "ADMIN" | "MEMBER";
+  userImage: string;
+  userEmail: string;
+  userName: string;
+  groupId: number;
+  userId: number;
+}
+
+// 그룹 목록 아이템
+export interface GroupSummaryServer {
   teamId: string;
   updatedAt: string;
   createdAt: string;
@@ -8,9 +24,8 @@ export interface GroupResponse {
   id: number;
 }
 
-// UI Type (화면에서 사용)
-export interface Group {
-  id: number;
-  name: string;
-  image: string;
+// 그룹 상세
+export interface GroupServer extends GroupSummaryServer {
+  members: GroupMemberServer[];
+  taskLists: TaskListServer[];
 }
