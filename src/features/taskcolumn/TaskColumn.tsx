@@ -2,9 +2,11 @@ import { useGroup } from "@/api/group";
 import TaskCard from "./components/TaskCard";
 import TaskColumnModals from "./components/TaskColumnModals";
 import { useTaskColumnModals } from "./components/useTaskColumnModals";
+import { Button } from "@/components/common/Button/Button";
+import PlusBlue from "@/assets/plus_blue.svg";
 
-export default function TaskColumn() {
-  const { data: groupData } = useGroup(3818);
+export default function TaskColumn({ groupId }: { groupId: number }) {
+  const { data: groupData } = useGroup(groupId);
 
   console.log(groupData);
 
@@ -35,22 +37,40 @@ export default function TaskColumn() {
 
   return (
     <div>
-      <div style={{ width: "842px", margin: "50px auto" }}>
+      <div>
         {/* 목록 명 */}
-        <p className="flex gap-1">
-          <span className="text-lg-m text-color-primary">할 일 목록</span>
-          <span className="text-lg-m text-color-default">
-            ({taskLists.length}개)
-          </span>
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="flex gap-1">
+            <span className="text-lg-m text-color-primary">할 일 목록</span>
+            <span className="text-lg-m text-color-default">
+              ({taskLists.length}개)
+            </span>
+          </p>
+          <div>
+            <Button
+              size="todoAdd"
+              variant="default"
+              icon={<PlusBlue className="h-4 w-4" />}
+              onClick={() => openModal("ListCreate", null)}
+            >
+              목록 추가
+            </Button>
+          </div>
+        </div>
 
         {/* 할 일 칼럼 */}
         <div className="mt-[16px] justify-between lg:mt-[30px] lg:flex lg:gap-[16px]">
           {/* 할 일 */}
-          <div className="bg-background-primary rounded-[12px] lg:w-[270px]">
+          <div className="rounded-[12px] lg:w-[270px]">
             <div className="bg-background-tertiary flex items-center justify-between rounded-[12px] py-[10px] pr-[8px] pl-[20px]">
               <span className="text-color-primary text-md-m">할 일</span>
             </div>
+
+            {todoLists.length === 0 && (
+              <p className="flex h-full items-center justify-center px-[10px] py-[30px]">
+                할 일 목록이 없습니다.
+              </p>
+            )}
 
             {todoLists.map((taskList) => (
               <TaskCard
@@ -64,11 +84,16 @@ export default function TaskColumn() {
           </div>
 
           {/* 진행중 */}
-          <div className="bg-background-primary mt-[16px] rounded-[12px] lg:mt-0 lg:w-[270px]">
+          <div className="mt-[16px] rounded-[12px] lg:mt-0 lg:w-[270px]">
             <div className="bg-background-tertiary flex items-center justify-between rounded-[12px] py-[10px] pr-[8px] pl-[20px]">
               <span className="text-color-primary text-md-m">진행중</span>
             </div>
 
+            {inProgressLists.length === 0 && (
+              <p className="flex h-full items-center justify-center px-[10px] py-[30px]">
+                진행중인 목록이 없습니다.
+              </p>
+            )}
             {inProgressLists.map((taskList) => (
               <TaskCard
                 key={taskList.id}
@@ -81,10 +106,15 @@ export default function TaskColumn() {
           </div>
 
           {/* 완료 */}
-          <div className="bg-background-primary mt-[16px] rounded-[12px] lg:mt-0 lg:w-[270px]">
+          <div className="mt-[16px] rounded-[12px] lg:mt-0 lg:w-[270px]">
             <div className="bg-background-tertiary flex items-center justify-between rounded-[12px] py-[10px] pr-[8px] pl-[20px]">
               <span className="text-color-primary text-md-m">완료</span>
             </div>
+            {doneLists.length === 0 && (
+              <p className="flex h-full items-center justify-center px-[10px] py-[30px]">
+                완료된 목록이 없습니다.
+              </p>
+            )}
 
             {doneLists.map((taskList) => (
               <TaskCard

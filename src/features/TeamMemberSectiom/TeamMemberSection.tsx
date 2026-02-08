@@ -16,9 +16,9 @@ type Member = {
 /** 모달 종류: invite(초대), profile(프로필), remove(추방), null(닫힘) */
 type ModalType = "invite" | "profile" | "remove" | null;
 
-export default function TeamMemberSection() {
+export default function TeamMemberSection({ groupId }: { groupId: number }) {
   // 데이터 요청
-  const { data: groupData } = useGroup(3810);
+  const { data: groupData } = useGroup(groupId);
 
   const members = groupData?.members || [];
   const memberCount = members.length;
@@ -38,16 +38,7 @@ export default function TeamMemberSection() {
 
   return (
     <>
-      <div
-        style={{
-          width: "100vw",
-          height: "100vh",
-          background: "#f0f0f0",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <div>
         <div className="bg-background-primary border-border-primary w-[240px] rounded-[12px] border-1 px-[20px] py-[24px]">
           {/* 헤더 */}
           <div className="flex items-center justify-between">

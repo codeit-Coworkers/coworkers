@@ -8,13 +8,15 @@ import { useToastStore } from "@/stores/useToastStore";
 type ListEditModalProps = {
   onClose: () => void;
   selectedTaskList: TaskListServer | null;
+  groupId: number;
 };
 
 export default function ListEditModal({
   onClose,
   selectedTaskList,
+  groupId,
 }: ListEditModalProps) {
-  const { mutate: updateList } = useUpdateTaskList(3818);
+  const { mutate: updateList } = useUpdateTaskList(groupId);
   const [name, setName] = useState(selectedTaskList?.name || "");
 
   const { show: showToast } = useToastStore();
@@ -52,7 +54,7 @@ export default function ListEditModal({
             onClose();
           }}
         >
-          만들기
+          수정하기
         </button>
       </div>
     </>

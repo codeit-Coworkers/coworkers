@@ -24,7 +24,7 @@ export default function TaskCard({
   return (
     <div className="mt-[12px] lg:mt-[20px]">
       <div
-        className={`border-border-primary rounded-[12px] border-1 pl-[20px] ${cardPadding}`}
+        className={`border-border-primary bg-background-primary rounded-[12px] border-1 pl-[20px] ${cardPadding}`}
       >
         <div className="flex items-center justify-between gap-1">
           <p className="text-color-primary text-md-sb truncate">
