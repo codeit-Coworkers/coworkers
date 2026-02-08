@@ -1,10 +1,18 @@
 import Close from "@/assets/close.svg";
+import { useToastStore } from "@/stores/useToastStore";
 
 type InviteModalProps = {
   onClose: () => void;
 };
 
 export default function InviteModal({ onClose }: InviteModalProps) {
+  const { show: showToast } = useToastStore();
+
+  const linkCopyHandler = () => {
+    navigator.clipboard.writeText(window.location.href);
+    showToast("링크가 복사되었습니다!");
+  };
+
   return (
     <>
       <div className="-mb-2 flex w-full justify-end pt-2">
@@ -18,7 +26,14 @@ export default function InviteModal({ onClose }: InviteModalProps) {
             그룹에 참여할 수 있는 링크를 복사합니다.
           </p>
         </div>
-        <button className="bg-brand-primary text-lg-b text-color-inverse h-[48px] w-[280px] rounded-[12px] text-center">
+        <button
+          type="button"
+          className="bg-brand-primary text-lg-b text-color-inverse h-[48px] w-[280px] rounded-[12px] text-center"
+          onClick={() => {
+            linkCopyHandler();
+            onClose();
+          }}
+        >
           링크 복사하기
         </button>
       </div>
