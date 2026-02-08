@@ -42,7 +42,6 @@ export const WeeklyCalendar = ({
 
   return (
     <div className="flex w-full items-center gap-2">
-      {/* ✅ 1. 왼쪽 이동 버튼: 날짜 카드와 동일한 네모 박스 스타일 */}
       <button
         type="button"
         onClick={onPrevWeek}
@@ -51,7 +50,6 @@ export const WeeklyCalendar = ({
         <ChevronLeftIcon className="text-icon-primary h-5 w-5" />
       </button>
 
-      {/* 2. 7일 날짜 카드 리스트 */}
       <div className="flex flex-1 items-center justify-between gap-2">
         {weekDays.map((date, idx) => {
           const isSelected = isSameDay(selectedDate, date);
@@ -74,7 +72,6 @@ export const WeeklyCalendar = ({
         })}
       </div>
 
-      {/* ✅ 3. 오른쪽 이동 버튼: 왼쪽과 대칭되는 네모 박스 스타일 */}
       <button
         type="button"
         onClick={onNextWeek}

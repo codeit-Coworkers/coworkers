@@ -47,7 +47,7 @@ export const TaskGroupCard = ({
         <div className="relative" ref={menuRef}>
           <button
             onClick={(e) => {
-              e.stopPropagation(); // 카드 클릭 이벤트 방지
+              e.stopPropagation();
               setIsMenuOpen(!isMenuOpen);
             }}
             className="hover:bg-background-secondary rounded-md p-1 transition-colors"
@@ -55,7 +55,6 @@ export const TaskGroupCard = ({
             <KebabIcon className="text-icon-primary h-4 w-4" />
           </button>
 
-          {/* ✅ 드롭다운 메뉴: 이미지 디자인 재현 */}
           {isMenuOpen && (
             <div className="border-border-primary absolute right-0 z-50 mt-2 w-28 overflow-hidden rounded-lg border bg-white shadow-lg">
               <button
