@@ -18,6 +18,7 @@ import AlertIcon from "@/assets/alert.svg";
 import ProfileIcon from "@/assets/icon.svg";
 import EnterIcon from "@/features/boards/assets/enter.svg";
 import Dropdown from "@/components/common/Dropdown/Dropdown";
+import { formatDate, formatLikeCount } from "@/utils/format";
 
 /**
  * 게시글 상세 페이지
@@ -84,21 +85,6 @@ function BoardDetailContent({ articleId }: { articleId: number }) {
       action: () => setIsDeleteModalOpen(true),
     },
   ];
-
-  // 좋아요 수 포맷
-  const formatLikeCount = (count: number) => {
-    if (count > 999) return "999+";
-    return count.toString();
-  };
-
-  // 날짜 포맷
-  const formatDate = (dateStr: string) => {
-    const d = new Date(dateStr);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}. ${month}. ${day}`;
-  };
 
   // 반응형 스타일
   const cardWidth = isMobile ? "w-full" : isTablet ? "w-[620px]" : "w-[900px]";
@@ -429,14 +415,6 @@ function CommentItem({
     deleteComment.mutate(comment.id, {
       onSuccess: () => setIsDeleteModalOpen(false),
     });
-  };
-
-  const formatDate = (dateStr: string) => {
-    const d = new Date(dateStr);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}. ${month}. ${day}`;
   };
 
   const kebabOptions = [

@@ -7,8 +7,13 @@ import { Input } from "@/components/common/Input/Input";
 import Dropdown from "@/components/common/Dropdown/Dropdown";
 import { FetchBoundary } from "@/providers/boundary";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-import { useArticles, useBestArticles } from "@/api/article";
+import {
+  useArticles,
+  useInfiniteArticles,
+  useBestArticles,
+} from "@/api/article";
 import type { ArticleSummary } from "@/types/article";
+import { formatDate } from "@/utils/format";
 import PlusIcon from "@/assets/plus.svg";
 
 // ─── 정렬 타입 매핑 ─────────────────────────────────────────
@@ -53,11 +58,6 @@ export default function Boards() {
 
   // 페이지네이션 상태 (데스크톱/태블릿)
   const [page, setPage] = useState(1);
-
-  // 무한 스크롤 상태 (모바일)
-  const [mobileArticles, setMobileArticles] = useState<ArticleSummary[]>([]);
-  const [mobilePage, setMobilePage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const observerRef = useRef<HTMLDivElement>(null);
 
   const pageSize = isMobile ? PAGE_SIZE_MOBILE : PAGE_SIZE_DESKTOP;
@@ -67,50 +67,52 @@ export default function Boards() {
     const timer = setTimeout(() => {
       setDebouncedKeyword(keyword);
       setPage(1);
-      setMobilePage(1);
-      setMobileArticles([]);
-      setHasMore(true);
     }, 300);
     return () => clearTimeout(timer);
   }, [keyword]);
 
-  // 정렬/검색 변경 시 모바일 목록 초기화
-  useEffect(() => {
-    setMobilePage(1);
-    setMobileArticles([]);
-    setHasMore(true);
-  }, [orderBy]);
+  // API 호출: 데스크톱/태블릿은 페이지네이션, 모바일은 무한 스크롤 (enabled로 하나만 요청)
+  const articlesQuery = useArticles(
+    {
+      page,
+      pageSize: PAGE_SIZE_DESKTOP,
+      orderBy,
+      keyword: debouncedKeyword || undefined,
+    },
+    { enabled: !isMobile },
+  );
+  const infiniteQuery = useInfiniteArticles(
+    {
+      pageSize: PAGE_SIZE_MOBILE,
+      orderBy,
+      keyword: debouncedKeyword || undefined,
+    },
+    { enabled: isMobile },
+  );
 
-  // API 호출
-  const currentPage = isMobile ? mobilePage : page;
-  const { data, isLoading, isFetching } = useArticles({
-    page: currentPage,
-    pageSize,
-    orderBy,
-    keyword: debouncedKeyword || undefined,
-  });
+  const { data, isLoading, isFetching } = isMobile
+    ? {
+        data: infiniteQuery.data
+          ? {
+              list: infiniteQuery.data.pages.flatMap((p) => p.list),
+              totalCount: infiniteQuery.data.pages[0]?.totalCount ?? 0,
+            }
+          : undefined,
+        isLoading: infiniteQuery.isLoading,
+        isFetching: infiniteQuery.isFetching,
+      }
+    : {
+        data: articlesQuery.data,
+        isLoading: articlesQuery.isLoading,
+        isFetching: articlesQuery.isFetching,
+      };
 
-  // 모바일: 데이터 도착 시 누적
-  useEffect(() => {
-    if (!isMobile || !data) return;
-
-    if (mobilePage === 1) {
-      setMobileArticles(data.list);
-    } else {
-      setMobileArticles((prev) => [...prev, ...data.list]);
-    }
-
-    // 더 불러올 데이터가 있는지 확인
-    const totalPages = Math.ceil(data.totalCount / pageSize);
-    setHasMore(mobilePage < totalPages);
-  }, [data, isMobile, mobilePage, pageSize]);
-
-  // 모바일: 무한 스크롤 IntersectionObserver
+  // 모바일: 무한 스크롤 다음 페이지 로드
   const loadMore = useCallback(() => {
-    if (!isFetching && hasMore) {
-      setMobilePage((prev) => prev + 1);
+    if (!infiniteQuery.isFetching && infiniteQuery.hasNextPage) {
+      infiniteQuery.fetchNextPage();
     }
-  }, [isFetching, hasMore]);
+  }, [infiniteQuery]);
 
   useEffect(() => {
     if (!isMobile || !observerRef.current) return;
@@ -138,7 +140,7 @@ export default function Boards() {
   };
 
   // 표시할 게시글 목록
-  const displayArticles = isMobile ? mobileArticles : (data?.list ?? []);
+  const displayArticles = data?.list ?? [];
 
   // ─── 반응형 스타일 ────────────────────────────────────────
 
@@ -274,7 +276,7 @@ export default function Boards() {
           )}
 
           {/* 무한 스크롤 감지 영역 (모바일) */}
-          {isMobile && hasMore && (
+          {isMobile && infiniteQuery.hasNextPage && (
             <div ref={observerRef} className="flex justify-center py-6">
               {isFetching && (
                 <span className="text-md-r text-color-default">
@@ -305,15 +307,6 @@ export default function Boards() {
 }
 
 // ─── 유틸 함수 ──────────────────────────────────────────────
-
-/** API 날짜를 "YYYY. MM. DD" 형식으로 변환 */
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}. ${month}. ${day}`;
-}
 
 /** ArticleSummary → BestPostCarousel 형식으로 변환 */
 function toBestPost(article: ArticleSummary) {

@@ -9,6 +9,7 @@ import { TASKIFY_ACCESS_TOKEN } from "./auth";
 import { fetchClient } from "@/lib/fetchClient";
 import {
   useQuery,
+  useInfiniteQuery,
   useSuspenseQuery,
   useMutation,
   useQueryClient,
@@ -117,12 +118,45 @@ export async function unlikeArticle(articleId: number): Promise<ArticleDetail> {
  * - keepPreviousData로 페이지 전환 시 깜빡임 방지
  * - useSuspenseQuery 대신 useQuery 사용 (페이지 전환 시 Suspense 재발동 방지)
  */
-export function useArticles(params: ArticleListParams = {}) {
+export function useArticles(
+  params: ArticleListParams = {},
+  options?: { enabled?: boolean },
+) {
   return useQuery<ArticleListResponse>({
     queryKey: ["articles", params],
     queryFn: () => getArticles(params),
     placeholderData: keepPreviousData,
     staleTime: 1000 * 60, // 1분
+    enabled: options?.enabled,
+  });
+}
+
+/**
+ * 게시글 목록 무한 스크롤 훅 (모바일용)
+ *
+ * - useArticles와 동일 API, 페이지 누적
+ * - effect 내 setState 없이 데이터 사용
+ */
+export function useInfiniteArticles(
+  params: {
+    pageSize: number;
+    orderBy: ArticleListParams["orderBy"];
+    keyword?: string;
+  },
+  options?: { enabled?: boolean },
+) {
+  const { pageSize, orderBy, keyword } = params;
+  return useInfiniteQuery({
+    queryKey: ["articles", "infinite", { pageSize, orderBy, keyword }],
+    queryFn: ({ pageParam }) =>
+      getArticles({ page: pageParam as number, pageSize, orderBy, keyword }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      const loaded = allPages.length * pageSize;
+      return loaded < lastPage.totalCount ? allPages.length + 1 : undefined;
+    },
+    staleTime: 1000 * 60,
+    enabled: options?.enabled,
   });
 }
 

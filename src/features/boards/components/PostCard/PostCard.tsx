@@ -1,5 +1,6 @@
 import HeartIcon from "@/assets/heart.svg";
 import BestIcon from "@/assets/best.svg";
+import { formatLikeCount } from "@/utils/format";
 
 export interface PostCardProps {
   /**
@@ -125,12 +126,6 @@ export default function PostCard({
 
   // 콘텐츠와 이름행 사이 간격
   const contentAuthorGap = state === "best" ? "" : "gap-3";
-
-  // 좋아요 수 포맷
-  const formatLikeCount = (count: number) => {
-    if (count > 999) return "999+";
-    return count.toString();
-  };
 
   // Best 카드 레이아웃
   if (state === "best") {
