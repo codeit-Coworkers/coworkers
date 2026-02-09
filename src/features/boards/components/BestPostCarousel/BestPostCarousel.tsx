@@ -127,10 +127,10 @@ function BestPostCarouselInner({
         </button>
       </div>
 
-      {/* 카드 영역 - 클릭 시 해당 게시글 상세로 이동 */}
-      <div className="flex gap-3">
+      {/* 카드 영역 - 클릭 시 해당 게시글 상세로 이동 (데스크 3장/태블릿 2장 세트 가운데 정렬) */}
+      <div className="flex justify-center gap-3">
         {visiblePosts.map((post) => (
-          <Link key={post.id} to={`/boards/${post.id}`} className="block">
+          <Link key={post.id} to={`/boards/${post.id}`} className="flex-none">
             <PostCard
               state="best"
               size={cardSize}

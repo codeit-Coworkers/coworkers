@@ -55,10 +55,10 @@ export interface PostCardProps {
   fullWidth?: boolean;
 }
 
-// 카드 크기 스타일 맵
+// 카드 크기 스타일 맵 (베스트 large는 컨테이너에 3장이 들어가도록 330px)
 const SIZE_MAP = {
   best: {
-    large: "w-[350px] h-[210px] pt-6 pb-7 px-5",
+    large: "w-[330px] h-[198px] pt-6 pb-7 px-5",
     small: "w-[304px] h-[177px] p-5",
   },
   default: {
