@@ -114,7 +114,7 @@ export default function CalendarTime({ selectedTime, onSelectTime }: Props) {
       `}</style>
 
       {/* 전체 컨테이너 */}
-      <div className="border-border-primary box-border flex h-44 w-[288px] gap-3.5 rounded-[20px] border bg-white p-3 shadow-sm">
+      <div className="border-border-primary box-border flex h-44 w-[288px] gap-3.5 rounded-[20px] bg-white p-3">
         {/* 1. 오전/오후 버튼 영역 */}
         <div className="flex flex-col gap-2">
           {(["am", "pm"] as const).map((p) => (

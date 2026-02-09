@@ -3,37 +3,82 @@ import Sidebar from "@/components/gnb/Gnb";
 import ListCreateModal from "@/components/common/Modal/Contents/ListCreateModal";
 import TaskCreateModal from "@/components/common/Modal/Contents/TaskCreateModal";
 
-// 하위 컴포넌트들
 import { WeeklyCalendar } from "./components/WeeklyCalendar";
 import DatePagination from "./components/DatePagination";
 import CalendarPicker from "./components/CalendarPicker";
 import TaskCard from "./components/TaskCard";
 import { TaskGroupCard } from "./components/TaskGroupCard";
 
-// 아이콘 및 에셋 설정
 import PlusIcon from "@/assets/plus_blue.svg";
 import SettingsIcon from "@/assets/settings.svg";
 
 // --- 타입 정의 ---
+interface TaskCreateInput {
+  title: string;
+  date: Date | null;
+  time: string | null;
+  repeat: string;
+  selectedDays: string[];
+  memo: string;
+}
+
 interface Task {
   id: number;
-  groupId: number; // 그룹 식별자
+  groupId: number;
   title: string;
   commentCount: number;
   date: Date;
+  time?: string | null;
+  repeat?: string;
   isRecurring: boolean;
   isCompleted: boolean;
+  memo?: string;
 }
 
 export default function ListPage() {
-  // --- 상태 관리 ---
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [isListModalOpen, setIsListModalOpen] = useState<boolean>(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
   const [selectedGroupId, setSelectedGroupId] = useState<number>(2);
 
-  // --- 날짜 제어 로직 ---
+  const [taskGroups, setTaskGroups] = useState([
+    { id: 1, name: "법인 설립", current: 3, total: 5 },
+    { id: 2, name: "법인 등기", current: 3, total: 5 },
+    { id: 3, name: "정기 주총", current: 3, total: 5 },
+  ]);
+
+  const [allTasks, setAllTasks] = useState<Task[]>([
+    {
+      id: 1,
+      groupId: 1,
+      title: "법인 설립 비용 안내 드리기",
+      commentCount: 3,
+      date: new Date(),
+      isRecurring: false,
+      isCompleted: true,
+    },
+  ]);
+
+  // --- 핸들러 ---
+  const handleCreateTask = (data: TaskCreateInput) => {
+    const newTask: Task = {
+      id: Date.now(),
+      groupId: selectedGroupId,
+      title: data.title,
+      commentCount: 0,
+      date: data.date || selectedDate,
+      time: data.time,
+      repeat: data.repeat,
+      isRecurring: data.repeat !== "반복 안함",
+      isCompleted: false,
+      memo: data.memo,
+    };
+
+    setAllTasks((prev) => [...prev, newTask]);
+    setIsTaskModalOpen(false);
+  };
+
   const handlePrevMonth = () => {
     const newDate = new Date(selectedDate);
     newDate.setMonth(selectedDate.getMonth() - 1);
@@ -58,62 +103,19 @@ export default function ListPage() {
     setSelectedDate(newDate);
   };
 
-  // --- 데이터 영역 (임시 데이터) ---
-  const [taskGroups, setTaskGroups] = useState([
-    { id: 1, name: "법인 설립", current: 3, total: 5 },
-    { id: 2, name: "법인 등기", current: 3, total: 5 },
-    { id: 3, name: "정기 주총", current: 3, total: 5 },
-  ]);
-
-  const tasks: Task[] = [
-    {
-      id: 1,
-      groupId: 1,
-      title: "법인 설립 비용 안내 드리기",
-      commentCount: 3,
-      date: new Date(), // 오늘 날짜
-      isRecurring: false,
-      isCompleted: true,
-    },
-    {
-      id: 2,
-      groupId: 2,
-      title: "법인 설립 혹은 변경 등기 비용 안내 드리기",
-      commentCount: 3,
-      date: new Date(), // 오늘 날짜
-      isRecurring: true,
-      isCompleted: false,
-    },
-    {
-      id: 3,
-      groupId: 2,
-      title: "법인 등기 서류 준비하기",
-      commentCount: 0,
-      date: new Date(2026, 1, 15), // 2026년 2월 15일
-      isRecurring: false,
-      isCompleted: false,
-    },
-  ];
-
-  // --- 유틸리티: 날짜 비교 (시/분/초 제외) ---
   const isSameDay = (d1: Date, d2: Date) =>
     d1.getFullYear() === d2.getFullYear() &&
     d1.getMonth() === d2.getMonth() &&
     d1.getDate() === d2.getDate();
 
-  // --- 필터링 로직 ---
   const activeGroup =
     taskGroups.find((g) => g.id === selectedGroupId) || taskGroups[0];
 
-  // 그룹 ID와 날짜가 모두 일치하는 테스크만 추출
-  const filteredTasks = tasks.filter(
+  const filteredTasks = allTasks.filter(
     (task) =>
-      task.groupId === selectedGroupId && isSameDay(task.date, selectedDate),
+      task.groupId === selectedGroupId &&
+      isSameDay(new Date(task.date), selectedDate),
   );
-
-  // --- 핸들러 함수들 ---
-  const handleEditTask = (id: number) => console.log(`테스크 ${id} 수정`);
-  const handleDeleteTask = (id: number) => console.log(`테스크 ${id} 삭제`);
 
   return (
     <div className="bg-background-secondary font-pretendard flex min-h-screen">
@@ -125,11 +127,10 @@ export default function ListPage() {
         <div className="mx-auto max-w-300 space-y-6">
           <header className="border-border-primary mb-12 flex items-center justify-between rounded-xl border bg-white px-6 py-4 shadow-sm">
             <h1 className="text-2xl-b">경영관리팀</h1>
-            <SettingsIcon className="text-icon-primary hover:text-color-primary h-5 w-5 cursor-pointer transition-colors" />
+            <SettingsIcon className="text-icon-primary h-5 w-5 cursor-pointer" />
           </header>
 
           <div className="flex gap-8">
-            {/* 왼쪽 사이드바: 그룹 목록 */}
             <aside className="flex w-72 shrink-0 flex-col items-center">
               <h2 className="text-xl-b mb-2 w-full px-1">할 일</h2>
               <div className="mt-6 flex w-full flex-col gap-3">
@@ -149,14 +150,13 @@ export default function ListPage() {
               </div>
               <button
                 onClick={() => setIsListModalOpen(true)}
-                className="group text-md-sb text-brand-primary border-brand-primary bg-background-inverse hover:bg-brand-primary mt-11 flex h-10 w-28 items-center justify-center gap-2 rounded-4xl border shadow-sm transition-all duration-200 hover:text-white active:scale-95"
+                className="group text-md-sb text-brand-primary border-brand-primary mt-11 flex h-10 w-28 items-center justify-center gap-2 rounded-4xl border"
               >
-                <PlusIcon className="h-3.5 w-3.5 transition-all duration-200 group-hover:brightness-0 group-hover:invert" />
-                할 일 추가
+                <PlusIcon className="h-3.5 w-3.5 group-hover:brightness-0 group-hover:invert" />
+                목록 추가
               </button>
             </aside>
 
-            {/* 오른쪽 메인 영역: 상세 목록 */}
             <section className="border-border-primary relative min-h-175 flex-1 rounded-xl border bg-white p-12 shadow-sm">
               <div className="mx-auto max-w-3xl space-y-8">
                 <div className="flex items-center justify-between">
@@ -193,19 +193,30 @@ export default function ListPage() {
                         title={task.title}
                         commentCount={task.commentCount}
                         date={task.date}
+                        time={task.time}
+                        repeatLabel={task.repeat}
                         isRecurring={task.isRecurring}
                         isCompleted={task.isCompleted}
-                        onToggle={() => console.log(`${task.id} 토글`)}
-                        onEdit={() => handleEditTask(task.id)}
-                        onDelete={() => handleDeleteTask(task.id)}
+                        onToggle={() => {
+                          setAllTasks((prev) =>
+                            prev.map((t) =>
+                              t.id === task.id
+                                ? { ...t, isCompleted: !t.isCompleted }
+                                : t,
+                            ),
+                          );
+                        }}
+                        onEdit={() => console.log(`${task.id} 수정`)}
+                        onDelete={() =>
+                          setAllTasks((prev) =>
+                            prev.filter((t) => t.id !== task.id),
+                          )
+                        }
                       />
                     ))
                   ) : (
                     <div className="text-color-disabled flex flex-col items-center justify-center py-24">
                       <p>해당 날짜에 등록된 할 일이 없습니다.</p>
-                      <p className="mt-1 text-sm">
-                        새로운 할 일을 추가해보세요!
-                      </p>
                     </div>
                   )}
                 </div>
@@ -214,7 +225,7 @@ export default function ListPage() {
               <button
                 type="button"
                 onClick={() => setIsTaskModalOpen(true)}
-                className="bg-brand-primary hover:bg-interaction-hover absolute top-1/2 -right-8 z-10 flex h-16 w-16 -translate-y-1/2 items-center justify-center rounded-full text-white shadow-xl transition-all active:scale-95"
+                className="bg-brand-primary absolute top-1/2 -right-8 z-10 flex h-16 w-16 -translate-y-1/2 items-center justify-center rounded-full text-white shadow-xl"
               >
                 <PlusIcon className="h-8 w-8 brightness-0 invert filter" />
               </button>
@@ -223,7 +234,6 @@ export default function ListPage() {
         </div>
       </main>
 
-      {/* --- 모달 영역 --- */}
       {isListModalOpen && (
         <div
           className="fixed inset-0 z-999 flex items-center justify-center bg-black/50"
@@ -241,7 +251,10 @@ export default function ListPage() {
           onClick={() => setIsTaskModalOpen(false)}
         >
           <div onClick={(e) => e.stopPropagation()}>
-            <TaskCreateModal onClose={() => setIsTaskModalOpen(false)} />
+            <TaskCreateModal
+              onClose={() => setIsTaskModalOpen(false)}
+              onCreate={handleCreateTask}
+            />
           </div>
         </div>
       )}
