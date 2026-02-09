@@ -60,6 +60,7 @@ export default function TestIndex() {
               Input
             </Link>
           </li>
+
           <li>
             <Link
               to="/test/toast"
@@ -68,6 +69,7 @@ export default function TestIndex() {
               Toast
             </Link>
           </li>
+
           <li>
             <Link
               to="/test/dropdown"
@@ -76,6 +78,16 @@ export default function TestIndex() {
               Dropdown
             </Link>
           </li>
+
+          <li>
+            <Link
+              to="/test/list-page"
+              className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:border-gray-300 hover:bg-gray-100"
+            >
+              List Page
+            </Link>
+          </li>
+
           <li>
             <Link
               to="/test/modal"
@@ -84,8 +96,9 @@ export default function TestIndex() {
               Modal
             </Link>
           </li>
+
           <li>
-              <Link
+            <Link
               to="/test/error-boundary"
               className="block rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-800 hover:border-gray-300 hover:bg-gray-100"
             >

@@ -76,8 +76,7 @@ export function useDeleteMember(groupId: number) {
     },
   });
 }
-    
-    
+
 // Tasks 목록 조회(그룹 전체 항목)
 export async function getAllTasks(
   groupId: number,
