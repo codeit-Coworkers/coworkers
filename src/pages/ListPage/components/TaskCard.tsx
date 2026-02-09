@@ -51,14 +51,14 @@ export default function TaskCard({
             />
           </div>
           <div className="ml-2 flex shrink-0 items-center gap-1">
-            <CommentIcon className="text-color-tertiary h-4 w-4" />
-            <span className="text-xs-m text-color-tertiary">
+            <CommentIcon className="text-color-disabled h-4 w-4" />
+            <span className="text-xs-m text-color-disabled">
               {commentCount}
             </span>
           </div>
         </div>
 
-        <div className="text-xs-m text-color-tertiary mt-1.5 flex items-center gap-3 px-0.5">
+        <div className="text-xs-m text-color-disabled mt-1.5 flex items-center gap-3 px-0.5">
           <div className="flex items-center gap-1.5">
             <CalendarIcon className="h-4 w-4" />
             <span>
