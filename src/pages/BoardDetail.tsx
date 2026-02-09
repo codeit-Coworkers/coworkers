@@ -4,11 +4,9 @@ import { useIsMobile } from "@/hooks/useMediaQuery";
 import { FetchBoundary } from "@/providers/boundary";
 import { useArticle, useDeleteArticle, useToggleLike } from "@/api/article";
 import { useUser } from "@/api/user";
-import HeartIcon from "@/assets/heart.svg";
-import HeartFillIcon from "@/assets/heart-fill.svg";
-import { formatLikeCount } from "@/utils/format";
 import BoardDetailSkeleton from "@/features/boards/components/BoardDetailSkeleton";
 import BoardDetailArticle from "@/features/boards/components/BoardDetailArticle";
+import BoardDetailFloatingLike from "@/features/boards/components/BoardDetailFloatingLike";
 import ArticleDeleteModal from "@/features/boards/components/ArticleDeleteModal";
 
 /**
@@ -111,27 +109,13 @@ function BoardDetailContent({ articleId }: { articleId: number }) {
             isLikePending={likeMutation.isPending}
           />
 
-          {/* 하트 버튼 (데스크톱만) - 카드 오른쪽 */}
           {!isMobile && !isTablet && (
-            <div className="absolute top-[251px] left-[calc(900px+26px)]">
-              <div className="flex flex-col items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleToggleLike}
-                  disabled={likeMutation.isPending}
-                  className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-slate-200 bg-white transition-colors"
-                >
-                  {article.isLiked ? (
-                    <HeartFillIcon className="text-status-danger h-6 w-6" />
-                  ) : (
-                    <HeartIcon className="h-6 w-6 text-slate-400" />
-                  )}
-                </button>
-                <span className="text-sm text-slate-500">
-                  {formatLikeCount(article.likeCount)}
-                </span>
-              </div>
-            </div>
+            <BoardDetailFloatingLike
+              isLiked={article.isLiked}
+              likeCount={article.likeCount}
+              onToggleLike={handleToggleLike}
+              isPending={likeMutation.isPending}
+            />
           )}
         </div>
       </div>

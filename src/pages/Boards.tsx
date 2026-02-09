@@ -1,11 +1,7 @@
 import BoardListHeader from "@/features/boards/components/BoardListHeader";
-import BoardListSectionHeader from "@/features/boards/components/BoardListSectionHeader";
-import BoardListSkeleton from "@/features/boards/components/BoardListSkeleton";
-import BoardListEmpty from "@/features/boards/components/BoardListEmpty";
-import BoardListGrid from "@/features/boards/components/BoardListGrid";
+import BoardListSection from "@/features/boards/components/BoardListSection";
 import BestPostSection from "@/features/boards/components/BestPostSection";
 import FloatingWriteButton from "@/features/boards/components/FloatingWriteButton";
-import Pagination from "@/components/common/Pagination/Pagination";
 import { FetchBoundary } from "@/providers/boundary";
 import { useBoardList } from "@/features/boards/hooks/useBoardList";
 
@@ -16,38 +12,17 @@ import { useBoardList } from "@/features/boards/hooks/useBoardList";
  * - 모바일: 무한 스크롤
  */
 export default function Boards() {
-  const {
-    keyword,
-    setKeyword,
-    debouncedKeyword,
-    page,
-    setPage,
-    data,
-    isLoading,
-    isFetching,
-    displayArticles,
-    observerRef,
-    hasNextPage,
-    isMobile,
-    isTablet,
-    pageSize,
-    gridClass,
-    headerMarginClass,
-    titleClass,
-    sectionGapClass,
-    cardSize,
-    handleSortChange,
-  } = useBoardList();
+  const boardList = useBoardList();
 
   return (
     <div className="!bg-background-primary min-h-screen pb-20">
       <div className="mx-auto max-w-[1120px] px-4 md:px-6">
         <BoardListHeader
-          keyword={keyword}
-          onKeywordChange={setKeyword}
-          headerMarginClass={headerMarginClass}
-          titleClass={titleClass}
-          isMobile={isMobile}
+          keyword={boardList.keyword}
+          onKeywordChange={boardList.setKeyword}
+          headerMarginClass={boardList.headerMarginClass}
+          titleClass={boardList.titleClass}
+          isMobile={boardList.isMobile}
         />
 
         <FetchBoundary
@@ -62,54 +37,27 @@ export default function Boards() {
           <BestPostSection />
         </FetchBoundary>
 
-        <section className={sectionGapClass}>
-          <BoardListSectionHeader
-            onSortChange={handleSortChange}
-            isMobile={isMobile}
-            isTablet={isTablet}
-          />
-
-          {isLoading && displayArticles.length === 0 ? (
-            <BoardListSkeleton />
-          ) : displayArticles.length > 0 ? (
-            <BoardListGrid
-              articles={displayArticles}
-              gridClass={gridClass}
-              cardSize={cardSize}
-              fullWidth={isMobile || isTablet}
-            />
-          ) : (
-            <BoardListEmpty keyword={debouncedKeyword || undefined} />
-          )}
-
-          {!isMobile && data && data.totalCount > pageSize && (
-            <div className="mt-10">
-              <Pagination
-                currentPage={page}
-                totalCount={data.totalCount}
-                pageSize={pageSize}
-                onPageChange={setPage}
-              />
-            </div>
-          )}
-
-          {isMobile && hasNextPage && (
-            <div ref={observerRef} className="flex justify-center py-6">
-              {isFetching && (
-                <span className="text-md-r text-color-default">
-                  불러오는 중...
-                </span>
-              )}
-            </div>
-          )}
-
-          {!isMobile && isFetching && !isLoading && (
-            <div className="pointer-events-none fixed inset-0 z-40 bg-white/30" />
-          )}
-        </section>
+        <BoardListSection
+          sectionGapClass={boardList.sectionGapClass}
+          handleSortChange={boardList.handleSortChange}
+          isMobile={boardList.isMobile}
+          isTablet={boardList.isTablet}
+          isLoading={boardList.isLoading}
+          displayArticles={boardList.displayArticles}
+          debouncedKeyword={boardList.debouncedKeyword}
+          gridClass={boardList.gridClass}
+          cardSize={boardList.cardSize}
+          data={boardList.data}
+          pageSize={boardList.pageSize}
+          page={boardList.page}
+          setPage={boardList.setPage}
+          observerRef={boardList.observerRef}
+          hasNextPage={boardList.hasNextPage}
+          isFetching={boardList.isFetching}
+        />
       </div>
 
-      {!isMobile && !isTablet && <FloatingWriteButton />}
+      {!boardList.isMobile && !boardList.isTablet && <FloatingWriteButton />}
     </div>
   );
 }
