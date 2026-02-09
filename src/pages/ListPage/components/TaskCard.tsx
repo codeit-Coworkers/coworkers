@@ -9,6 +9,8 @@ interface TaskCardProps {
   title: string;
   commentCount: number;
   date: Date;
+  time?: string | null; // 추가: 선택된 시간
+  repeatLabel?: string; // 추가: 반복 설정 문구 (예: "매일", "주 반복")
   isRecurring: boolean;
   isCompleted: boolean;
   onToggle: () => void;
@@ -20,6 +22,8 @@ export default function TaskCard({
   title,
   commentCount,
   date,
+  time,
+  repeatLabel,
   isRecurring,
   isCompleted,
   onToggle,
@@ -58,7 +62,8 @@ export default function TaskCard({
           </div>
         </div>
 
-        <div className="text-xs-m text-color-disabled mt-1.5 flex items-center gap-3 px-0.5">
+        <div className="text-xs-m text-color-disabled mt-1.5 flex flex-wrap items-center gap-3 px-0.5">
+          {/* 날짜 및 시간 표시 */}
           <div className="flex items-center gap-1.5">
             <CalendarIcon className="h-4 w-4" />
             <span>
@@ -67,22 +72,23 @@ export default function TaskCard({
                 month: "long",
                 day: "numeric",
               })}
+              {time && ` ${time}`}
             </span>
           </div>
 
+          {/* 반복 설정 정보 표시 */}
           {isRecurring && (
             <>
               <span className="text-gray-300">|</span>
               <div className="flex items-center gap-1.5">
                 <RepeatIcon className="h-4 w-4" />
-                <span>매일 반복</span>
+                <span>{repeatLabel}</span>
               </div>
             </>
           )}
         </div>
       </div>
 
-      {/* 케밥 버튼 영역 */}
       <div className="relative ml-4" ref={menuRef}>
         <button
           onClick={(e) => {
