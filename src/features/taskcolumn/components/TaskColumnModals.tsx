@@ -4,6 +4,7 @@ import ListEditModal from "@/components/common/Modal/Contents/ListEditModal";
 import ListDeleteModal from "@/components/common/Modal/Contents/ListDeleteModal";
 import { TaskListServer } from "@/types/tasklist";
 import { ModalType } from "./useTaskColumnModals";
+import { useParams } from "react-router-dom";
 
 interface TaskColumnModalsProps {
   modalType: ModalType;
@@ -16,11 +17,16 @@ export default function TaskColumnModals({
   selectedTaskList,
   closeModal,
 }: TaskColumnModalsProps) {
+  const { id } = useParams<{ id: string }>();
+  const groupId = Number(id);
+
+  if (!groupId) return;
+
   return (
     <>
       {/* 목록 추가 모달 */}
       <Modal isOpen={modalType === "ListCreate"} onClose={closeModal}>
-        <ListCreateModal onClose={closeModal} />
+        <ListCreateModal onClose={closeModal} groupId={groupId} />
       </Modal>
       {/* 목록 수정 모달 */}
       <Modal isOpen={modalType === "ListEdit"} onClose={closeModal}>
@@ -28,6 +34,7 @@ export default function TaskColumnModals({
           key={selectedTaskList?.id}
           selectedTaskList={selectedTaskList}
           onClose={closeModal}
+          groupId={groupId}
         />
       </Modal>
       {/* 목록 삭제 모달 */}
@@ -35,6 +42,7 @@ export default function TaskColumnModals({
         <ListDeleteModal
           selectedTaskList={selectedTaskList}
           onClose={closeModal}
+          groupId={groupId}
         />
       </Modal>
     </>

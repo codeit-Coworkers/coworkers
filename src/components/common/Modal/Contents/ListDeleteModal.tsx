@@ -6,13 +6,15 @@ import { TaskListServer } from "@/types/tasklist";
 type ListDeleteModalProps = {
   onClose: () => void;
   selectedTaskList: TaskListServer | null;
+  groupId: number;
 };
 
 export default function ListDeleteModal({
   onClose,
   selectedTaskList,
+  groupId,
 }: ListDeleteModalProps) {
-  const { mutate: deleteList } = useDeleteTaskList(3818);
+  const { mutate: deleteList } = useDeleteTaskList(groupId);
 
   const { show: showToast } = useToastStore();
 

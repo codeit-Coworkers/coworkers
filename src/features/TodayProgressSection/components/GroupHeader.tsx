@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Dropdown from "@/components/common/Dropdown/Dropdown";
 import Modal from "@/components/common/Modal/Modal";
-import DangerModal from "@/components/common/Modal/Contents/DangerModal";
+import TeamDeleteModal from "@/components/common/Modal/Contents/TeamDeleteModal";
 import MemberAvatars from "./MemberAvatars";
 
 type Member = {
@@ -49,7 +49,7 @@ export default function GroupHeader({
           >
             <Dropdown
               optionsKey="edit"
-              listAlign="left"
+              listAlign="center"
               trigger="set"
               options={[
                 { label: "수정하기", value: "edit", action: handleEdit },
@@ -61,7 +61,7 @@ export default function GroupHeader({
             isOpen={isDeleteModalOpen}
             onClose={() => setIsDeleteModalOpen(false)}
           >
-            <DangerModal onClose={() => setIsDeleteModalOpen(false)} />
+            <TeamDeleteModal onClose={() => setIsDeleteModalOpen(false)} />
           </Modal>
         </div>
       )}

@@ -1,10 +1,28 @@
+import { useCreateTaskList } from "@/api/tasklist";
 import Close from "@/assets/close.svg";
+import { useToastStore } from "@/stores/useToastStore";
+import { useState } from "react";
 
 type ListCreateModalProps = {
   onClose: () => void;
+  groupId: number;
 };
 
-export default function ListCreateModal({ onClose }: ListCreateModalProps) {
+export default function ListCreateModal({
+  onClose,
+  groupId,
+}: ListCreateModalProps) {
+  const { mutate: createList } = useCreateTaskList(groupId);
+  const [name, setName] = useState("");
+
+  const { show: showToast } = useToastStore();
+
+  const handleCreate = () => {
+    createList(name);
+    showToast("목록이 생성되었습니다.");
+    onClose();
+  };
+
   return (
     /* 기존 Fragment(<>) 대신 흰색 배경과 라운딩이 들어간 div로 감싸줍니다. 
       w-[320px] md:w-[384px] 정도로 너비를 잡아주면 원본과 비슷합니다.
