@@ -126,16 +126,18 @@ export default function ListPage() {
                 ))}
               </div>
 
+              {/* 왼쪽 사이드바 내 '할 일 추가' 버튼 부분 */}
               <button
                 onClick={() => setIsListModalOpen(true)}
-                className="text-md-sb text-brand-primary border-brand-primary bg-background-inverse mt-11 flex h-10 w-28 items-center justify-center gap-2 rounded-4xl border shadow-sm"
+                className="group text-md-sb text-brand-primary border-brand-primary bg-background-inverse hover:bg-brand-primary mt-11 flex h-10 w-28 items-center justify-center gap-2 rounded-4xl border shadow-sm transition-all duration-200 hover:text-white active:scale-95"
               >
-                <PlusIcon className="h-3.5 w-3.5" /> 할 일 추가
+                <PlusIcon className="h-3.5 w-3.5 transition-all duration-200 group-hover:brightness-0 group-hover:invert" />
+                할 일 추가
               </button>
             </aside>
 
             {/* 오른쪽 메인 영역 */}
-            <section className="border-border-primary relative min-h-175 flex-1 rounded-[40px] border bg-white p-12 shadow-sm">
+            <section className="border-border-primary relative min-h-175 flex-1 rounded-xl border bg-white p-12 shadow-sm">
               <div className="mx-auto max-w-3xl space-y-8">
                 <div className="flex items-center justify-between">
                   <h3 className="text-2xl-b text-color-tertiary">법인 등기</h3>
