@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import { FetchBoundary } from "@/providers/boundary";
@@ -150,32 +150,28 @@ function BoardCreateForm() {
 function BoardEditForm({ articleId }: { articleId: number }) {
   const navigate = useNavigate();
 
-  // 기존 게시글 데이터 불러오기 (useSuspenseQuery → 항상 호출)
+  // 기존 게시글 데이터 (useSuspenseQuery → 마운트 시점에 이미 데이터 존재)
   const { data: existingArticle } = useArticle(articleId);
   const updateMutation = useUpdateArticle(articleId);
 
-  // 폼 상태 (기존 데이터로 초기화)
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [imageUrl, setImageUrl] = useState<string | undefined>();
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  // 기존 데이터로 폼 채우기 (최초 1회)
-  useEffect(() => {
-    if (existingArticle && !isInitialized) {
-      setTitle(existingArticle.title);
-      setContent(existingArticle.content);
-      setImageUrl(existingArticle.image ?? undefined);
-      setIsInitialized(true);
-    }
-  }, [existingArticle, isInitialized]);
+  // 폼 상태: Suspense로 데이터가 준비된 뒤 마운트되므로 초기값을 바로 사용
+  const [title, setTitle] = useState(() => existingArticle.title);
+  const [content, setContent] = useState(() => existingArticle.content);
+  const [imageUrl, setImageUrl] = useState<string | undefined>(
+    () => existingArticle.image ?? undefined,
+  );
 
   const isValid = title.trim().length > 0 && content.trim().length > 0;
 
   const handleSubmit = () => {
     if (!isValid || updateMutation.isPending) return;
+    // 이미지 삭제 시 undefined는 JSON에 포함되지 않으므로, null을 명시적으로 전달
     updateMutation.mutate(
-      { title: title.trim(), content: content.trim(), image: imageUrl },
+      {
+        title: title.trim(),
+        content: content.trim(),
+        image: imageUrl ?? null,
+      },
       { onSuccess: () => navigate(`/boards/${articleId}`) },
     );
   };

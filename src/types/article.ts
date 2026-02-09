@@ -40,6 +40,11 @@ export interface ArticleCreateRequest {
   title: string;
 }
 
+/** 게시글 수정 시 이미지 삭제는 image: null 로 전달 */
+export type ArticleUpdateRequest = Partial<
+  Omit<ArticleCreateRequest, "image">
+> & { image?: string | null };
+
 // 게시글 생성 응답
 export interface ArticleCreateResponse {
   updatedAt: string;

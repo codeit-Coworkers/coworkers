@@ -19,6 +19,7 @@ import type {
   ArticleListParams,
   ArticleDetail,
   ArticleCreateRequest,
+  ArticleUpdateRequest,
   ArticleCreateResponse,
   ArticleDeleteResponse,
 } from "@/types/article";
@@ -70,10 +71,10 @@ export async function createArticle(
   });
 }
 
-/** 게시글 수정 */
+/** 게시글 수정 (이미지 삭제 시 body.image = null) */
 export async function updateArticle(
   articleId: number,
-  body: Partial<ArticleCreateRequest>,
+  body: ArticleUpdateRequest,
 ): Promise<ArticleDetail> {
   return fetchClient(`${BASE_URL}/articles/${articleId}`, {
     method: "PATCH",
@@ -173,8 +174,7 @@ export function useUpdateArticle(articleId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (body: Partial<ArticleCreateRequest>) =>
-      updateArticle(articleId, body),
+    mutationFn: (body: ArticleUpdateRequest) => updateArticle(articleId, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["article", articleId] });
       queryClient.invalidateQueries({ queryKey: ["articles"] });
