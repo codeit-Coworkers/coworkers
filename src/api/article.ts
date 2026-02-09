@@ -166,7 +166,7 @@ export function useInfiniteArticles(
  * - 좋아요순 상위 N개를 가져옴
  * - Suspense + ErrorBoundary 지원
  */
-export function useBestArticles(pageSize: number = 5) {
+export function useBestArticles(pageSize: number = 15) {
   return useSuspenseQuery<ArticleListResponse>({
     queryKey: ["articles", "best", pageSize],
     queryFn: () => getArticles({ page: 1, pageSize, orderBy: "like" }),

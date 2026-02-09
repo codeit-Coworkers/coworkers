@@ -16,7 +16,7 @@ import PlusIcon from "@/assets/plus.svg";
 // ─── 베스트 게시글 섹션 (Suspense 내부) ─────────────────────
 
 function BestPostSection() {
-  const { data } = useBestArticles(5);
+  const { data } = useBestArticles(15);
   const bestPosts = data.list.map(toBestPost);
   return <BestPostCarousel posts={bestPosts} />;
 }
