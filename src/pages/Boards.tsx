@@ -1,25 +1,13 @@
-import { Link } from "react-router-dom";
-import BestPostCarousel from "@/features/boards/components/BestPostCarousel";
-import PostCard from "@/features/boards/components/PostCard";
 import BoardListHeader from "@/features/boards/components/BoardListHeader";
 import BoardListSectionHeader from "@/features/boards/components/BoardListSectionHeader";
 import BoardListSkeleton from "@/features/boards/components/BoardListSkeleton";
 import BoardListEmpty from "@/features/boards/components/BoardListEmpty";
+import BoardListGrid from "@/features/boards/components/BoardListGrid";
+import BestPostSection from "@/features/boards/components/BestPostSection";
+import FloatingWriteButton from "@/features/boards/components/FloatingWriteButton";
 import Pagination from "@/components/common/Pagination/Pagination";
 import { FetchBoundary } from "@/providers/boundary";
-import { useBestArticles } from "@/api/article";
-import type { ArticleSummary } from "@/types/article";
-import { formatDate } from "@/utils/format";
 import { useBoardList } from "@/features/boards/hooks/useBoardList";
-import PlusIcon from "@/assets/plus.svg";
-
-// ─── 베스트 게시글 섹션 (Suspense 내부) ─────────────────────
-
-function BestPostSection() {
-  const { data } = useBestArticles(15);
-  const bestPosts = data.list.map(toBestPost);
-  return <BestPostCarousel posts={bestPosts} />;
-}
 
 /**
  * 자유게시판 페이지
@@ -84,23 +72,12 @@ export default function Boards() {
           {isLoading && displayArticles.length === 0 ? (
             <BoardListSkeleton />
           ) : displayArticles.length > 0 ? (
-            <div className={gridClass}>
-              {displayArticles.map((article) => (
-                <Link key={article.id} to={`/boards/${article.id}`}>
-                  <PostCard
-                    state="default"
-                    size={cardSize}
-                    title={article.title}
-                    content=""
-                    author={article.writer.nickname}
-                    date={formatDate(article.createdAt)}
-                    likeCount={article.likeCount}
-                    imageUrl={article.image ?? undefined}
-                    fullWidth={isMobile || isTablet}
-                  />
-                </Link>
-              ))}
-            </div>
+            <BoardListGrid
+              articles={displayArticles}
+              gridClass={gridClass}
+              cardSize={cardSize}
+              fullWidth={isMobile || isTablet}
+            />
           ) : (
             <BoardListEmpty keyword={debouncedKeyword || undefined} />
           )}
@@ -132,26 +109,7 @@ export default function Boards() {
         </section>
       </div>
 
-      {!isMobile && !isTablet && (
-        <Link
-          to="/boards/write"
-          className="bg-brand-primary hover:bg-interaction-hover fixed right-[120px] bottom-[76px] flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-colors"
-        >
-          <PlusIcon className="h-6 w-6 text-white" />
-        </Link>
-      )}
+      {!isMobile && !isTablet && <FloatingWriteButton />}
     </div>
   );
-}
-
-function toBestPost(article: ArticleSummary) {
-  return {
-    id: article.id,
-    title: article.title,
-    content: "",
-    author: article.writer.nickname,
-    date: formatDate(article.createdAt),
-    likeCount: article.likeCount,
-    imageUrl: article.image ?? undefined,
-  };
 }

@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import { useArticles, useInfiniteArticles } from "@/api/article";
 import type { ArticleSummary } from "@/types/article";
+import { useBoardListStore } from "@/stores/useBoardListStore";
 
 export interface UseBoardListReturn {
   keyword: string;
@@ -52,9 +53,8 @@ export function useBoardList(): UseBoardListReturn {
   const isTabletOrSmaller = useIsMobile("lg");
   const isTablet = !isMobile && isTabletOrSmaller;
 
-  const [keyword, setKeyword] = useState("");
+  const { keyword, setKeyword, orderBy, setOrderBy } = useBoardListStore();
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
-  const [orderBy, setOrderBy] = useState<"recent" | "like">("recent");
   const [page, setPage] = useState(1);
   const observerRef = useRef<HTMLDivElement>(null);
 
@@ -129,7 +129,7 @@ export function useBoardList(): UseBoardListReturn {
         setPage(1);
       }
     },
-    [],
+    [setOrderBy],
   );
 
   const displayArticles: ArticleSummary[] = data?.list ?? [];
