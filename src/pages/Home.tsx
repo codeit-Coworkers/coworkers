@@ -7,6 +7,7 @@ export default function Home() {
       <div className="text-xl font-bold">HOME</div>
       <Alert />
       <Link to="/index">Index</Link>
+      <Link to="/Login">Login</Link>
     </>
   );
 }
