@@ -5,8 +5,8 @@ import UncheckedIcon from "@/assets/checkbox.svg";
 /**
  * @interface TodoProps
  * @property {string} content - 할 일의 상세 내용입니다.
- * @property {boolean} isCompleted - 할 일의 완료 여부를 결정합니다.
- * @property {() => void} [onToggle] - 컴포넌트 클릭 시 실행되는 이벤트 핸들러입니다.
+ * @property {boolean} isCompleted - 할 일의 완료 여부(체크 상태)를 결정합니다.
+ * @property {() => void} [onToggle] - 체크박스 상태가 변경될 때 실행되는 이벤트 핸들러입니다.
  * @property {boolean} [isWeb] - 테스트/디버깅용으로 특정 레이아웃을 강제할 때 사용합니다.
  * 이 프롭이 없으면 화면 너비에 따라 반응형으로 동작합니다.
  */
@@ -18,11 +18,10 @@ interface TodoProps {
 }
 
 /**
- * Coworkers 프로젝트의 공통 Todo 아이템 컴포넌트입니다.
+ * Coworkers 프로젝트의 웹 접근성(A11y)을 고려한 공통 Todo 아이템 컴포넌트입니다.
+ * 실제 체크박스(input)를 숨기고 커스텀 SVG 아이콘을 라벨로 연결하여 구현되었습니다.
  */
 const Todo = ({ content, isCompleted, onToggle, isWeb }: TodoProps) => {
-  // isWeb 프롭이 명시적으로 넘어오면(undefined가 아니면) 해당 모드로 고정합니다.
-  // 프롭이 없으면 Tailwind의 md: 접두사를 사용하는 반응형 로직을 사용합니다.
   const isWebForced = isWeb !== undefined;
 
   const containerStyle = isWebForced
@@ -44,12 +43,21 @@ const Todo = ({ content, isCompleted, onToggle, isWeb }: TodoProps) => {
     : "text-xs-r md:text-md-r";
 
   return (
-    <div
-      onClick={onToggle}
+    <label
       className={`group flex w-full cursor-pointer items-center transition-all ${containerStyle}`}
     >
-      {/* 체크박스 아이콘 영역 */}
-      <div className={`flex shrink-0 items-center justify-center ${iconSize}`}>
+      {/* 실제 체크박스 요소를 사용하여 접근성을 확보합니다. */}
+      <input
+        type="checkbox"
+        checked={isCompleted}
+        onChange={onToggle}
+        className="sr-only"
+      />
+
+      {/* 체크 상태에 따른 커스텀 아이콘 렌더링 영역 */}
+      <div
+        className={`flex shrink-0 items-center justify-center transition-transform active:scale-95 ${iconSize}`}
+      >
         {isCompleted ? (
           <CheckedIcon className="h-full w-full" />
         ) : (
@@ -57,7 +65,6 @@ const Todo = ({ content, isCompleted, onToggle, isWeb }: TodoProps) => {
         )}
       </div>
 
-      {/* 텍스트 내용 영역 */}
       <span
         className={`transition-all duration-200 select-none ${textSize} ${
           isCompleted
@@ -67,7 +74,7 @@ const Todo = ({ content, isCompleted, onToggle, isWeb }: TodoProps) => {
       >
         {content}
       </span>
-    </div>
+    </label>
   );
 };
 
