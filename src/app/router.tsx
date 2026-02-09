@@ -10,9 +10,12 @@ import Layout from "@/components/layout/Layout";
 import { GlobalErrorFallback } from "@/providers/boundary";
 import Index from "@/pages/Index";
 import LoginPage from "@/pages/Login";
+import ResetPasswordPage from "@/pages/ResetPassword";
+import RootLayout from "@/components/common/Rootlayout/RootLayout";
 
 export const router = createBrowserRouter([
   {
+    element: <RootLayout />,
     errorElement: <GlobalErrorFallback />,
     children: [
       {
@@ -22,6 +25,10 @@ export const router = createBrowserRouter([
       {
         path: "/login",
         element: <LoginPage />,
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPasswordPage />,
       },
       {
         path: "/index",

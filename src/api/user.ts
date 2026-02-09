@@ -49,3 +49,29 @@ export function useGroups() {
     staleTime: 1000 * 10, // 10초
   });
 }
+
+// 비밀번호 재설정 이메일 전송 API
+export async function sendResetPasswordEmail(data: {
+  email: string;
+  redirectUrl: string;
+}): Promise<{ message: string }> {
+  return await fetchClient(`${BASE_URL}/user/send-reset-password-email`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+}
+
+export async function resetPassword(data: {
+  passwordConfirmation: string;
+  password: string;
+  token: string;
+}): Promise<{ message: string }> {
+  return await fetchClient(`${BASE_URL}/user/reset-password`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+}

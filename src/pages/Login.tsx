@@ -43,13 +43,16 @@ export default function LoginPage() {
 
   const onSubmit = (data: SignUpRequest) => {
     if (isSignup) {
+      // 💡 Swagger 확인 결과 passwordConfirmation 필드도 함께 보내야 함
       signUp(data, {
         onSuccess: () => {
           alert("회원가입이 완료되었습니다! 로그인해주세요.");
           setIsSignup(false);
           reset();
         },
-        onError: (error) => alert((error as Error).message),
+        onError: (error: Error) => {
+          alert(error.message);
+        },
       });
     } else {
       const signInData: SignInRequest = {
@@ -61,7 +64,9 @@ export default function LoginPage() {
           alert("로그인 성공!");
           navigate("/");
         },
-        onError: (error) => alert((error as Error).message),
+        onError: (error: Error) => {
+          alert(error.message);
+        },
       });
     }
   };
@@ -148,6 +153,12 @@ export default function LoginPage() {
                           value: 8,
                           message: "비밀번호는 8자 이상이어야 합니다.",
                         },
+                        // 💡 [수정] 서버 규격에 맞춘 영문/숫자/특수문자 정규식 추가
+                        pattern: {
+                          value:
+                            /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                          message: "영문, 숫자, 특수문자를 포함해야 합니다.",
+                        },
                       }}
                       render={({ field: { onChange, ...field } }) => (
                         <Input
@@ -160,7 +171,7 @@ export default function LoginPage() {
                           }}
                           label="비밀번호"
                           type="password"
-                          placeholder="비밀번호를 입력하세요"
+                          placeholder="영문+숫자+특수문자 8자 이상"
                           className={`focus:ring-2 focus:outline-none ${errors.password ? "border-status-danger" : ""}`}
                         />
                       )}
@@ -212,7 +223,6 @@ export default function LoginPage() {
                       </button>
                     </div>
                   )}
-                  {/* 💡 컴포넌트 하단에 모달 추가 */}
                   <ForgotPasswordModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
