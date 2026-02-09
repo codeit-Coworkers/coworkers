@@ -1,5 +1,5 @@
 import { useGroup } from "@/api/group";
-import { useAllTasks } from "@/api/task";
+import { useAllTasks } from "@/api/group";
 import { useUser } from "@/api/user";
 import GroupHeader from "./components/GroupHeader";
 import ProgressStats from "./components/ProgressStats";
