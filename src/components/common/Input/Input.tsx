@@ -27,7 +27,7 @@ type InputVariant = "default" | "search";
 
 const inputVariantClassMap: Record<InputVariant, string> = {
   default: `
-    border-color-secondary
+    border-border-primary
     bg-surface-secondary
     text-color-primary
   `,
@@ -79,7 +79,7 @@ export const Input = ({
   const Tag = isContent ? "textarea" : "input";
 
   return (
-    <div className="flex w-full flex-col gap-1">
+    <div className="flex w-full flex-col gap-3">
       {label && (
         <label
           htmlFor={inputId}
@@ -92,7 +92,7 @@ export const Input = ({
       <div className="relative w-full">
         {withSearchIcon && (
           <Searchicon
-            className={`absolute left-3 z-10 h-4 w-4 ${
+            className={`absolute left-2 z-10 h-8 w-8 ${
               isContent ? "top-4" : "top-1/2 -translate-y-1/2"
             }`}
           />

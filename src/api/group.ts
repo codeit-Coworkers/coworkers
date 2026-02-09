@@ -5,7 +5,6 @@
 
 import { GroupServer, GroupMemberServer } from "@/types/group";
 import { BASE_URL } from "./config";
-import { TASKIFY_ACCESS_TOKEN } from "./auth";
 import {
   useMutation,
   useQueryClient,
@@ -20,7 +19,6 @@ export async function getGroup(id: number): Promise<GroupServer> {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
     },
   });
 }
@@ -45,7 +43,6 @@ export async function getMember(
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
       },
     },
   );
@@ -59,7 +56,6 @@ export async function deleteMember(groupId: number, memberUserId: number) {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
       },
     },
   );
@@ -91,7 +87,6 @@ export async function getAllTasks(
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
     },
   });
 }
