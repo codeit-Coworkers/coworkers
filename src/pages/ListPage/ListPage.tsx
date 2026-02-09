@@ -97,7 +97,9 @@ export default function ListPage() {
 
   return (
     <div className="bg-background-secondary font-pretendard flex min-h-screen">
-      <Sidebar />
+      <div className="bg-background-inverse">
+        <Sidebar />
+      </div>
 
       <main className="text-color-primary flex-1 overflow-hidden p-10">
         <div className="mx-auto max-w-300 space-y-6">
