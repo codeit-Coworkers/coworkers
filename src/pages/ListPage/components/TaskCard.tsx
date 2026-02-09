@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import KebabIcon from "@/assets/kebab.svg"; // 프로젝트 경로 확인 필요
-import CheckIcon from "@/assets/check.svg";
+import KebabIcon from "@/assets/kebab.svg";
 import CommentIcon from "@/assets/comment.svg";
 import CalendarIcon from "@/assets/calendar.svg";
 import RepeatIcon from "@/assets/repeat.svg";
+import Todo from "@/components/common/Todo/todo";
 
 interface TaskCardProps {
   title: string;
@@ -29,7 +29,6 @@ export default function TaskCard({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // 외부 클릭 시 메뉴 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -41,50 +40,50 @@ export default function TaskCard({
   }, []);
 
   return (
-    <div className="group border-border-primary hover:border-brand-primary relative flex items-center justify-between rounded-xl border bg-white p-4 shadow-sm transition-all">
-      <div className="flex flex-1 items-start gap-4">
-        {/* 체크박스 */}
-        <button
-          onClick={onToggle}
-          className={`mt-1 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all ${
-            isCompleted
-              ? "bg-brand-primary border-brand-primary"
-              : "border-border-primary"
-          }`}
-        >
-          {isCompleted && <CheckIcon className="h-4 w-4 text-white" />}
-        </button>
+    <div className="group border-border-primary hover:border-brand-primary font-pretendard relative flex items-center justify-between rounded-xl border bg-white px-4 py-3 shadow-sm transition-all">
+      <div className="flex-1 overflow-hidden">
+        <div className="flex items-center">
+          <div className="flex-none">
+            <Todo
+              content={title}
+              isCompleted={isCompleted}
+              onToggle={onToggle}
+            />
+          </div>
+          <div className="ml-2 flex shrink-0 items-center gap-1">
+            <CommentIcon className="text-color-tertiary h-4 w-4" />
+            <span className="text-xs-m text-color-tertiary">
+              {commentCount}
+            </span>
+          </div>
+        </div>
 
-        <div className="space-y-2">
-          {/* 제목 */}
-          <h4
-            className={`text-lg-m ${isCompleted ? "text-color-disabled line-through" : "text-color-primary"}`}
-          >
-            {title}
-          </h4>
+        <div className="text-xs-m text-color-tertiary mt-1.5 flex items-center gap-3 px-0.5">
+          <div className="flex items-center gap-1.5">
+            <CalendarIcon className="h-4 w-4" />
+            <span>
+              {date.toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </span>
+          </div>
 
-          {/* 푸터 정보 (댓글, 날짜, 반복 여부) */}
-          <div className="text-xs-m text-color-tertiary flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <CommentIcon className="h-4 w-4" />
-              <span>{commentCount}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <CalendarIcon className="h-4 w-4" />
-              <span>{date.toLocaleDateString()}</span>
-            </div>
-            {isRecurring && (
-              <div className="flex items-center gap-1">
+          {isRecurring && (
+            <>
+              <span className="text-gray-300">|</span>
+              <div className="flex items-center gap-1.5">
                 <RepeatIcon className="h-4 w-4" />
                 <span>매일 반복</span>
               </div>
-            )}
-          </div>
+            </>
+          )}
         </div>
       </div>
 
-      {/* 케밥 버튼 및 드롭다운 메뉴 */}
-      <div className="relative" ref={menuRef}>
+      {/* 케밥 버튼 영역 */}
+      <div className="relative ml-4" ref={menuRef}>
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -96,7 +95,7 @@ export default function TaskCard({
         </button>
 
         {isMenuOpen && (
-          <div className="border-border-primary absolute right-0 z-50 mt-2 w-24 overflow-hidden rounded-lg border bg-white shadow-lg">
+          <div className="border-border-primary absolute right-0 z-50 mt-1 w-24 overflow-hidden rounded-lg border bg-white shadow-lg">
             <button
               onClick={(e) => {
                 e.stopPropagation();

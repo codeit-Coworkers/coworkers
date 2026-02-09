@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "@/components/gnb/Gnb";
 import ListCreateModal from "@/components/common/Modal/Contents/ListCreateModal";
+import TaskCreateModal from "@/components/common/Modal/Contents/TaskCreateModal";
 
 // 하위 컴포넌트들
 import { WeeklyCalendar } from "./components/WeeklyCalendar";
@@ -27,9 +28,9 @@ export default function ListPage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [isListModalOpen, setIsListModalOpen] = useState<boolean>(false);
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
 
   // 날짜 제어 로직
-  // 1. 월 단위 변경 (DatePagination용)
   const handlePrevMonth = () => {
     const newDate = new Date(selectedDate);
     newDate.setMonth(selectedDate.getMonth() - 1);
@@ -42,7 +43,6 @@ export default function ListPage() {
     setSelectedDate(newDate);
   };
 
-  // 2. 주 단위 변경 (WeeklyCalendar용)
   const handlePrevWeek = () => {
     const newDate = new Date(selectedDate);
     newDate.setDate(selectedDate.getDate() - 7);
@@ -139,7 +139,7 @@ export default function ListPage() {
               <div className="mx-auto max-w-3xl space-y-8">
                 <div className="flex items-center justify-between">
                   <h3 className="text-2xl-b text-color-tertiary">법인 등기</h3>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
                     <DatePagination
                       selectedDate={selectedDate}
                       onPrevMonth={handlePrevMonth}
@@ -178,8 +178,10 @@ export default function ListPage() {
                 </div>
               </div>
 
+              {/* 파란 플러스 버튼 */}
               <button
                 type="button"
+                onClick={() => setIsTaskModalOpen(true)}
                 className="bg-brand-primary hover:bg-interaction-hover absolute top-1/2 -right-8 z-10 flex h-16 w-16 -translate-y-1/2 items-center justify-center rounded-full text-white shadow-xl transition-all active:scale-95"
               >
                 <PlusIcon className="h-8 w-8 brightness-0 invert filter" />
@@ -189,13 +191,28 @@ export default function ListPage() {
         </div>
       </main>
 
+      {/* --- 모달 렌더링 영역 --- */}
+
+      {/* 할 일 그룹 추가 모달 */}
       {isListModalOpen && (
         <div
-          className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-999 flex items-center justify-center bg-black/50"
           onClick={() => setIsListModalOpen(false)}
         >
           <div onClick={(e) => e.stopPropagation()}>
             <ListCreateModal onClose={() => setIsListModalOpen(false)} />
+          </div>
+        </div>
+      )}
+
+      {/* 테스크 생성 모달 추가 */}
+      {isTaskModalOpen && (
+        <div
+          className="fixed inset-0 z-999 flex items-center justify-center bg-black/50"
+          onClick={() => setIsTaskModalOpen(false)}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <TaskCreateModal onClose={() => setIsTaskModalOpen(false)} />
           </div>
         </div>
       )}

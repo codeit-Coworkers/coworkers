@@ -27,9 +27,9 @@ const Todo = ({ content, isCompleted, onToggle, isWeb }: TodoProps) => {
 
   const containerStyle = isWebForced
     ? isWeb
-      ? "gap-4 py-3"
-      : "gap-3 py-2"
-    : "gap-3 py-2 md:gap-4 md:py-3";
+      ? "gap-4"
+      : "gap-3"
+    : "gap-3 md:gap-4";
 
   const iconSize = isWebForced
     ? isWeb
