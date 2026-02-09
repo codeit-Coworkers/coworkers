@@ -5,16 +5,21 @@ type Member = {
   userName: string;
   userEmail: string;
   userImage: string;
+  role: "ADMIN" | "MEMBER";
 };
 
 type MemberItemProps = {
   member: Member;
+  isAdmin: boolean | undefined;
+  isSelf: boolean;
   onProfileOpen: () => void;
   onRemoveOpen: () => void;
 };
 
 export default function MemberItem({
   member,
+  isAdmin,
+  isSelf,
   onProfileOpen,
   onRemoveOpen,
 }: MemberItemProps) {
@@ -41,25 +46,28 @@ export default function MemberItem({
             {member.userEmail}
           </p>
         </div>
-        {/* 케밥 드롭다운 */}
-        <div
-          className="flex flex-shrink-0 items-center"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <button type="button">
-            <Dropdown
-              listAlign="center"
-              trigger="kebab"
-              options={[
-                {
-                  label: "멤버 내보내기",
-                  value: "멤버 내보내기",
-                  action: onRemoveOpen,
-                },
-              ]}
-            />
-          </button>
-        </div>
+
+        {/* 케밥 드롭다운: 관리자일 경우만 보임 본인건 안보임 */}
+        {isAdmin && !isSelf && (
+          <div
+            className="flex flex-shrink-0 items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button type="button">
+              <Dropdown
+                listAlign="center"
+                trigger="kebab"
+                options={[
+                  {
+                    label: "멤버 내보내기",
+                    value: "멤버 내보내기",
+                    action: onRemoveOpen,
+                  },
+                ]}
+              />
+            </button>
+          </div>
+        )}
       </div>
     </li>
   );

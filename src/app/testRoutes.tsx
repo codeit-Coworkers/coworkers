@@ -8,6 +8,7 @@ import TestInput from "@/pages/test/TestInput";
 import TestToast from "@/pages/test/TestToast";
 import TestChip from "@/pages/test/TestChip";
 import TestDropdown from "@/pages/test/TestDropdown";
+import TestListPage from "@/pages/ListPage/ListPage";
 import TestModal from "@/pages/test/TestModal";
 import TestTodayProgressSection from "@/pages/test/TestTodayProgressSection";
 import TestErrorBoundary from "@/pages/test/TestErrorBoundary";
@@ -54,6 +55,10 @@ export const testRoutes = [
   {
     path: "/test/dropdown",
     element: <TestDropdown />,
+  },
+  {
+    path: "/test/list-page",
+    element: <TestListPage />,
   },
   {
     path: "/test/modal",

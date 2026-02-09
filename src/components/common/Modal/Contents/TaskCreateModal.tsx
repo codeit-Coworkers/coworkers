@@ -6,35 +6,32 @@ import CalendarTime from "../../Calendar/CalendarTime";
 import getDateTime from "@/utils/dateTime";
 import { useClickOutside } from "@/hooks/useClickOutside";
 
-/**
- * 요일 표시용 상수 배열
- * - 반복 요일 선택 UI에서 사용됩니다.
- */
+interface TaskData {
+  title: string;
+  date: Date | null;
+  time: string | null;
+  repeat: string;
+  selectedDays: string[];
+  memo: string;
+}
+
+interface TaskCreateModalProps {
+  onClose: () => void;
+  onCreate: (data: TaskData) => void;
+}
+
 const weekDays: string[] = ["일", "월", "화", "수", "목", "금", "토"];
 
-/**
- * 할 일 생성 모달 콘텐츠 컴포넌트
- *
- * ## 역할
- * - 할 일(Task)을 생성하기 위한 입력 폼 UI를 제공합니다.
- * - 시작 날짜/시간 선택(Calendar)과 반복 설정(Dropdown)을 포함합니다.
- *
- * ## 주요 기능
- * - 제목/메모 입력 (Input 컴포넌트 사용)
- * - 시작 날짜 선택 (`CalendarDate`)
- * - 시작 시간 선택 (`CalendarTime`)
- * - 반복 설정 선택 (`Dropdown` - optionsKey="repeat")
- * - 반복 설정이 "주 반복" 또는 "월 반복"인 경우 요일 선택 UI 표시
- *
- * ## 동작 방식
- * - 날짜 입력 클릭 시 날짜 캘린더 레이어가 열립니다.
- * - 시간 입력 클릭 시 시간 선택 레이어가 열리고, 날짜 레이어는 닫힙니다.
- * - 캘린더 레이어 바깥을 클릭하면 `useClickOutside`로 레이어가 닫힙니다.
- * - 반복 설정 dropdown 선택값에 따라 반복 요일 UI가 조건부로 렌더링됩니다.
- */
-export default function TaskCreateModal() {
+export default function TaskCreateModal({
+  onClose,
+  onCreate,
+}: TaskCreateModalProps) {
+  const [title, setTitle] = useState("");
+  const [memo, setMemo] = useState("");
   const [date, setDate] = useState<Date | null>(null);
   const [time, setTime] = useState<string | null>(null);
+  const [selectDay, setSelectDay] = useState<Option | null>(null);
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
 
   const [isDateOpen, setIsDateOpen] = useState(false);
   const [isTimeOpen, setIsTimeOpen] = useState(false);
@@ -45,13 +42,8 @@ export default function TaskCreateModal() {
   useClickOutside(dateLayerRef, () => setIsDateOpen(false));
   useClickOutside(timeLayerRef, () => setIsTimeOpen(false));
 
-  const [selectDay, setSelectDay] = useState<Option | null>(null);
-
   const formattedDate = date ? getDateTime(date).dateString : "";
-
   const { dateString, timeString } = getDateTime();
-
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
 
   const toggleDay = (day: string) => {
     setSelectedDays((prev) =>
@@ -59,77 +51,131 @@ export default function TaskCreateModal() {
     );
   };
 
+  const handleSubmit = () => {
+    if (!title.trim()) {
+      alert("할 일 제목을 입력해주세요!");
+      return;
+    }
+
+    const newTask: TaskData = {
+      title,
+      date,
+      time,
+      repeat: selectDay?.label || "반복 안함",
+      selectedDays,
+      memo,
+    };
+
+    onCreate(newTask);
+    onClose();
+  };
+
   return (
-    <div className="p-5">
-      <div className="mt-2 mb-4 flex flex-col">
-        <h2 className="text-lg-m text-color-primary mb-5">할 일 만들기</h2>
-        <p className="text-md-r text-color-default mb-10">
+    <div className="font-pretendard bg-background-primary w-93.75 rounded-2xl p-6 shadow-xl md:w-112.5">
+      <div className="flex flex-col">
+        <div className="relative mb-5 flex items-center justify-center">
+          <h2 className="text-2lg-b text-color-primary">할 일 만들기</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-color-tertiary hover:text-brand-primary absolute right-0 transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+
+        <p className="text-md-r text-color-default mb-10 text-center">
           할 일은 실제로 행동 가능한 작업 중심으로
           <br /> 작성해주시면 좋습니다.
         </p>
+
+        {/* 할 일 제목 입력 */}
         <div className="mb-5 flex flex-col gap-2 text-left">
-          <label htmlFor="todoTitle">할 일 제목</label>
+          <label className="text-md-sb text-color-primary" htmlFor="todoTitle">
+            할 일 제목
+          </label>
           <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             size="search"
-            className="border-none ring-1 ring-[#e2e8f0]"
+            className="ring-border-primary focus:ring-brand-primary border-none ring-1"
             placeholder="할 일 제목을 입력해주세요."
           />
         </div>
+
+        {/* 시작 날짜 및 시간 선택 */}
         <div className="mb-5 flex flex-col text-left">
-          <label htmlFor="startAt" className="mb-2">
+          <label className="text-md-sb text-color-primary mb-2">
             시작 날짜 및 시간
           </label>
-          <div className="flex flex-row gap-2">
+          <div className="relative flex flex-row gap-2">
             <input
-              id="startAtDate"
               type="text"
               value={formattedDate}
               readOnly
-              onClick={() => setIsDateOpen((item) => !item)}
-              className="placeholder-color-default text-color-default h-[48px] w-3/5 cursor-pointer rounded-[12px] border-[1px] border-solid border-[#e2e8f0] p-4 caret-transparent"
+              onClick={() => {
+                setIsDateOpen(!isDateOpen);
+                setIsTimeOpen(false);
+              }}
+              className="placeholder-color-default text-color-default border-border-primary text-md-r focus:ring-brand-primary h-12 w-3/5 cursor-pointer rounded-xl border border-solid p-4 caret-transparent focus:ring-1 focus:outline-none"
               placeholder={dateString}
             />
             <input
-              id="startAtTime"
               type="text"
               value={time ?? ""}
               readOnly
               onClick={() => {
-                setIsTimeOpen((prev) => !prev);
+                setIsTimeOpen(!isTimeOpen);
                 setIsDateOpen(false);
               }}
-              className="placeholder-color-default text-color-default h-[48px] w-2/5 cursor-pointer rounded-[12px] border-[1px] border-solid border-[#e2e8f0] p-4 caret-transparent"
+              className="placeholder-color-default text-color-default border-border-primary text-md-r focus:ring-brand-primary h-12 w-2/5 cursor-pointer rounded-xl border border-solid p-4 caret-transparent focus:ring-1 focus:outline-none"
               placeholder={timeString}
             />
           </div>
-          <div>
+
+          {/* 레이어 영역 (Calendar) */}
+          <div className="relative">
             {isDateOpen && (
-              <div className="mt-2 flex justify-center" ref={dateLayerRef}>
-                <CalendarDate
-                  selectedDate={date}
-                  onSelectDate={(date) => {
-                    setDate(date);
-                    setIsDateOpen(false);
-                  }}
-                />
+              <div
+                className="animate-fadeDown ring-brand-primary bg-background-primary absolute top-2 left-0 z-99 w-full rounded-xl pb-2 shadow-2xl ring-1"
+                ref={dateLayerRef}
+              >
+                <div className="flex items-center justify-center">
+                  <CalendarDate
+                    selectedDate={date}
+                    onSelectDate={(date) => {
+                      setDate(date);
+                      setIsDateOpen(false);
+                    }}
+                  />
+                </div>
               </div>
             )}
             {isTimeOpen && (
-              <div className="mt-2 flex justify-center" ref={timeLayerRef}>
-                <CalendarTime
-                  selectedTime={time}
-                  onSelectTime={(time) => {
-                    setTime(time);
-                    setIsTimeOpen(false);
-                  }}
-                />
+              <div
+                className="animate-fadeDown ring-brand-primary bg-background-primary absolute top-2 right-0 z-99 w-full rounded-xl p-4 shadow-2xl ring-1"
+                ref={timeLayerRef}
+              >
+                <div className="flex items-center justify-center">
+                  <CalendarTime
+                    selectedTime={time}
+                    onSelectTime={(time) => {
+                      setTime(time);
+                      setIsTimeOpen(false);
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>
         </div>
+
+        {/* 반복 설정 드롭다운 */}
         <div className="mb-5 flex flex-col gap-2 text-left">
-          <label htmlFor="repeat">반복 설정</label>
-          <div className="w-[130px]">
+          <label className="text-md-sb text-color-primary" htmlFor="repeat">
+            반복 설정
+          </label>
+          <div className="w-32.5">
             <Dropdown
               optionsKey="repeat"
               defaultLabel="반복 안함"
@@ -140,40 +186,52 @@ export default function TaskCreateModal() {
             />
           </div>
         </div>
-        {selectDay?.label === "주 반복" || selectDay?.label === "월 반복" ? (
-          <div className="mb-5 flex flex-col gap-2 text-left">
-            <label htmlFor="repeat">반복 요일</label>
-            <div>
-              <ul className="flex flex-row justify-between">
-                {weekDays.map((item) => (
+
+        {/* 반복 요일 (조건부 렌더링) */}
+        {(selectDay?.label === "주 반복" || selectDay?.label === "월 반복") && (
+          <div className="animate-fadeDown mb-5 flex flex-col gap-2">
+            <label className="text-md-sb text-color-primary">반복 요일</label>
+            <ul className="flex flex-row justify-between">
+              {weekDays.map((item) => {
+                const isSelected = selectedDays.includes(item);
+                return (
                   <li
                     key={item}
                     onClick={() => toggleDay(item)}
-                    className={
-                      selectedDays.includes(item)
-                        ? "bg-brand-primary text-color-inverse hover:bg-brand-primary hover:text-background-primary flex cursor-pointer items-center justify-center rounded-[12px] border-1 border-solid border-[#e2e8f0] px-[11px] py-[11px]"
-                        : "hover:bg-brand-primary hover:text-background-primary flex cursor-pointer items-center justify-center rounded-[12px] border-1 border-solid border-[#e2e8f0] px-[11px] py-[11px]"
-                    }
+                    className={`text-sm-m flex h-11 w-12 cursor-pointer items-center justify-center rounded-xl border transition-all duration-200 select-none ${
+                      isSelected
+                        ? "bg-brand-primary text-color-inverse border-brand-primary"
+                        : "text-color-primary border-border-primary hover:bg-background-secondary"
+                    }`}
                   >
                     {item}
                   </li>
-                ))}
-              </ul>
-            </div>
+                );
+              })}
+            </ul>
           </div>
-        ) : null}
+        )}
 
-        <div className="mb-5 flex flex-col gap-2 text-left">
-          <label htmlFor="todoMemo">할 일 메모</label>
+        {/* 할 일 메모 입력 */}
+        <div className="mb-10 flex flex-col gap-2 text-left">
+          <label className="text-md-sb text-color-primary" htmlFor="todoMemo">
+            할 일 메모
+          </label>
           <Input
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
             size="content"
-            className="border-none ring-1 ring-[#e2e8f0]"
+            className="ring-border-primary focus:ring-brand-primary border-none ring-1"
             placeholder="메모를 입력해주세요."
           />
         </div>
       </div>
 
-      <button className="bg-brand-primary text-lg-b text-color-inverse h-[48px] w-full rounded-[12px] text-center">
+      <button
+        type="button"
+        onClick={handleSubmit}
+        className="bg-brand-primary text-lg-b text-color-inverse hover:bg-interaction-hover active:bg-interaction-pressed h-12 w-full rounded-xl text-center transition-all active:scale-[0.98]"
+      >
         만들기
       </button>
     </div>

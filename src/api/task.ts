@@ -5,7 +5,7 @@
 
 import { TaskServer } from "@/types/task";
 import { BASE_URL } from "./config";
-import { TASKIFY_ACCESS_TOKEN } from "./auth";
+import { fetchClient } from "@/lib/fetchClient";
 
 // Tasks 목록 조회
 export async function getTasks(
@@ -20,19 +20,12 @@ export async function getTasks(
     url.searchParams.append("date", date);
   }
 
-  const response = await fetch(url, {
+  return await fetchClient(url.toString(), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
     },
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch tasks");
-  }
-
-  return response.json();
 }
 
 // Task 단일 조회
@@ -41,20 +34,13 @@ export async function getTask(
   taskListId: number,
   taskId: number,
 ): Promise<TaskServer> {
-  const response = await fetch(
+  return await fetchClient(
     `${BASE_URL}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
       },
     },
   );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch task");
-  }
-
-  return response.json();
 }

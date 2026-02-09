@@ -115,7 +115,7 @@ export default function CalendarDate({ selectedDate, onSelectDate }: Props) {
   const years = Array.from({ length: 21 }, (_, i) => currentYear - 10 + i);
 
   return (
-    <div className="bg-background-primary font-pretendard box-border w-62.5 rounded-xl p-4 shadow-sm">
+    <div className="bg-background-primary font-pretendard box-border w-62.5 rounded-xl p-4">
       {/* ===== 헤더 ===== */}
       <div className="mb-2 flex h-8.75 items-center justify-between">
         <button

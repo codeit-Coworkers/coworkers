@@ -9,7 +9,7 @@ export function ToastContainer() {
   return (
     <Toast
       message={message}
-      onSave={hide} // 일단 닫기 버튼으로 사용
+      onAction={hide} // 일단 닫기 버튼으로 사용
       onClose={hide}
     />
   );

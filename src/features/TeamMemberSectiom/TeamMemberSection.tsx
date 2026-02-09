@@ -1,4 +1,5 @@
 import { useGroup } from "@/api/group";
+import { useUser } from "@/api/user";
 import InviteModal from "@/components/common/Modal/Contents/InviteModal";
 import ProfileModal from "./ProfileModal";
 import Modal from "@/components/common/Modal/Modal";
@@ -11,17 +12,37 @@ type Member = {
   userName: string;
   userEmail: string;
   userImage: string;
+  role: "ADMIN" | "MEMBER";
+};
+
+type TeamMemberSectionProps = {
+  groupId: number;
 };
 
 /** 모달 종류: invite(초대), profile(프로필), remove(추방), null(닫힘) */
 type ModalType = "invite" | "profile" | "remove" | null;
 
-export default function TeamMemberSection() {
+export default function TeamMemberSection({ groupId }: TeamMemberSectionProps) {
   // 데이터 요청
-  const { data: groupData } = useGroup(3810);
+  const { data: groupData } = useGroup(groupId);
+  const { data: user } = useUser();
+
+  const currentUserId = user.id;
+
+  const isAdmin =
+    user?.memberships.find((m) => m.groupId === groupData.id)?.role === "ADMIN";
 
   const members = groupData?.members || [];
   const memberCount = members.length;
+
+  // 멤버 정렬: 로그인 유저 -> 관리자 -> 나머지
+  const sortedMembers = [...members].sort((a, b) => {
+    if (a.userId === currentUserId) return -1;
+    if (b.userId === currentUserId) return 1;
+    if (a.role === "ADMIN" && b.role !== "ADMIN") return -1;
+    if (b.role === "ADMIN" && a.role !== "ADMIN") return 1;
+    return 0;
+  });
 
   const [modalType, setModalType] = useState<ModalType>(null);
 
@@ -38,16 +59,7 @@ export default function TeamMemberSection() {
 
   return (
     <>
-      <div
-        style={{
-          width: "100vw",
-          height: "100vh",
-          background: "#f0f0f0",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <div>
         <div className="bg-background-primary border-border-primary w-[240px] rounded-[12px] border-1 px-[20px] py-[24px]">
           {/* 헤더 */}
           <div className="flex items-center justify-between">
@@ -68,10 +80,12 @@ export default function TeamMemberSection() {
           {/* 멤버 리스트 */}
           <div className="mt-[24px]">
             <ul>
-              {members.map((member) => (
+              {sortedMembers.map((member) => (
                 <MemberItem
                   key={member.userId}
                   member={member}
+                  isAdmin={isAdmin}
+                  isSelf={member.userId === currentUserId}
                   onProfileOpen={() => openModal("profile", member)}
                   onRemoveOpen={() => openModal("remove", member)}
                 />

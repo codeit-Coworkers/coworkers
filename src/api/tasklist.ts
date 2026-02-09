@@ -5,7 +5,6 @@
 
 import { TaskListServer } from "@/types/tasklist";
 import { BASE_URL } from "./config";
-import { TASKIFY_ACCESS_TOKEN } from "./auth";
 import { fetchClient } from "@/lib/fetchClient";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -20,10 +19,34 @@ export async function getTaskList(
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
       },
     },
   );
+}
+
+// TaskList 생성
+export async function createTaskList(
+  groupId: number,
+  newName: string,
+): Promise<TaskListServer> {
+  return await fetchClient(`${BASE_URL}/groups/${groupId}/task-lists`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name: newName }),
+  });
+}
+
+// react-query를 활용한 taskList 생성 훅
+export function useCreateTaskList(groupId: number) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (newName: string) => createTaskList(groupId, newName),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["group", groupId] });
+    },
+  });
 }
 
 // TaskList 수정
@@ -38,7 +61,6 @@ export async function updateTaskList(
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
       },
       body: JSON.stringify({ name: newName }),
     },
@@ -74,7 +96,6 @@ export async function deleteTaskList(
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
       },
     },
   );
