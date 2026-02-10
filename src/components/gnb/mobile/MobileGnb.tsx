@@ -6,7 +6,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 export default function MobileGnb() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const { isLoggedIn, logout } = useAuthStore();
+  const { isLoggedIn } = useAuthStore();
 
   if (!isLoggedIn) {
     return (
@@ -25,7 +25,6 @@ export default function MobileGnb() {
           onClose={() => setIsMenuOpen(false)}
         />
       </header>
-      <button onClick={logout}>로그아웃</button>
     </>
   );
 }

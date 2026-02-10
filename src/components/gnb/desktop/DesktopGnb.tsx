@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 
 export default function DesktopGnb() {
   const { isFolded, toggleFolded } = useGnbStore();
+
   const { isLoggedIn } = useAuthStore();
 
   if (!isLoggedIn) {
