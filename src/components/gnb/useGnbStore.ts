@@ -9,7 +9,7 @@ interface GnbState {
 }
 
 export const useGnbStore = create<GnbState>((set) => ({
-  isFolded: false,
+  isFolded: true,
   toggleFolded: () => set((state) => ({ isFolded: !state.isFolded })),
   setFolded: (folded) => set({ isFolded: folded }),
 
