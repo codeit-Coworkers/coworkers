@@ -1,6 +1,3 @@
-import { Link } from "react-router-dom";
-import UserProfileMobile from "@/assets/user-mobile.svg";
-import UserProfile from "@/assets/user.svg";
 import { useGnbStore } from "../useGnbStore";
 import { useUser } from "@/api/user";
 
@@ -17,22 +14,6 @@ export default function GnbUserProfile() {
   // 현재 선택된 팀 이름 (없으면 첫 번째 팀)
   const teamName =
     selectedGroup?.group.name ?? user?.memberships[0]?.group.name;
-
-  if (!user) {
-    return (
-      <Link
-        to="/login"
-        aria-label="로그인 페이지로 이동"
-        className="inline-flex"
-      >
-        <span className="inline-flex items-center gap-2">
-          <UserProfileMobile className="md:hidden" />
-          <UserProfile className="hidden md:block" />
-          <span className="hidden md:block">로그인</span>
-        </span>
-      </Link>
-    );
-  }
 
   return (
     <>
