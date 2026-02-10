@@ -2,7 +2,7 @@ import Dropdown from "@/components/common/Dropdown/Dropdown";
 import { useGnbStore } from "../useGnbStore";
 import { useUser } from "@/api/user";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function GnbUserProfile() {
   const { data: user } = useUser();
@@ -10,6 +10,12 @@ export default function GnbUserProfile() {
   const { logout } = useAuthStore();
   const { isFolded } = useGnbStore();
   const { id: teamId } = useParams();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   // 현재 선택된 그룹 정보 가져오기
   const selectedGroup = user?.memberships.find(
@@ -46,7 +52,7 @@ export default function GnbUserProfile() {
               {
                 label: "로그아웃",
                 value: "로그아웃",
-                action: () => logout(),
+                action: handleLogout,
               },
             ]}
             keepSelected={false}
@@ -87,7 +93,7 @@ export default function GnbUserProfile() {
               {
                 label: "로그아웃",
                 value: "로그아웃",
-                action: () => logout(),
+                action: handleLogout,
               },
             ]}
             listClassName={` ${isFolded ? "bottom-0 left-[42px]" : "-top-[20px] translate-y-[-100%] left-[48px]"}`}
