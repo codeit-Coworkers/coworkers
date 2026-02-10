@@ -15,7 +15,7 @@ export default function MobileNavLinks({
 }: MobileNavLinksProps) {
   return (
     <div
-      className={`border-t border-[#E2E8F0] ${
+      className={`border-border-primary border-t ${
         isMenuOpen
           ? "mx-0 animate-[fadeDown_0.5s_ease-out_forwards] opacity-0"
           : "mx-4"
@@ -29,7 +29,7 @@ export default function MobileNavLinks({
           className={`group text-lg-m hover:bg-brand-secondary flex h-[52px] w-full items-center gap-3 rounded-[12px] px-4 text-left ${isSelected ? "bg-brand-secondary" : ""}`}
         >
           <BoardIcon
-            className={`group-hover:text-brand-primary h-[20px] w-[20px] flex-shrink-0 ${isSelected ? "text-brand-primary" : "text-[#CBD5E1]"}`}
+            className={`group-hover:text-brand-primary h-[20px] w-[20px] flex-shrink-0 ${isSelected ? "text-brand-primary" : "text-icon-gnb"}`}
           />
           <span
             className={`text-lg-r group-hover:text-brand-primary line-clamp-2 group-hover:font-semibold ${isSelected ? "text-brand-primary font-semibold" : "text-color-primary"}`}

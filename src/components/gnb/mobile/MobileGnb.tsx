@@ -6,7 +6,7 @@ export default function MobileGnb() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="relative w-full border-r border-solid border-[#E2E8F0]">
+    <header className="border-border-primary relative w-full md:border-r md:border-solid">
       <MobileUserArea onMenuOpen={setIsMenuOpen} />
       <MobileHeaderMenus
         isOpen={isMenuOpen}

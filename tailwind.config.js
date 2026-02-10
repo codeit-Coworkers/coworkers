@@ -60,6 +60,7 @@ module.exports = {
           primary: "#64748B",
           inverse: "#F8FAFC",
           brand: "#74A1FB",
+          gnb: "#CBD5E1",
         },
       },
 

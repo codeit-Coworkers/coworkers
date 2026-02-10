@@ -31,7 +31,7 @@ export default function DesktopTeamSelector({
           className={`group hover:bg-brand-secondary flex h-[52px] w-[52px] items-center justify-center rounded-[12px] ${isTeamSelected ? "bg-brand-secondary" : ""}`}
         >
           <Chess
-            className={`group-hover:text-brand-primary h-[24px] w-[24px] ${isTeamSelected ? "text-brand-primary" : "text-[#CBD5E1]"}`}
+            className={`group-hover:text-brand-primary h-[24px] w-[24px] ${isTeamSelected ? "text-brand-primary" : "text-icon-gnb"}`}
           />
         </button>
       </div>
@@ -46,7 +46,7 @@ export default function DesktopTeamSelector({
         className="group hover:bg-brand-secondary flex h-[36px] w-full items-center gap-3 px-4"
       >
         <Chess
-          className={`group-hover:text-brand-primary h-[20px] w-[20px] text-[#CBD5E1] ${isOpen ? "text-brand-primary" : "text-[#CBD5E1]"}`}
+          className={`group-hover:text-brand-primary text-icon-gnb h-[20px] w-[20px] ${isOpen ? "text-brand-primary" : "text-icon-gnb"}`}
         />
         <span
           className={`text-lg-sb group-hover:text-brand-primary flex-1 text-left ${isOpen ? "text-brand-primary" : "text-color-disabled"} transition-opacity duration-1000 ${isFolded ? "opacity-0" : "opacity-100"}`}
