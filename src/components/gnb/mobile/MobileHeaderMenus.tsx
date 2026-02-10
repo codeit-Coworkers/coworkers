@@ -4,11 +4,13 @@ import AddTeamButton from "../shared/AddTeamButton";
 import MobileNavLinks from "./MobileNavLinks";
 import {
   ITEM_DELAY,
+  getMobileMenuItems,
   getItemIndex,
   menuSlideDownProps,
 } from "../utils/menuSlideDown";
 // 임시 상태 관리 훅
 import { useGnbStore } from "../useGnbStore";
+import { useGroups } from "@/api/user";
 interface MobileHeaderMenusProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,12 +20,14 @@ export default function MobileHeaderMenus({
   isOpen,
   onClose,
 }: MobileHeaderMenusProps) {
-  const { selectedItem, setSelectedItem } = useGnbStore();
+  const { data: groups } = useGroups();
+  const menuItems = getMobileMenuItems(groups);
 
+  const { selectedItem, setSelectedItem } = useGnbStore();
   const selectedBoard = selectedItem === "board";
 
   const addTeamAnimationProps = menuSlideDownProps(
-    getItemIndex("addTeamButton"),
+    getItemIndex(menuItems, "addTeamButton"),
     isOpen,
   );
 
@@ -41,6 +45,7 @@ export default function MobileHeaderMenus({
             isMenuOpen={isOpen}
             selectedItem={selectedItem}
             onSelectItem={(id) => setSelectedItem(id)}
+            groupsData={groups}
           />
 
           <AddTeamButton
@@ -51,7 +56,7 @@ export default function MobileHeaderMenus({
         </div>
         <MobileNavLinks
           isMenuOpen={isOpen}
-          animationDelay={getItemIndex("navLinks") * ITEM_DELAY}
+          animationDelay={getItemIndex(menuItems, "navLinks") * ITEM_DELAY}
           isSelected={selectedBoard}
           onSelect={() => setSelectedItem("board")}
         />

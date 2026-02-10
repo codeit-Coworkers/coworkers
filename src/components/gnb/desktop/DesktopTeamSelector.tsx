@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Chess from "@/assets/chess.svg";
 import ArrowDown from "@/assets/arrow-down.svg";
-import { MOCK_GROUPS } from "@/components/gnb/mocks/groups";
 import TeamListItem from "../shared/TeamListItem";
 import { useGnbStore } from "../useGnbStore";
+import { useGroups } from "@/api/user";
 
 interface DesktopTeamSelectorProps {
   selectedItem: number | "board" | null;
@@ -18,8 +18,11 @@ export default function DesktopTeamSelector({
   const [isOpen, setIsOpen] = useState(true);
   const isTeamSelected = typeof selectedItem === "number";
 
+  const { data: group } = useGroups();
+
   if (isFolded) {
-    const firstGroupId = MOCK_GROUPS[0]?.id;
+    const firstGroupId = group[0]?.id;
+
     return (
       <div className="flex justify-center">
         <button
@@ -58,7 +61,7 @@ export default function DesktopTeamSelector({
         className={`mt-2 grid transition-all duration-200 ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
       >
         <ul className="mb-2 min-w-0 space-y-2 overflow-hidden">
-          {MOCK_GROUPS.map((group) => {
+          {group.map((group) => {
             const isSelected = selectedItem === group.id;
             return (
               <li key={group.id}>

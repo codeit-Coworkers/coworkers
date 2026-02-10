@@ -2,26 +2,21 @@ import { Link } from "react-router-dom";
 import UserProfileMobile from "@/assets/user-mobile.svg";
 import UserProfile from "@/assets/user.svg";
 import { useGnbStore } from "../useGnbStore";
+import { useUser } from "@/api/user";
 
-interface User {
-  id: number;
-  name: string;
-  team: string;
-  profileUrl: string;
-}
+export default function GnbUserProfile() {
+  const { data: user } = useUser();
 
-type UserProfileProps = {
-  user?: User | null;
-};
-export default function GnbUserProfile({ user }: UserProfileProps) {
-  const isFolded = useGnbStore((state) => state.isFolded);
-  user = {
-    id: 1,
-    name: "홍길동",
-    team: "개발팀",
-    profileUrl:
-      "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-  };
+  const { isFolded, selectedItem } = useGnbStore();
+
+  // 현재 선택된 그룹 정보 가져오기
+  const selectedGroup = user?.memberships.find(
+    (member) => member.groupId === selectedItem,
+  );
+
+  // 현재 선택된 팀 이름 (없으면 첫 번째 팀)
+  const teamName =
+    selectedGroup?.group.name ?? user?.memberships[0]?.group.name;
 
   if (!user) {
     return (
@@ -46,8 +41,8 @@ export default function GnbUserProfile({ user }: UserProfileProps) {
           <button type="button" aria-label="유저 프로필 모달 열기 버튼">
             <span className="block h-[28px] w-[28px] flex-shrink-0 overflow-hidden rounded-full">
               <img
-                src={user.profileUrl}
-                alt={`${user.name} 프로필 이미지`}
+                src={user.image}
+                alt={`${user.nickname} 프로필 이미지`}
                 className="h-full w-full object-cover"
               />
             </span>
@@ -63,8 +58,8 @@ export default function GnbUserProfile({ user }: UserProfileProps) {
               className={`flex-shrink-0 ${isFolded ? "h-8 w-8" : "h-10 w-10"}`}
             >
               <img
-                src={user.profileUrl}
-                alt={`${user.name} 프로필 이미지`}
+                src={user.image}
+                alt={`${user.nickname} 프로필 이미지`}
                 className="h-full w-full rounded-[12px] object-cover"
               />
             </div>
@@ -72,10 +67,10 @@ export default function GnbUserProfile({ user }: UserProfileProps) {
               className={`min-w-0 flex-1 flex-col gap-1 text-left transition-opacity ${isFolded ? "pointer-events-none scale-0 opacity-0" : "flex scale-100 opacity-100 duration-200"}`}
             >
               <span className="text-lg-m text-color-primary block max-w-full truncate">
-                {user.name}
+                {user.nickname}
               </span>
               <span className="text-md-m text-color-disabled block max-w-full truncate">
-                {user.team}
+                {teamName}
               </span>
             </div>
           </button>
