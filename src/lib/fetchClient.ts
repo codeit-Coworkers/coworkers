@@ -29,10 +29,16 @@ export async function fetchClient<T>(
   url: string,
   options?: RequestInit,
 ): Promise<T> {
+  // 1. 로컬 스토리지에서 토큰 가져오기
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
   const response = await fetch(url, {
     ...options,
     headers: {
       "Content-Type": "application/json",
+      // 2. 토큰이 있으면 Authorization 헤더 자동 추가
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options?.headers,
     },
   });

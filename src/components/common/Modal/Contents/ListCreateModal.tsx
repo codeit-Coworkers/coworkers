@@ -52,6 +52,7 @@ export default function ListCreateModal({
         <button
           className="bg-brand-primary text-lg-b text-color-inverse hover:bg-interaction-hover active:bg-interaction-pressed mt-2 h-12 w-full rounded-xl text-center transition-colors"
           onClick={() => {
+            // 만들기 로직...
             handleCreate();
           }}
         >

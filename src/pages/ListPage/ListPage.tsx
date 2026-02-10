@@ -240,7 +240,10 @@ export default function ListPage() {
           onClick={() => setIsListModalOpen(false)}
         >
           <div onClick={(e) => e.stopPropagation()}>
-            <ListCreateModal onClose={() => setIsListModalOpen(false)} />
+            <ListCreateModal
+              onClose={() => setIsListModalOpen(false)}
+              groupId={selectedGroupId}
+            />
           </div>
         </div>
       )}
