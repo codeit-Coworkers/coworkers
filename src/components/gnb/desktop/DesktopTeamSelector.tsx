@@ -4,19 +4,14 @@ import ArrowDown from "@/assets/arrow-down.svg";
 import TeamListItem from "../shared/TeamListItem";
 import { useGnbStore } from "../useGnbStore";
 import { useGroups } from "@/api/user";
+import { Link, useParams } from "react-router-dom";
 
-interface DesktopTeamSelectorProps {
-  selectedItem: number | "board" | null;
-  onSelectItem: (item: number) => void;
-}
-
-export default function DesktopTeamSelector({
-  selectedItem,
-  onSelectItem,
-}: DesktopTeamSelectorProps) {
+export default function DesktopTeamSelector() {
   const isFolded = useGnbStore((state) => state.isFolded);
   const [isOpen, setIsOpen] = useState(true);
-  const isTeamSelected = typeof selectedItem === "number";
+
+  const { id: teamId } = useParams();
+  const isTeamSelected = teamId !== undefined;
 
   const { data: group } = useGroups();
 
@@ -25,15 +20,14 @@ export default function DesktopTeamSelector({
 
     return (
       <div className="flex justify-center">
-        <button
-          type="button"
-          onClick={() => onSelectItem(firstGroupId)}
+        <Link
+          to={`/team/${firstGroupId}`}
           className={`group hover:bg-brand-secondary flex h-[52px] w-[52px] items-center justify-center rounded-[12px] ${isTeamSelected ? "bg-brand-secondary" : ""}`}
         >
           <Chess
             className={`group-hover:text-brand-primary h-[24px] w-[24px] ${isTeamSelected ? "text-brand-primary" : "text-icon-gnb"}`}
           />
-        </button>
+        </Link>
       </div>
     );
   }
@@ -62,13 +56,13 @@ export default function DesktopTeamSelector({
       >
         <ul className="mb-2 min-w-0 space-y-2 overflow-hidden">
           {group.map((group) => {
-            const isSelected = selectedItem === group.id;
+            const isSelected = Number(teamId) === group.id;
             return (
               <li key={group.id}>
                 <TeamListItem
                   name={group.name}
+                  id={group.id}
                   isSelected={isSelected}
-                  onClick={() => onSelectItem(group.id)}
                 />
               </li>
             );

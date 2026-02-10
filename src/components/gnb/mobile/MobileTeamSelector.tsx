@@ -1,27 +1,26 @@
 import { menuSlideDownProps } from "../utils/menuSlideDown";
 import TeamListItem from "../shared/TeamListItem";
 import { GroupSummaryServer } from "@/types/group";
+import { useParams } from "react-router-dom";
 
 interface MobileTeamSelectorProps {
   isMenuOpen: boolean;
-  selectedItem: number | "board" | null;
-  onSelectItem: (item: number) => void;
   groupsData?: GroupSummaryServer[];
 }
 
 export default function MobileTeamSelector({
   isMenuOpen,
-  selectedItem,
-  onSelectItem,
   groupsData,
 }: MobileTeamSelectorProps) {
   const teamItems =
     groupsData?.map((group) => ({ type: "team" as const, data: group })) || [];
 
+  const { id: teamId } = useParams();
+
   return (
     <ul className="mb-2 min-w-0 space-y-2 overflow-hidden">
       {teamItems.map((item, index) => {
-        const isSelected = selectedItem === item.data.id;
+        const isSelected = Number(teamId) === item.data.id;
         const animationProps = menuSlideDownProps(index, isMenuOpen);
 
         return (
@@ -31,9 +30,9 @@ export default function MobileTeamSelector({
             style={animationProps.style}
           >
             <TeamListItem
+              id={item.data.id}
               name={item.data.name}
               isSelected={isSelected}
-              onClick={() => onSelectItem(item.data.id)}
             />
           </li>
         );

@@ -1,22 +1,22 @@
 import Chess from "@/assets/chess.svg";
+import { Link } from "react-router-dom";
 
 interface TeamListItemProps {
+  id: number;
   name: string;
   isSelected: boolean;
-  onClick: () => void;
   className?: string;
 }
 
 export default function TeamListItem({
+  id,
   name,
   isSelected,
-  onClick,
   className,
 }: TeamListItemProps) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
+    <Link
+      to={`/team/${id}`}
       className={`group text-lg-m hover:bg-brand-secondary flex h-[52px] w-full items-center gap-3 rounded-[12px] px-4 text-left ${isSelected ? "bg-brand-secondary text-brand-primary" : ""} ${className ?? ""}`}
     >
       <Chess
@@ -27,6 +27,6 @@ export default function TeamListItem({
       >
         {name}
       </span>
-    </button>
+    </Link>
   );
 }

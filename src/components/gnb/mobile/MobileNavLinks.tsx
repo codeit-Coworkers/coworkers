@@ -1,17 +1,16 @@
 import BoardIcon from "@/assets/board.svg";
+import { Link } from "react-router-dom";
 
 interface MobileNavLinksProps {
   isMenuOpen: boolean;
   animationDelay: number;
   isSelected: boolean;
-  onSelect: () => void;
 }
 
 export default function MobileNavLinks({
   isMenuOpen,
   animationDelay,
   isSelected,
-  onSelect,
 }: MobileNavLinksProps) {
   return (
     <div
@@ -23,9 +22,8 @@ export default function MobileNavLinks({
       style={isMenuOpen ? { animationDelay: `${animationDelay}ms` } : {}}
     >
       <div className="mt-[12px]">
-        <button
-          type="button"
-          onClick={onSelect}
+        <Link
+          to="/boards"
           className={`group text-lg-m hover:bg-brand-secondary flex h-[52px] w-full items-center gap-3 rounded-[12px] px-4 text-left ${isSelected ? "bg-brand-secondary" : ""}`}
         >
           <BoardIcon
@@ -36,7 +34,7 @@ export default function MobileNavLinks({
           >
             자유게시판
           </span>
-        </button>
+        </Link>
       </div>
     </div>
   );

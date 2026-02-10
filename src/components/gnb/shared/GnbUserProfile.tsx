@@ -2,16 +2,18 @@ import Dropdown from "@/components/common/Dropdown/Dropdown";
 import { useGnbStore } from "../useGnbStore";
 import { useUser } from "@/api/user";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useParams } from "react-router-dom";
 
 export default function GnbUserProfile() {
   const { data: user } = useUser();
 
   const { logout } = useAuthStore();
-  const { isFolded, selectedItem } = useGnbStore();
+  const { isFolded } = useGnbStore();
+  const { id: teamId } = useParams();
 
   // 현재 선택된 그룹 정보 가져오기
   const selectedGroup = user?.memberships.find(
-    (member) => member.groupId === selectedItem,
+    (member) => member.groupId === Number(teamId),
   );
 
   // 현재 선택된 팀 이름 (없으면 첫 번째 팀)
