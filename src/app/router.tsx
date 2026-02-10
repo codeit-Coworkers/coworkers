@@ -9,6 +9,7 @@ import { testRoutes } from "./testRoutes";
 import Layout from "@/components/layout/Layout";
 import { GlobalErrorFallback } from "@/providers/boundary";
 import Team from "@/pages/team";
+import MyHistory from "@/pages/MyHistory";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
           { path: "/boards", element: <Boards /> },
           { path: "/boards/write", element: <BoardWrite /> },
           { path: "/boards/:articleId", element: <BoardDetail /> },
+          { path: "/my-history", element: <MyHistory /> },
         ],
       },
       {

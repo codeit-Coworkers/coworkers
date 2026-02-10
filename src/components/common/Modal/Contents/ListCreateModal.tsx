@@ -43,6 +43,8 @@ export default function ListCreateModal({
         <input
           type="text"
           className="text-md-r placeholder:text-color-disabled border-border-primary bg-background-secondary focus:border-brand-primary h-12 w-full rounded-xl border p-4 transition-all outline-none"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           placeholder="목록 명을 입력해주세요."
         />
 
@@ -50,8 +52,7 @@ export default function ListCreateModal({
         <button
           className="bg-brand-primary text-lg-b text-color-inverse hover:bg-interaction-hover active:bg-interaction-pressed mt-2 h-12 w-full rounded-xl text-center transition-colors"
           onClick={() => {
-            // 만들기 로직...
-            onClose();
+            handleCreate();
           }}
         >
           만들기
