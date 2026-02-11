@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import PostCard from "../PostCard";
 import CarouselDots from "./CarouselDots";
@@ -126,20 +127,21 @@ function BestPostCarouselInner({
         </button>
       </div>
 
-      {/* 카드 영역 */}
-      <div className="flex gap-3">
+      {/* 카드 영역 - 클릭 시 해당 게시글 상세로 이동 (데스크 3장/태블릿 2장 세트 가운데 정렬) */}
+      <div className="flex justify-center gap-3">
         {visiblePosts.map((post) => (
-          <PostCard
-            key={post.id}
-            state="best"
-            size={cardSize}
-            title={post.title}
-            content={post.content}
-            author={post.author}
-            date={post.date}
-            likeCount={post.likeCount}
-            imageUrl={post.imageUrl}
-          />
+          <Link key={post.id} to={`/boards/${post.id}`} className="flex-none">
+            <PostCard
+              state="best"
+              size={cardSize}
+              title={post.title}
+              content={post.content}
+              author={post.author}
+              date={post.date}
+              likeCount={post.likeCount}
+              imageUrl={post.imageUrl}
+            />
+          </Link>
         ))}
       </div>
 
