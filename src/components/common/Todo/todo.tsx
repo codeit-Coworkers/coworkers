@@ -51,6 +51,7 @@ const Todo = ({ content, isCompleted, onToggle, isWeb }: TodoProps) => {
         type="checkbox"
         checked={isCompleted}
         onChange={onToggle}
+        readOnly={!onToggle}
         className="sr-only"
       />
 

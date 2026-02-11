@@ -1,5 +1,6 @@
 import HeartIcon from "@/assets/heart.svg";
 import BestIcon from "@/assets/best.svg";
+import { formatLikeCount } from "@/utils/format";
 
 export interface PostCardProps {
   /**
@@ -54,10 +55,10 @@ export interface PostCardProps {
   fullWidth?: boolean;
 }
 
-// 카드 크기 스타일 맵
+// 카드 크기 스타일 맵 (베스트 large는 컨테이너에 3장이 들어가도록 330px)
 const SIZE_MAP = {
   best: {
-    large: "w-[350px] h-[210px] pt-6 pb-7 px-5",
+    large: "w-[330px] h-[198px] pt-6 pb-7 px-5",
     small: "w-[304px] h-[177px] p-5",
   },
   default: {
@@ -125,12 +126,6 @@ export default function PostCard({
 
   // 콘텐츠와 이름행 사이 간격
   const contentAuthorGap = state === "best" ? "" : "gap-3";
-
-  // 좋아요 수 포맷
-  const formatLikeCount = (count: number) => {
-    if (count > 999) return "999+";
-    return count.toString();
-  };
 
   // Best 카드 레이아웃
   if (state === "best") {
