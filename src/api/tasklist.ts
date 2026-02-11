@@ -5,7 +5,6 @@
 
 import { TaskListServer } from "@/types/tasklist";
 import { BASE_URL } from "./config";
-import { TASKIFY_ACCESS_TOKEN } from "./auth";
 import { fetchClient } from "@/lib/fetchClient";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -20,7 +19,6 @@ export async function getTaskList(
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
       },
     },
   );
@@ -35,7 +33,6 @@ export async function createTaskList(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
     },
     body: JSON.stringify({ name: newName }),
   });
@@ -64,7 +61,6 @@ export async function updateTaskList(
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
       },
       body: JSON.stringify({ name: newName }),
     },
@@ -100,7 +96,6 @@ export async function deleteTaskList(
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
       },
     },
   );

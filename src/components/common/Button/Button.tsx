@@ -16,7 +16,7 @@ const fontClassMap: Record<string, string> = {
  */
 export const buttonSizeMap = {
   landing: { width: 160, height: 48, fontSize: "lg-m", radius: 12 },
-  authWide: { width: 300, height: 48, fontSize: "lg-m", radius: 12 },
+  authWide: { width: "100%", height: 48, fontSize: "lg-m", radius: 12 },
   teamMedium: { width: 186, height: 48, fontSize: "lg-m", radius: 12 },
   teamAdd: { width: 172, height: 33, fontSize: "md-m", radius: 8 },
   todoAdd: { width: 112, height: 40, fontSize: "md-m", radius: 40 },

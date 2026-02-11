@@ -4,7 +4,6 @@
 // ========================================
 
 import { BASE_URL } from "./config";
-import { TASKIFY_ACCESS_TOKEN } from "./auth";
 
 // 이미지 업로드 응답
 interface ImageUploadResponse {
@@ -27,10 +26,6 @@ export async function uploadImage(file: File): Promise<string> {
 
   const response = await fetch(`${BASE_URL}/images/upload`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
-      // Content-Type은 FormData 사용 시 브라우저가 자동 설정 (boundary 포함)
-    },
     body: formData,
   });
 

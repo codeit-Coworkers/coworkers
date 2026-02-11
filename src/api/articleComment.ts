@@ -5,7 +5,6 @@
 // ========================================
 
 import { BASE_URL } from "./config";
-import { TASKIFY_ACCESS_TOKEN } from "./auth";
 import { fetchClient } from "@/lib/fetchClient";
 import {
   useInfiniteQuery,
@@ -16,12 +15,6 @@ import type {
   ArticleComment,
   ArticleCommentListResponse,
 } from "@/types/articleComment";
-
-// ─── 공통 헤더 ──────────────────────────────────────────────
-
-const authHeaders = {
-  Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
-};
 
 // ─── API 함수 ───────────────────────────────────────────────
 
@@ -39,7 +32,6 @@ export async function getArticleComments(
 
   return fetchClient(url.toString(), {
     method: "GET",
-    headers: authHeaders,
   });
 }
 
@@ -50,7 +42,6 @@ export async function createArticleComment(
 ): Promise<ArticleComment> {
   return fetchClient(`${BASE_URL}/articles/${articleId}/comments`, {
     method: "POST",
-    headers: authHeaders,
     body: JSON.stringify({ content }),
   });
 }
@@ -62,7 +53,6 @@ export async function updateArticleComment(
 ): Promise<ArticleComment> {
   return fetchClient(`${BASE_URL}/comments/${commentId}`, {
     method: "PATCH",
-    headers: authHeaders,
     body: JSON.stringify({ content }),
   });
 }
@@ -71,7 +61,6 @@ export async function updateArticleComment(
 export async function deleteArticleComment(commentId: number): Promise<void> {
   return fetchClient(`${BASE_URL}/comments/${commentId}`, {
     method: "DELETE",
-    headers: authHeaders,
   });
 }
 

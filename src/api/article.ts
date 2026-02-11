@@ -5,7 +5,6 @@
 // ========================================
 
 import { BASE_URL } from "./config";
-import { TASKIFY_ACCESS_TOKEN } from "./auth";
 import { fetchClient } from "@/lib/fetchClient";
 import {
   useQuery,
@@ -25,12 +24,6 @@ import type {
   ArticleDeleteResponse,
 } from "@/types/article";
 
-// ─── 공통 헤더 ──────────────────────────────────────────────
-
-const authHeaders = {
-  Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
-};
-
 // ─── API 함수 ───────────────────────────────────────────────
 
 /** 게시글 목록 조회 */
@@ -49,7 +42,6 @@ export async function getArticles(
 
   return fetchClient(url.toString(), {
     method: "GET",
-    headers: authHeaders,
   });
 }
 
@@ -57,7 +49,6 @@ export async function getArticles(
 export async function getArticle(articleId: number): Promise<ArticleDetail> {
   return fetchClient(`${BASE_URL}/articles/${articleId}`, {
     method: "GET",
-    headers: authHeaders,
   });
 }
 
@@ -67,19 +58,17 @@ export async function createArticle(
 ): Promise<ArticleCreateResponse> {
   return fetchClient(`${BASE_URL}/articles`, {
     method: "POST",
-    headers: authHeaders,
     body: JSON.stringify(body),
   });
 }
 
-/** 게시글 수정 (이미지 삭제 시 body.image = null) */
+/** 게시글 수정 */
 export async function updateArticle(
   articleId: number,
   body: ArticleUpdateRequest,
 ): Promise<ArticleDetail> {
   return fetchClient(`${BASE_URL}/articles/${articleId}`, {
     method: "PATCH",
-    headers: authHeaders,
     body: JSON.stringify(body),
   });
 }
@@ -90,7 +79,6 @@ export async function deleteArticle(
 ): Promise<ArticleDeleteResponse> {
   return fetchClient(`${BASE_URL}/articles/${articleId}`, {
     method: "DELETE",
-    headers: authHeaders,
   });
 }
 
@@ -98,7 +86,6 @@ export async function deleteArticle(
 export async function likeArticle(articleId: number): Promise<ArticleDetail> {
   return fetchClient(`${BASE_URL}/articles/${articleId}/like`, {
     method: "POST",
-    headers: authHeaders,
   });
 }
 
@@ -106,22 +93,12 @@ export async function likeArticle(articleId: number): Promise<ArticleDetail> {
 export async function unlikeArticle(articleId: number): Promise<ArticleDetail> {
   return fetchClient(`${BASE_URL}/articles/${articleId}/like`, {
     method: "DELETE",
-    headers: authHeaders,
   });
 }
 
 // ─── React Query 훅 ────────────────────────────────────────
 
-/**
- * 게시글 목록 조회 훅 (페이지네이션용)
- *
- * - keepPreviousData로 페이지 전환 시 깜빡임 방지
- * - useSuspenseQuery 대신 useQuery 사용 (페이지 전환 시 Suspense 재발동 방지)
- */
-export function useArticles(
-  params: ArticleListParams = {},
-  options?: { enabled?: boolean },
-) {
+export function useArticles(params: ArticleListParams = {}) {
   return useQuery<ArticleListResponse>({
     queryKey: ["articles", params],
     queryFn: () => getArticles(params),
@@ -160,13 +137,7 @@ export function useInfiniteArticles(
   });
 }
 
-/**
- * 베스트 게시글 조회 훅
- *
- * - 좋아요순 상위 N개를 가져옴
- * - Suspense + ErrorBoundary 지원
- */
-export function useBestArticles(pageSize: number = 15) {
+export function useBestArticles(pageSize: number = 5) {
   return useSuspenseQuery<ArticleListResponse>({
     queryKey: ["articles", "best", pageSize],
     queryFn: () => getArticles({ page: 1, pageSize, orderBy: "like" }),
@@ -174,11 +145,6 @@ export function useBestArticles(pageSize: number = 15) {
   });
 }
 
-/**
- * 게시글 상세 조회 훅
- *
- * - Suspense + ErrorBoundary 지원
- */
 export function useArticle(articleId: number) {
   return useSuspenseQuery<ArticleDetail>({
     queryKey: ["article", articleId],
@@ -187,9 +153,6 @@ export function useArticle(articleId: number) {
   });
 }
 
-/**
- * 게시글 생성 mutation
- */
 export function useCreateArticle() {
   const queryClient = useQueryClient();
 
@@ -201,9 +164,6 @@ export function useCreateArticle() {
   });
 }
 
-/**
- * 게시글 수정 mutation
- */
 export function useUpdateArticle(articleId: number) {
   const queryClient = useQueryClient();
 
@@ -216,9 +176,6 @@ export function useUpdateArticle(articleId: number) {
   });
 }
 
-/**
- * 게시글 삭제 mutation
- */
 export function useDeleteArticle() {
   const queryClient = useQueryClient();
 
@@ -230,9 +187,6 @@ export function useDeleteArticle() {
   });
 }
 
-/**
- * 게시글 좋아요 토글 mutation
- */
 export function useToggleLike(articleId: number) {
   const queryClient = useQueryClient();
 
