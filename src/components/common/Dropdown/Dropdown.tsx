@@ -105,6 +105,7 @@ type DropdownProps = {
   onSelect?: (item: Option) => void;
 
   showArrow?: boolean;
+  listClassName?: string;
 };
 
 /**
@@ -163,6 +164,7 @@ export default function Dropdown({
   keepSelected = true,
   onSelect,
   showArrow = true,
+  listClassName,
 }: DropdownProps) {
   /** 드롭다운 열림 여부 */
   const [open, setOpen] = useState(false);
@@ -255,7 +257,9 @@ export default function Dropdown({
 
       {open && (
         <div>
-          <ul className="border-background-tertiary bg-color-inverse absolute z-50 mt-[10px] rounded-[12px] border-1">
+          <ul
+            className={`border-background-tertiary bg-color-inverse absolute z-50 mt-[10px] rounded-[12px] border-1 ${listClassName}`}
+          >
             {finalOptions.map((item) => (
               <li
                 key={item.value}

@@ -1,84 +1,128 @@
-import { Link } from "react-router-dom";
-import UserProfileMobile from "@/assets/user-mobile.svg";
-import UserProfile from "@/assets/user.svg";
+import Dropdown from "@/components/common/Dropdown/Dropdown";
 import { useGnbStore } from "../useGnbStore";
+import { useUser } from "@/api/user";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useNavigate, useParams } from "react-router-dom";
 
-interface User {
-  id: number;
-  name: string;
-  team: string;
-  profileUrl: string;
-}
+export default function GnbUserProfile() {
+  const { data: user } = useUser();
 
-type UserProfileProps = {
-  user?: User | null;
-};
-export default function GnbUserProfile({ user }: UserProfileProps) {
-  const isFolded = useGnbStore((state) => state.isFolded);
-  user = {
-    id: 1,
-    name: "홍길동",
-    team: "개발팀",
-    profileUrl:
-      "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+  const { logout } = useAuthStore();
+  const { isFolded } = useGnbStore();
+  const { id: teamId } = useParams();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
 
-  if (!user) {
-    return (
-      <Link
-        to="/login"
-        aria-label="로그인 페이지로 이동"
-        className="inline-flex"
-      >
-        <span className="inline-flex items-center gap-2">
-          <UserProfileMobile className="md:hidden" />
-          <UserProfile className="hidden md:block" />
-          <span className="hidden md:block">로그인</span>
-        </span>
-      </Link>
-    );
-  }
+  // 현재 선택된 그룹 정보 가져오기
+  const selectedGroup = user?.memberships.find(
+    (member) => member.groupId === Number(teamId),
+  );
+
+  // 현재 선택된 팀 이름 (없으면 첫 번째 팀)
+  const teamName =
+    selectedGroup?.group.name ?? user?.memberships[0]?.group.name;
 
   return (
     <>
       <div>
-        <div className="md:hidden">
-          <button type="button" aria-label="유저 프로필 모달 열기 버튼">
-            <span className="block h-[28px] w-[28px] flex-shrink-0 overflow-hidden rounded-full">
-              <img
-                src={user.profileUrl}
-                alt={`${user.name} 프로필 이미지`}
-                className="h-full w-full object-cover"
-              />
-            </span>
-          </button>
+        <div className="relative md:hidden">
+          <Dropdown
+            optionsKey="myHistory"
+            listAlign="center"
+            trigger="user"
+            options={[
+              {
+                label: "마이 히스토리",
+                value: "마이 히스토리",
+                link: "/my-history",
+              },
+              {
+                label: "계정 설정",
+                value: "계정 설정",
+                link: "/my-settings",
+              },
+              {
+                label: "팀 참여",
+                value: "팀 참여",
+              },
+              {
+                label: "로그아웃",
+                value: "로그아웃",
+                action: handleLogout,
+              },
+            ]}
+            keepSelected={false}
+            listClassName="right-0"
+            icon={
+              <span className="block h-[28px] w-[28px] flex-shrink-0 overflow-hidden rounded-full">
+                <img
+                  src={user.image}
+                  alt={`${user.nickname} 프로필 이미지`}
+                  className="h-full w-full object-cover"
+                />
+              </span>
+            }
+          />
         </div>
-        <div className="hidden md:block">
-          <button
-            type="button"
-            aria-label="유저 프로필 모달 열기 버튼"
-            className={`flex ${isFolded ? "h-[32px]" : "h-auto"} items-center gap-3`}
-          >
-            <div
-              className={`flex-shrink-0 ${isFolded ? "h-8 w-8" : "h-10 w-10"}`}
-            >
-              <img
-                src={user.profileUrl}
-                alt={`${user.name} 프로필 이미지`}
-                className="h-full w-full rounded-[12px] object-cover"
-              />
-            </div>
-            <div
-              className={`min-w-0 flex-1 flex-col gap-1 text-left transition-opacity ${isFolded ? "pointer-events-none scale-0 opacity-0" : "flex scale-100 opacity-100 duration-200"}`}
-            >
-              <span className="text-lg-m text-color-primary block max-w-full truncate">
-                {user.name}
-              </span>
-              <span className="text-md-m text-color-disabled block max-w-full truncate">
-                {user.team}
-              </span>
-            </div>
-          </button>
+        <div className="relative hidden md:block">
+          <Dropdown
+            optionsKey="myHistory"
+            listAlign="center"
+            trigger="user"
+            keepSelected={false}
+            options={[
+              {
+                label: "마이 히스토리",
+                value: "마이 히스토리",
+                link: "/my-history",
+              },
+              {
+                label: "계정 설정",
+                value: "계정 설정",
+                link: "/my-settings",
+              },
+              {
+                label: "팀 참여",
+                value: "팀 참여",
+                link: "/join-team",
+              },
+              {
+                label: "로그아웃",
+                value: "로그아웃",
+                action: handleLogout,
+              },
+            ]}
+            listClassName={` ${isFolded ? "bottom-0 left-[42px]" : "-top-[20px] translate-y-[-100%] left-[48px]"}`}
+            icon={
+              <div
+                className={`flex ${isFolded ? "h-[32px]" : "h-auto"} items-center gap-3`}
+              >
+                <div
+                  className={`flex-shrink-0 ${isFolded ? "h-8 w-8" : "h-10 w-10"}`}
+                >
+                  <img
+                    src={user.image}
+                    alt={`${user.nickname} 프로필 이미지`}
+                    className="h-full w-full rounded-[12px] object-cover"
+                  />
+                </div>
+                <div
+                  className={`min-w-0 flex-1 flex-col gap-1 text-left transition-opacity ${isFolded ? "pointer-events-none scale-0 opacity-0" : "flex scale-100 opacity-100 duration-200"}`}
+                >
+                  <span className="text-lg-m text-color-primary block max-w-full truncate">
+                    {user.nickname}
+                  </span>
+                  <span className="text-md-m text-color-disabled block max-w-full truncate">
+                    {teamName}
+                  </span>
+                </div>
+              </div>
+            }
+          />
         </div>
       </div>
     </>
