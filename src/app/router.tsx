@@ -13,6 +13,7 @@ import LoginPage from "@/pages/Login";
 import ResetPasswordPage from "@/pages/ResetPassword";
 import RootLayout from "@/components/common/Rootlayout/RootLayout";
 import Team from "@/pages/team";
+import MyHistory from "@/pages/MyHistory";
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,7 @@ export const router = createBrowserRouter([
           { path: "/boards", element: <Boards /> },
           { path: "/boards/write", element: <BoardWrite /> },
           { path: "/boards/:articleId", element: <BoardDetail /> },
+          { path: "/my-history", element: <MyHistory /> },
         ],
       },
       {

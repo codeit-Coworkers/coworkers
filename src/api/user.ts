@@ -1,5 +1,6 @@
 import { User } from "@/types/user";
 import { GroupSummaryServer } from "@/types/group";
+import { TaskDoneResponse, TaskDoneClientResponse } from "@/types/user";
 import { BASE_URL } from "./config";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { fetchClient } from "@/lib/fetchClient";
@@ -58,5 +59,32 @@ export function useGroups() {
     queryKey: ["groups"],
     queryFn: getGroups,
     staleTime: 1000 * 10, // 10초
+  });
+}
+
+// 로그인 한 유저의 완료된 태스크 목록 조회
+export async function getCompletedTasks(): Promise<TaskDoneResponse> {
+  return await fetchClient(`${BASE_URL}/user/history`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
+    },
+  });
+}
+
+// react-query를 활용한 완료된 태스크 목록 조회 훅
+export function useCompletedTasks() {
+  return useSuspenseQuery<TaskDoneResponse, Error, TaskDoneClientResponse>({
+    queryKey: ["completedTasks"],
+    queryFn: getCompletedTasks,
+    staleTime: 1000 * 10,
+    select: (data) => ({
+      tasksDone: data.tasksDone.map((task) => ({
+        ...task,
+        title: task.name,
+        isCompleted: Boolean(task.doneAt),
+      })),
+    }),
   });
 }
