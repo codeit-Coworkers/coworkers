@@ -24,7 +24,7 @@ export default function TokenRefreshModal({
     const storedRefreshToken = localStorage.getItem("refreshToken");
 
     if (!storedRefreshToken) {
-      alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+      alert("로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
       navigate("/Login");
       return;
     }
@@ -34,7 +34,7 @@ export default function TokenRefreshModal({
       const { accessToken } = await refreshToken(storedRefreshToken);
 
       localStorage.setItem("accessToken", accessToken);
-      alert("세션이 연장되었습니다.");
+      alert("로그인이 연장되었습니다.");
 
       onClose();
     } catch (error) {

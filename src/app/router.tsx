@@ -12,6 +12,7 @@ import Index from "@/pages/Index";
 import LoginPage from "@/pages/Login";
 import ResetPasswordPage from "@/pages/ResetPassword";
 import RootLayout from "@/components/common/Rootlayout/RootLayout";
+import KakaoRedirectPage from "@/pages/KakaoRedirectPage";
 import Team from "@/pages/team";
 
 export const router = createBrowserRouter([
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
       {
         path: "/login",
         element: <LoginPage />,
+      },
+      {
+        path: "/login/kakao",
+        element: <KakaoRedirectPage />,
       },
       {
         path: "/reset-password",

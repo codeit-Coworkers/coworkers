@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Gnb from "@/components/gnb/Gnb";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { useSignIn, useSignUp, SignInRequest, SignUpRequest } from "@/api/auth";
 import { Input } from "@/components/common/Input/Input";
@@ -16,8 +16,10 @@ export default function LoginPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { mutate: signIn, isPending: isSignInPending } = useSignIn();
   const { mutate: signUp, isPending: isSignUpPending } = useSignUp();
-
   const isPending = isSignInPending || isSignUpPending;
+  const KAKAO_REST_API_KEY = "35804a1d124738c314f9abcb9b9181ea";
+  const REDIRECT_URI = `${window.location.origin}/login/kakao`;
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
   const {
     control,
@@ -43,7 +45,6 @@ export default function LoginPage() {
 
   const onSubmit = (data: SignUpRequest) => {
     if (isSignup) {
-      // 💡 Swagger 확인 결과 passwordConfirmation 필드도 함께 보내야 함
       signUp(data, {
         onSuccess: () => {
           alert("회원가입이 완료되었습니다! 로그인해주세요.");
@@ -153,7 +154,6 @@ export default function LoginPage() {
                           value: 8,
                           message: "비밀번호는 8자 이상이어야 합니다.",
                         },
-                        // 💡 [수정] 서버 규격에 맞춘 영문/숫자/특수문자 정규식 추가
                         pattern: {
                           value:
                             /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
@@ -223,10 +223,6 @@ export default function LoginPage() {
                       </button>
                     </div>
                   )}
-                  <ForgotPasswordModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                  />
                 </div>
 
                 <div className="w-full">
@@ -245,6 +241,11 @@ export default function LoginPage() {
                   </Button>
                 </div>
               </form>
+
+              <ForgotPasswordModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+              />
 
               <div className="mt-6 flex items-center justify-center gap-3 text-sm">
                 <span className="text-color-secondary">
@@ -270,9 +271,9 @@ export default function LoginPage() {
 
               <div className="flex items-center justify-between gap-2 pb-6">
                 <span className="text-color-default">간편 로그인하기</span>
-                <Link to="/login/kakao">
+                <a href={KAKAO_AUTH_URL}>
                   <Kakaoicon />
-                </Link>
+                </a>
               </div>
             </div>
           </div>
