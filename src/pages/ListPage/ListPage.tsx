@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import Sidebar from "@/components/gnb/Gnb";
 import ListCreateModal from "@/components/common/Modal/Contents/ListCreateModal";
-import TaskCreateModal from "@/components/common/Modal/Contents/TaskCreateModal";
+import TaskCreateModal, {
+  TaskData,
+} from "@/components/common/Modal/Contents/TaskCreateModal";
 
 import { WeeklyCalendar } from "./components/WeeklyCalendar";
 import DatePagination from "./components/DatePagination";
@@ -13,23 +14,15 @@ import PlusIcon from "@/assets/plus_blue.svg";
 import SettingsIcon from "@/assets/settings.svg";
 
 // --- 타입 정의 ---
-interface TaskCreateInput {
-  title: string;
-  date: Date | null;
-  time: string | null;
-  repeat: string;
-  selectedDays: string[];
-  memo: string;
-}
-
 interface Task {
   id: number;
-  groupId: number;
+  taskListId: string | number;
+  groupId: string | number;
   title: string;
   commentCount: number;
   date: Date;
   time?: string | null;
-  repeat?: string;
+  repeatLabel?: string;
   isRecurring: boolean;
   isCompleted: boolean;
   memo?: string;
@@ -40,7 +33,10 @@ export default function ListPage() {
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [isListModalOpen, setIsListModalOpen] = useState<boolean>(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
-  const [selectedGroupId, setSelectedGroupId] = useState<number>(2);
+
+  // 현재 페이지의 그룹/목록 ID 설정
+  const [selectedGroupId] = useState<number>(666);
+  const [selectedListId, setSelectedListId] = useState<number>(1);
 
   const [taskGroups, setTaskGroups] = useState([
     { id: 1, name: "법인 설립", current: 3, total: 5 },
@@ -51,28 +47,32 @@ export default function ListPage() {
   const [allTasks, setAllTasks] = useState<Task[]>([
     {
       id: 1,
-      groupId: 1,
+      taskListId: "1",
+      groupId: "666",
       title: "법인 설립 비용 안내 드리기",
       commentCount: 3,
       date: new Date(),
-      isRecurring: false,
+      repeatLabel: "매일", // 초기 데이터 예시
+      isRecurring: true,
       isCompleted: true,
     },
   ]);
 
   // --- 핸들러 ---
-  const handleCreateTask = (data: TaskCreateInput) => {
+  const handleCreateTask = (data: TaskData) => {
+    const taskDate = data.startDate ? new Date(data.startDate) : selectedDate;
+
     const newTask: Task = {
       id: Date.now(),
-      groupId: selectedGroupId,
+      taskListId: data.taskListId,
+      groupId: data.groupId,
       title: data.title,
       commentCount: 0,
-      date: data.date || selectedDate,
-      time: data.time,
-      repeat: data.repeat,
-      isRecurring: data.repeat !== "반복 안함",
+      date: taskDate,
+      repeatLabel: data.repeatLabel,
+      isRecurring: data.isRecurring,
       isCompleted: false,
-      memo: data.memo,
+      memo: data.description,
     };
 
     setAllTasks((prev) => [...prev, newTask]);
@@ -91,38 +91,22 @@ export default function ListPage() {
     setSelectedDate(newDate);
   };
 
-  const handlePrevWeek = () => {
-    const newDate = new Date(selectedDate);
-    newDate.setDate(selectedDate.getDate() - 7);
-    setSelectedDate(newDate);
-  };
-
-  const handleNextWeek = () => {
-    const newDate = new Date(selectedDate);
-    newDate.setDate(selectedDate.getDate() + 7);
-    setSelectedDate(newDate);
-  };
-
   const isSameDay = (d1: Date, d2: Date) =>
     d1.getFullYear() === d2.getFullYear() &&
     d1.getMonth() === d2.getMonth() &&
     d1.getDate() === d2.getDate();
 
   const activeGroup =
-    taskGroups.find((g) => g.id === selectedGroupId) || taskGroups[0];
+    taskGroups.find((g) => g.id === selectedListId) || taskGroups[0];
 
   const filteredTasks = allTasks.filter(
     (task) =>
-      task.groupId === selectedGroupId &&
+      Number(task.taskListId) === selectedListId &&
       isSameDay(new Date(task.date), selectedDate),
   );
 
   return (
     <div className="bg-background-secondary font-pretendard flex min-h-screen">
-      <div className="bg-background-inverse">
-        <Sidebar />
-      </div>
-
       <main className="text-color-primary flex-1 overflow-hidden p-10">
         <div className="mx-auto max-w-300 space-y-6">
           <header className="border-border-primary mb-12 flex items-center justify-between rounded-xl border bg-white px-6 py-4 shadow-sm">
@@ -138,9 +122,9 @@ export default function ListPage() {
                   <TaskGroupCard
                     key={group.id}
                     name={group.name}
-                    current={group.current}
-                    total={group.total}
-                    onClick={() => setSelectedGroupId(group.id)}
+                    current={group.current} // 필수 속성 추가
+                    total={group.total} // 필수 속성 추가
+                    onClick={() => setSelectedListId(group.id)}
                     onEdit={() => console.log(`${group.name} 수정`)}
                     onDelete={() =>
                       setTaskGroups(taskGroups.filter((g) => g.id !== group.id))
@@ -153,7 +137,7 @@ export default function ListPage() {
                 className="group text-md-sb text-brand-primary border-brand-primary hover:bg-brand-primary mt-11 flex h-10 w-28 items-center justify-center gap-2 rounded-4xl border hover:text-white"
               >
                 <PlusIcon className="h-3.5 w-3.5 group-hover:brightness-0 group-hover:invert" />
-                할 일 추가
+                목록 추가
               </button>
             </aside>
 
@@ -181,8 +165,8 @@ export default function ListPage() {
                 <WeeklyCalendar
                   selectedDate={selectedDate}
                   onDateSelect={setSelectedDate}
-                  onPrevWeek={handlePrevWeek}
-                  onNextWeek={handleNextWeek}
+                  onPrevWeek={() => {}}
+                  onNextWeek={() => {}}
                 />
 
                 <div className="flex flex-col gap-3">
@@ -193,8 +177,11 @@ export default function ListPage() {
                         title={task.title}
                         commentCount={task.commentCount}
                         date={task.date}
-                        time={task.time}
-                        repeatLabel={task.repeat}
+                        repeatLabel={
+                          task.repeatLabel && task.repeatLabel !== "반복 안함"
+                            ? `${task.repeatLabel} 반복`
+                            : ""
+                        }
                         isRecurring={task.isRecurring}
                         isCompleted={task.isCompleted}
                         onToggle={() => {
@@ -206,7 +193,7 @@ export default function ListPage() {
                             ),
                           );
                         }}
-                        onEdit={() => console.log(`${task.id} 수정`)}
+                        onEdit={() => console.log("수정")}
                         onDelete={() =>
                           setAllTasks((prev) =>
                             prev.filter((t) => t.id !== task.id),
@@ -225,7 +212,7 @@ export default function ListPage() {
               <button
                 type="button"
                 onClick={() => setIsTaskModalOpen(true)}
-                className="bg-brand-primary absolute top-1/2 -right-8 z-10 flex h-16 w-16 -translate-y-1/2 items-center justify-center rounded-full text-white shadow-xl transition-transform hover:scale-95 hover:bg-blue-600"
+                className="bg-brand-primary absolute top-1/2 -right-8 z-10 flex h-16 w-16 -translate-y-1/2 items-center justify-center rounded-full text-white shadow-xl hover:scale-95"
               >
                 <PlusIcon className="h-8 w-8 brightness-0 invert filter" />
               </button>
@@ -234,6 +221,7 @@ export default function ListPage() {
         </div>
       </main>
 
+      {/* 목록 생성 모달 */}
       {isListModalOpen && (
         <div
           className="fixed inset-0 z-999 flex items-center justify-center bg-black/50"
@@ -248,6 +236,7 @@ export default function ListPage() {
         </div>
       )}
 
+      {/* 할 일 생성 모달 */}
       {isTaskModalOpen && (
         <div
           className="fixed inset-0 z-999 flex items-center justify-center bg-black/50"
@@ -257,6 +246,8 @@ export default function ListPage() {
             <TaskCreateModal
               onClose={() => setIsTaskModalOpen(false)}
               onCreate={handleCreateTask}
+              currentListId={selectedListId}
+              currentGroupId={selectedGroupId}
             />
           </div>
         </div>

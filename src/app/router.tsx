@@ -8,10 +8,18 @@ import NotFound from "@/pages/NotFound";
 import { testRoutes } from "./testRoutes";
 import Layout from "@/components/layout/Layout";
 import { GlobalErrorFallback } from "@/providers/boundary";
+import Index from "@/pages/Index";
+import LoginPage from "@/pages/Login";
+import ResetPasswordPage from "@/pages/ResetPassword";
+import RootLayout from "@/components/common/Rootlayout/RootLayout";
 import Team from "@/pages/team";
+import MyHistory from "@/pages/MyHistory";
+import MySettings from "@/pages/MySettings";
+import ListPage from "@/pages/ListPage/ListPage";
 
 export const router = createBrowserRouter([
   {
+    element: <RootLayout />,
     errorElement: <GlobalErrorFallback />,
     children: [
       {
@@ -19,10 +27,22 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPasswordPage />,
+      },
+      {
+        path: "/index",
+        element: <Index />,
+      },
+      {
         path: "/user/:id",
         element: <User />,
       },
-      ...testRoutes,
+      ...(import.meta.env.DEV ? testRoutes : []),
       {
         element: <Layout />,
         children: [
@@ -32,6 +52,9 @@ export const router = createBrowserRouter([
           { path: "/boards", element: <Boards /> },
           { path: "/boards/write", element: <BoardWrite /> },
           { path: "/boards/:articleId", element: <BoardDetail /> },
+          { path: "/my-history", element: <MyHistory /> },
+          { path: "/my-settings", element: <MySettings /> },
+          { path: "/list", element: <ListPage /> },
         ],
       },
       {

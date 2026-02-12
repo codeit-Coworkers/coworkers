@@ -74,13 +74,6 @@ export default function Boards() {
     return () => clearTimeout(timer);
   }, [keyword]);
 
-  // 정렬/검색 변경 시 모바일 목록 초기화
-  useEffect(() => {
-    setMobilePage(1);
-    setMobileArticles([]);
-    setHasMore(true);
-  }, [orderBy]);
-
   // API 호출
   const currentPage = isMobile ? mobilePage : page;
   const { data, isLoading, isFetching } = useArticles({
@@ -94,16 +87,26 @@ export default function Boards() {
   useEffect(() => {
     if (!isMobile || !data) return;
 
-    if (mobilePage === 1) {
-      setMobileArticles(data.list);
-    } else {
-      setMobileArticles((prev) => [...prev, ...data.list]);
-    }
+    const timer = setTimeout(() => {
+      // 데이터 중복 추가 방지 (이미 있는 데이터인지 확인)
+      const lastIncomingId = data.list[data.list.length - 1]?.id;
+      const isAlreadyLoaded = mobileArticles.some(
+        (article) => article.id === lastIncomingId,
+      );
 
-    // 더 불러올 데이터가 있는지 확인
-    const totalPages = Math.ceil(data.totalCount / pageSize);
-    setHasMore(mobilePage < totalPages);
-  }, [data, isMobile, mobilePage, pageSize]);
+      if (mobilePage === 1) {
+        setMobileArticles(data.list);
+      } else if (!isAlreadyLoaded) {
+        setMobileArticles((prev) => [...prev, ...data.list]);
+      }
+
+      // 더 불러올 데이터가 있는지 확인
+      const totalPages = Math.ceil(data.totalCount / pageSize);
+      setHasMore(mobilePage < totalPages);
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [data, isMobile, mobilePage, pageSize, mobileArticles]);
 
   // 모바일: 무한 스크롤 IntersectionObserver
   const loadMore = useCallback(() => {
@@ -134,6 +137,9 @@ export default function Boards() {
     if (mapped) {
       setOrderBy(mapped);
       setPage(1);
+      setMobilePage(1);
+      setMobileArticles([]);
+      setHasMore(true);
     }
   };
 

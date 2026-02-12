@@ -5,24 +5,14 @@ import { useGnbStore } from "../useGnbStore";
 
 export default function DesktopHeaderMenus() {
   const isFolded = useGnbStore((state) => state.isFolded);
-  // 임시 상태 관리 훅
-  const { selectedItem, setSelectedItem } = useGnbStore();
-
-  const selectedBoard = selectedItem === "board";
 
   return (
     <div>
-      <DesktopTeamSelector
-        selectedItem={selectedItem}
-        onSelectItem={(id) => setSelectedItem(id)}
-      />
+      <DesktopTeamSelector />
       <div className={isFolded ? "hidden" : "mb-6 px-4"}>
         <AddTeamButton size="sm" />
       </div>
-      <DesktopNavLinks
-        isSelected={selectedBoard}
-        onSelect={() => setSelectedItem("board")}
-      />
+      <DesktopNavLinks />
     </div>
   );
 }
