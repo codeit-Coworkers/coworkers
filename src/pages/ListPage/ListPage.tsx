@@ -101,7 +101,15 @@ export default function ListPage() {
 
   const handleMonthChange = (direction: "prev" | "next") => {
     const newDate = new Date(selectedDate);
-    newDate.setMonth(selectedDate.getMonth() + (direction === "next" ? 1 : -1));
+    const currentDay = selectedDate.getDate();
+    newDate.setDate(1);
+    newDate.setMonth(newDate.getMonth() + (direction === "next" ? 1 : -1));
+    const lastDayOfNewMonth = new Date(
+      newDate.getFullYear(),
+      newDate.getMonth() + 1,
+      0,
+    ).getDate();
+    newDate.setDate(Math.min(currentDay, lastDayOfNewMonth));
     setSelectedDate(newDate);
   };
 
