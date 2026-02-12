@@ -132,11 +132,7 @@ export default function TaskCreateModal({
   };
 
   return (
-    <div
-      ref={modalRef}
-      className="font-pretendard bg-background-primary w-93.75 rounded-2xl p-6 shadow-xl outline-none md:w-112.5"
-      tabIndex={-1}
-    >
+    <div ref={modalRef} tabIndex={-1}>
       <div className="flex flex-col">
         <div className="relative mb-5 flex items-center justify-center">
           <h2 className="text-2lg-b text-color-primary">할 일 만들기</h2>

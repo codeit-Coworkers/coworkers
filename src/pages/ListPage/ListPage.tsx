@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import Modal from "@/components/common/Modal/Modal";
 import ListCreateModal from "@/components/common/Modal/Contents/ListCreateModal";
 import TaskCreateModal, {
   TaskData,
@@ -322,7 +323,7 @@ export default function ListPage() {
       {/* 모달 배경 및 컴포넌트 */}
       {(isListModalOpen || isTaskModalOpen) && (
         <div
-          className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 p-4"
+          className=""
           onClick={() => {
             setIsListModalOpen(false);
             setIsTaskModalOpen(false);
@@ -330,18 +331,28 @@ export default function ListPage() {
         >
           <div onClick={(e) => e.stopPropagation()} className="w-full max-w-lg">
             {isListModalOpen && (
-              <ListCreateModal
-                groupId={selectedGroupId}
+              <Modal
+                isOpen={isListModalOpen}
                 onClose={() => setIsListModalOpen(false)}
-              />
+              >
+                <ListCreateModal
+                  groupId={selectedGroupId}
+                  onClose={() => setIsListModalOpen(false)}
+                />
+              </Modal>
             )}
             {isTaskModalOpen && (
-              <TaskCreateModal
+              <Modal
+                isOpen={isTaskModalOpen}
                 onClose={() => setIsTaskModalOpen(false)}
-                onCreate={handleCreateTask}
-                currentListId={selectedListId}
-                currentGroupId={selectedGroupId}
-              />
+              >
+                <TaskCreateModal
+                  onClose={() => setIsTaskModalOpen(false)}
+                  onCreate={handleCreateTask}
+                  currentListId={selectedListId}
+                  currentGroupId={selectedGroupId}
+                />
+              </Modal>
             )}
           </div>
         </div>
