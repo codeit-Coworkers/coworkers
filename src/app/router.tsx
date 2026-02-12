@@ -17,6 +17,7 @@ import MyHistory from "@/pages/MyHistory";
 import JoinTeam from "@/pages/JoinTeam";
 import AddTeam from "@/pages/AddTeam";
 import EditTeam from "@/pages/EditTeam";
+import MySettings from "@/pages/MySettings";
 
 export const router = createBrowserRouter([
   {
@@ -57,6 +58,7 @@ export const router = createBrowserRouter([
           { path: "/boards/write", element: <BoardWrite /> },
           { path: "/boards/:articleId", element: <BoardDetail /> },
           { path: "/my-history", element: <MyHistory /> },
+          { path: "/my-settings", element: <MySettings /> },
         ],
       },
       {

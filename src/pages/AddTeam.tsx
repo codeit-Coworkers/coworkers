@@ -49,7 +49,7 @@ export default function AddTeam() {
       {
         onSuccess: (group) => {
           toast.show("팀이 성공적으로 생성되었습니다.");
-          navigate(`team/${group.id}`);
+          navigate(`/team/${group.id}`);
         },
         onError: () => {
           toast.show("팀 생성에 실패했습니다. 다시 시도해주세요.");
