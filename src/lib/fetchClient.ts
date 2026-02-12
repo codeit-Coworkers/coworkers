@@ -33,11 +33,12 @@ export async function fetchClient<T>(
   const token =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
+  const isFormData = options?.body instanceof FormData;
   const response = await fetch(url, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
-      // 2. 토큰이 있으면 Authorization 헤더 자동 추가
+      // FormData일 때는 Content-Type 생략 (브라우저가 boundary 포함해서 설정)
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options?.headers,
     },
