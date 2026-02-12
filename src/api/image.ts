@@ -4,11 +4,8 @@
 // ========================================
 
 import { BASE_URL } from "./config";
-
-// 이미지 업로드 응답
-interface ImageUploadResponse {
-  url: string;
-}
+import { fetchClient } from "@/lib/fetchClient";
+import { useMutation } from "@tanstack/react-query";
 
 /**
  * 이미지 업로드
@@ -24,15 +21,17 @@ export async function uploadImage(file: File): Promise<string> {
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await fetch(`${BASE_URL}/images/upload`, {
+  const data = await fetchClient<{ url: string }>(`${BASE_URL}/images/upload`, {
     method: "POST",
     body: formData,
   });
 
-  if (!response.ok) {
-    throw new Error(`이미지 업로드 실패: ${response.status}`);
-  }
-
-  const data: ImageUploadResponse = await response.json();
   return data.url;
+}
+
+// 이미지 업로드 훅
+export function useUploadImage() {
+  return useMutation({
+    mutationFn: uploadImage,
+  });
 }

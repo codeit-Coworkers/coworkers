@@ -36,7 +36,9 @@ export async function fetchClient<T>(
   const response = await fetch(url, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      ...(options?.body instanceof FormData
+        ? {}
+        : { "Content-Type": "application/json" }),
       // 2. 토큰이 있으면 Authorization 헤더 자동 추가
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options?.headers,
