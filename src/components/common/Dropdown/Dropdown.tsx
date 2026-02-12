@@ -162,7 +162,7 @@ export default function Dropdown({
     ) : null);
 
   return (
-    <div ref={rootRef} className="relative inline-block text-left">
+    <div ref={rootRef}>
       {/* 트리거 영역: 텍스트 타입 */}
       {trigger === "text" ? (
         <div
@@ -174,10 +174,14 @@ export default function Dropdown({
         >
           {showArrow && (
             <ArrowDown
+              onClick={() => setOpen((item) => !item)}
               className={`absolute right-[14px] cursor-pointer transition-transform duration-300 ${open ? "rotate-180" : "rotate-0"}`}
             />
           )}
-          <div className="md:text-md-m text-xs-m text-color-default border-background-tertiary active:bg-background-tertiary hover:bg-background-tertiary flex h-[40px] w-[120px] cursor-pointer items-center rounded-[12px] border-1 px-[14px] py-[10px] md:h-[44px] md:w-[130px]">
+          <div
+            onClick={() => setOpen((item) => !item)}
+            className="md:text-md-m text-xs-m text-color-default border-background-tertiary active:bg-background-tertiary hover:bg-background-tertiary flex h-[40px] w-[120px] cursor-pointer items-center rounded-[12px] border-1 px-[14px] py-[10px] md:h-[44px] md:w-[130px]"
+          >
             {selected ? selected.label : defaultLabel}
           </div>
         </div>
@@ -196,12 +200,9 @@ export default function Dropdown({
 
       {/* 옵션 리스트 영역 */}
       {open && (
-        <div
-          className="absolute z-50 mt-[10px]"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div onClick={(e) => e.stopPropagation()}>
           <ul
-            className={`border-background-tertiary bg-color-inverse rounded-[12px] border-1 shadow-lg ${listClassName}`}
+            className={`border-background-tertiary bg-color-inverse absolute z-50 mt-[10px] rounded-[12px] border-1 ${listClassName}`}
           >
             {finalOptions.map((item) => (
               <li
