@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Dropdown from "../../Dropdown/Dropdown";
 import { Input } from "../../Input/Input";
 import CalendarDate from "../../Calendar/CalendarDate";
@@ -44,6 +44,7 @@ export default function TaskCreateModal({
   const [isDateOpen, setIsDateOpen] = useState(false);
   const [isTimeOpen, setIsTimeOpen] = useState(false);
 
+  const modalRef = useRef<HTMLDivElement>(null);
   const dateContainerRef = useRef<HTMLDivElement>(null);
   const timeContainerRef = useRef<HTMLDivElement>(null);
 
@@ -51,6 +52,43 @@ export default function TaskCreateModal({
   useClickOutside(timeContainerRef, () => setIsTimeOpen(false));
 
   const { dateString } = getDateTime();
+
+  // ⭐ Focus Trap 로직 구현
+  useEffect(() => {
+    const modalElement = modalRef.current;
+    if (!modalElement) return;
+
+    // 포커스 가능한 요소들 선택
+    const focusableElements = modalElement.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    const handleTabKeyPress = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+
+      if (e.shiftKey) {
+        // Shift + Tab: 첫 번째 요소에서 누르면 마지막 요소로 포커스 이동
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        // Tab: 마지막 요소에서 누르면 첫 번째 요소로 포커스 이동
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
+    firstElement?.focus();
+
+    window.addEventListener("keydown", handleTabKeyPress);
+    return () => window.removeEventListener("keydown", handleTabKeyPress);
+  }, []);
 
   const toggleDay = (day: string) => {
     setSelectedDays((prev) =>
@@ -94,7 +132,11 @@ export default function TaskCreateModal({
   };
 
   return (
-    <div className="font-pretendard bg-background-primary w-93.75 rounded-2xl p-6 shadow-xl md:w-112.5">
+    <div
+      ref={modalRef}
+      className="font-pretendard bg-background-primary w-93.75 rounded-2xl p-6 shadow-xl outline-none md:w-112.5"
+      tabIndex={-1}
+    >
       <div className="flex flex-col">
         <div className="relative mb-5 flex items-center justify-center">
           <h2 className="text-2lg-b text-color-primary">할 일 만들기</h2>
@@ -102,6 +144,7 @@ export default function TaskCreateModal({
             type="button"
             onClick={onClose}
             className="text-color-tertiary absolute right-0"
+            aria-label="닫기"
           >
             ✕
           </button>
@@ -133,6 +176,9 @@ export default function TaskCreateModal({
                 readOnly
                 value={date ? getDateTime(date).dateString : ""}
                 onClick={() => setIsDateOpen(!isDateOpen)}
+                onKeyDown={(e) =>
+                  e.key === "Enter" && setIsDateOpen(!isDateOpen)
+                }
                 className="placeholder-color-default border-border-primary text-md-r focus:ring-brand-primary h-12 w-full cursor-pointer rounded-xl border p-4 outline-none focus:ring-1"
                 placeholder={dateString}
               />
@@ -153,6 +199,9 @@ export default function TaskCreateModal({
                 readOnly
                 value={time}
                 onClick={() => setIsTimeOpen(!isTimeOpen)}
+                onKeyDown={(e) =>
+                  e.key === "Enter" && setIsTimeOpen(!isTimeOpen)
+                }
                 className="placeholder-color-default border-border-primary text-md-r focus:ring-brand-primary h-12 w-full cursor-pointer rounded-xl border p-4 outline-none focus:ring-1"
                 placeholder="시간 선택"
               />
@@ -194,8 +243,10 @@ export default function TaskCreateModal({
               {weekDays.map((item) => (
                 <li
                   key={item}
+                  tabIndex={0} // 키보드로 접근 가능하게 설정
                   onClick={() => toggleDay(item)}
-                  className={`text-sm-m flex h-11 w-12 cursor-pointer items-center justify-center rounded-xl border transition-all ${
+                  onKeyDown={(e) => e.key === "Enter" && toggleDay(item)}
+                  className={`text-sm-m focus:ring-brand-primary flex h-11 w-12 cursor-pointer items-center justify-center rounded-xl border transition-all outline-none focus:ring-2 ${
                     selectedDays.includes(item)
                       ? "bg-brand-primary border-brand-primary text-white"
                       : "text-color-primary border-border-primary hover:bg-background-secondary"
@@ -222,7 +273,7 @@ export default function TaskCreateModal({
       <button
         type="button"
         onClick={handleSubmit}
-        className="bg-brand-primary text-lg-b h-12 w-full rounded-xl text-white transition-all active:scale-[0.98]"
+        className="bg-brand-primary text-lg-b focus:ring-brand-primary/50 h-12 w-full rounded-xl text-white transition-all outline-none focus:ring-4 active:scale-[0.98]"
       >
         만들기
       </button>
