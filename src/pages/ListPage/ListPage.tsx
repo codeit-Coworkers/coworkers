@@ -150,10 +150,10 @@ export default function ListPage() {
               </div>
               <button
                 onClick={() => setIsListModalOpen(true)}
-                className="group text-md-sb text-brand-primary border-brand-primary mt-11 flex h-10 w-28 items-center justify-center gap-2 rounded-4xl border"
+                className="group text-md-sb text-brand-primary border-brand-primary hover:bg-brand-primary mt-11 flex h-10 w-28 items-center justify-center gap-2 rounded-4xl border hover:text-white"
               >
                 <PlusIcon className="h-3.5 w-3.5 group-hover:brightness-0 group-hover:invert" />
-                목록 추가
+                할 일 추가
               </button>
             </aside>
 
@@ -225,7 +225,7 @@ export default function ListPage() {
               <button
                 type="button"
                 onClick={() => setIsTaskModalOpen(true)}
-                className="bg-brand-primary absolute top-1/2 -right-8 z-10 flex h-16 w-16 -translate-y-1/2 items-center justify-center rounded-full text-white shadow-xl"
+                className="bg-brand-primary absolute top-1/2 -right-8 z-10 flex h-16 w-16 -translate-y-1/2 items-center justify-center rounded-full text-white shadow-xl transition-transform hover:scale-95 hover:bg-blue-600"
               >
                 <PlusIcon className="h-8 w-8 brightness-0 invert filter" />
               </button>
@@ -240,7 +240,10 @@ export default function ListPage() {
           onClick={() => setIsListModalOpen(false)}
         >
           <div onClick={(e) => e.stopPropagation()}>
-            <ListCreateModal onClose={() => setIsListModalOpen(false)} />
+            <ListCreateModal
+              groupId={selectedGroupId}
+              onClose={() => setIsListModalOpen(false)}
+            />
           </div>
         </div>
       )}
