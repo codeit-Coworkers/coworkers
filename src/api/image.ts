@@ -3,6 +3,7 @@
 // Swagger: image
 // ========================================
 
+import { useMutation } from "@tanstack/react-query";
 import { BASE_URL } from "./config";
 
 // 이미지 업로드 응답
@@ -24,8 +25,14 @@ export async function uploadImage(file: File): Promise<string> {
   const formData = new FormData();
   formData.append("image", file);
 
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
   const response = await fetch(`${BASE_URL}/images/upload`, {
     method: "POST",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: formData,
   });
 
@@ -35,4 +42,11 @@ export async function uploadImage(file: File): Promise<string> {
 
   const data: ImageUploadResponse = await response.json();
   return data.url;
+}
+
+/** 이미지 업로드 훅 (useMutation) - 기존 API 패턴과 동일 */
+export function useUploadImage() {
+  return useMutation({
+    mutationFn: uploadImage,
+  });
 }

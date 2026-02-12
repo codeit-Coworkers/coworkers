@@ -1,8 +1,14 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useBlocker } from "react-router-dom";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import { FetchBoundary } from "@/providers/boundary";
-import { useUser } from "@/api/user";
+import { useUser, useUpdateUser } from "@/api/user";
 import { Input } from "@/components/common/Input/Input";
+import { useUploadImage } from "@/api/image";
+import {
+  PasswordChangeModal,
+  WithdrawModal,
+} from "@/features/my-settings/components";
 import AlertIcon from "@/assets/alert-white.svg";
 import PencilIcon from "@/assets/pencil.svg";
 import SecessionIcon from "@/assets/secession.svg";
@@ -22,12 +28,31 @@ function MySettingsContent() {
 
   const { data: user } = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const updateUserMutation = useUpdateUser();
+  const uploadImageMutation = useUploadImage();
 
   const [nickname, setNickname] = useState(user.nickname);
   const [profileImageUrl, setProfileImageUrl] = useState(user.image);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
 
   const hasUnsavedChanges =
     nickname !== user.nickname || profileImageUrl !== user.image;
+
+  // 미저장 시 다른 탭/나가기 시도 시 경고: 이동 차단 + 하단 파란 바는 이미 노출됨
+  useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      hasUnsavedChanges && currentLocation.pathname !== nextLocation.pathname,
+  );
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   // 카드 레이아웃 (BoardWrite와 동일한 왼쪽 여백)
   // 타블렛: GNB와 흰 카드 사이 최소 56px, 모바일: 최소 16px
@@ -60,13 +85,25 @@ function MySettingsContent() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setProfileImageUrl(url);
+    if (file.size > 10 * 1024 * 1024) {
+      alert("이미지 파일은 최대 10MB까지 업로드 가능합니다.");
+      e.target.value = "";
+      return;
+    }
+    uploadImageMutation.mutate(file, {
+      onSuccess: (url) => setProfileImageUrl(url),
+      onError: () => alert("이미지 업로드에 실패했습니다. 다시 시도해주세요."),
+    });
     e.target.value = "";
   };
 
   const handleSave = () => {
-    // TODO: API 연동 시 저장 요청
+    if (!hasUnsavedChanges || updateUserMutation.isPending) return;
+    const payload: { nickname?: string; image?: string } = {};
+    if (nickname.trim() !== user.nickname) payload.nickname = nickname.trim();
+    if (profileImageUrl !== user.image) payload.image = profileImageUrl;
+    if (Object.keys(payload).length === 0) return;
+    updateUserMutation.mutate(payload, { onSuccess: () => {} });
   };
 
   return (
@@ -85,14 +122,20 @@ function MySettingsContent() {
               <button
                 type="button"
                 onClick={handleProfileClick}
-                className="relative inline-block"
+                disabled={uploadImageMutation.isPending}
+                className="relative inline-block disabled:opacity-70"
                 aria-label="프로필 이미지 변경"
               >
                 <img
                   src={profileImageUrl}
                   alt="프로필"
-                  className={`${profileSize} ${profileRadius} object-cover`}
+                  className={`${profileSize} ${profileRadius} object-cover ${uploadImageMutation.isPending ? "animate-pulse" : ""}`}
                 />
+                {uploadImageMutation.isPending && (
+                  <span className="absolute inset-0 flex items-center justify-center rounded-[8px] bg-black/30 text-sm font-medium text-white">
+                    업로드 중...
+                  </span>
+                )}
                 <span
                   className={`bg-background-secondary absolute right-0 bottom-0 flex items-center justify-center rounded-full shadow [&_path]:!fill-[#64748B] ${isMobile ? "h-[18px] w-[18px]" : "h-8 w-8"}`}
                 >
@@ -130,11 +173,11 @@ function MySettingsContent() {
                 variant="default"
                 value={user.email}
                 disabled
-                className="bg-surface-secondary !h-12"
+                className="bg-background-secondary !h-12"
               />
             </div>
 
-            {/* 비밀번호 + 변경하기 */}
+            {/* 비밀번호 (비활성) + 변경하기 */}
             <div className="mb-8">
               <Input
                 label="비밀번호"
@@ -142,16 +185,17 @@ function MySettingsContent() {
                 size="auth"
                 variant="default"
                 placeholder="··········"
+                disabled
                 rightElement={
                   <button
                     type="button"
-                    className="text-md-sb text-brand-primary"
-                    onClick={() => {}}
+                    className="bg-brand-primary text-color-inverse text-md-sb hover:bg-interaction-hover h-9 rounded-lg px-3 transition-colors"
+                    onClick={() => setPasswordModalOpen(true)}
                   >
                     변경하기
                   </button>
                 }
-                className="!h-12"
+                className="bg-background-secondary !h-12"
               />
             </div>
 
@@ -159,39 +203,53 @@ function MySettingsContent() {
             <button
               type="button"
               className="text-status-danger flex items-center gap-2"
-              onClick={() => {}}
+              onClick={() => setWithdrawModalOpen(true)}
             >
               <SecessionIcon className="h-5 w-5" />
               <span className="text-md-m">회원 탈퇴하기</span>
             </button>
           </article>
+
+          {/* 미저장 시: 흰 카드 아래 32px 간격으로 표시 (디자인: 하얀 네모 아래) */}
+          {hasUnsavedChanges && (
+            <div
+              className={`mt-8 flex items-center justify-between gap-3 rounded-2xl px-4 py-2.5 shadow-lg md:px-5 md:py-3 ${cardWidth} ${cardMaxWidth} bg-brand-primary`}
+            >
+              <div className="flex min-w-0 flex-1 items-center gap-2 md:gap-3">
+                <div className="shrink-0">
+                  <AlertIcon
+                    width="20"
+                    height="20"
+                    className="text-color-inverse md:h-6 md:w-6"
+                  />
+                </div>
+                <span className="text-color-inverse md:text-md-sb text-sm text-ellipsis whitespace-nowrap">
+                  저장하지 않은 변경사항이 있어요!
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={updateUserMutation.isPending}
+                className="bg-background-inverse text-brand-primary text-sm-sb hover:bg-opacity-90 h-8 shrink-0 rounded-lg px-3 transition-colors disabled:opacity-50 md:px-4"
+              >
+                {updateUserMutation.isPending
+                  ? "저장 중..."
+                  : "변경사항 저장하기"}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* 미저장 시 하단 고정 바 (Toast 스타일 재활용) */}
-      {hasUnsavedChanges && (
-        <div className="bg-brand-primary fixed right-0 bottom-0 left-0 z-[99] flex items-center justify-between px-4 py-3 shadow-lg md:px-6 md:py-4">
-          <div className="flex min-w-0 flex-1 items-center gap-2 md:gap-3">
-            <div className="shrink-0">
-              <AlertIcon
-                width="24"
-                height="24"
-                className="text-color-inverse"
-              />
-            </div>
-            <span className="text-color-inverse md:text-lg-sb overflow-hidden text-sm text-ellipsis whitespace-nowrap">
-              저장하지 않은 변경사항이 있어요!
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={handleSave}
-            className="bg-background-inverse text-brand-primary text-md-sb hover:bg-opacity-90 ml-4 h-9 min-w-20 shrink-0 rounded-lg px-3 transition-colors md:h-10 md:min-w-25 md:px-4"
-          >
-            변경사항 저장하기
-          </button>
-        </div>
-      )}
+      <PasswordChangeModal
+        isOpen={passwordModalOpen}
+        onClose={() => setPasswordModalOpen(false)}
+      />
+      <WithdrawModal
+        isOpen={withdrawModalOpen}
+        onClose={() => setWithdrawModalOpen(false)}
+      />
     </div>
   );
 }
