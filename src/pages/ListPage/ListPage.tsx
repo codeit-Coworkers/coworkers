@@ -148,13 +148,12 @@ export default function ListPage() {
             <aside className="flex w-full shrink-0 flex-col lg:w-72">
               <div className="flex flex-col gap-4">
                 {/* 제목 라인 */}
-                <h2 className="md:text-xl-b text-lg-sb lg:text-lg-sb px-1">
+                <h2 className="md:text-xl-b text-lg-sb lg:text-xl-b px-1 font-bold">
                   할 일
                 </h2>
 
                 {/* 드롭다운 & 할 일 추가 버튼 라인 (모바일 전용) */}
                 <div className="flex items-center justify-between gap-2 lg:hidden">
-                  {/* 드롭다운 메뉴 */}
                   <div className="relative max-w-50 flex-1" ref={dropdownRef}>
                     <button
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -198,7 +197,6 @@ export default function ListPage() {
                     )}
                   </div>
 
-                  {/* 할 일 추가 버튼 */}
                   <button
                     onClick={() => setIsTaskModalOpen(true)}
                     className="border-brand-primary text-brand-primary text-sm-sb bg-background-inverse flex shrink-0 items-center gap-1.5 rounded-4xl border px-4 py-3 shadow-sm transition-all active:scale-95"
@@ -224,13 +222,16 @@ export default function ListPage() {
                     }
                   />
                 ))}
-                <button
-                  onClick={() => setIsListModalOpen(true)}
-                  className="group text-md-sb text-brand-primary border-brand-primary hover:bg-brand-primary mt-11 flex h-10 w-full items-center justify-center gap-2 rounded-xl border transition-all hover:text-white"
-                >
-                  <PlusIcon className="h-3.5 w-3.5 group-hover:brightness-0 group-hover:invert" />
-                  목록 추가
-                </button>
+
+                <div className="mt-4 flex w-full items-center justify-center">
+                  <button
+                    onClick={() => setIsListModalOpen(true)}
+                    className="border-brand-primary text-brand-primary text-sm-sb bg-background-inverse hover:bg-brand-primary group flex h-10 w-28 items-center justify-center gap-1.5 rounded-4xl border shadow-sm transition-all hover:text-white active:scale-95"
+                  >
+                    <PlusIcon className="h-3.5 w-3.5 group-hover:brightness-0 group-hover:invert" />
+                    할 일 추가
+                  </button>
+                </div>
               </div>
             </aside>
 
@@ -293,7 +294,7 @@ export default function ListPage() {
                 </div>
               </div>
 
-              {/* Floating Action Button */}
+              {/* Floating Action Button (모바일/태블릿용) */}
               <button
                 type="button"
                 onClick={() => setIsTaskModalOpen(true)}
