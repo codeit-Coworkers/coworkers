@@ -45,7 +45,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
       <button
         type="button"
         onClick={onPrevWeek}
-        className="bg-background-primary border-border-primary hover:bg-background-secondary flex h-14 w-8 shrink-0 items-center justify-center rounded-lg border transition-all sm:h-18 sm:w-12 sm:rounded-xl"
+        className="bg-background-primary border-border-primary hover:bg-background-secondary hidden h-14 w-8 shrink-0 items-center justify-center rounded-lg border transition-all sm:h-18 sm:w-12 sm:rounded-xl md:flex"
       >
         <ChevronLeftIcon className="text-icon-primary h-4 w-4 sm:h-5 sm:w-5" />
       </button>
@@ -81,7 +81,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
       <button
         type="button"
         onClick={onNextWeek}
-        className="bg-background-primary border-border-primary hover:bg-background-secondary flex h-14 w-8 shrink-0 items-center justify-center rounded-lg border transition-all sm:h-18 sm:w-12 sm:rounded-xl"
+        className="bg-background-primary border-border-primary hover:bg-background-secondary hidden h-14 w-8 shrink-0 items-center justify-center rounded-lg border transition-all sm:h-18 sm:w-12 sm:rounded-xl md:flex"
       >
         <ChevronRightIcon className="text-icon-primary h-4 w-4 sm:h-5 sm:w-5" />
       </button>

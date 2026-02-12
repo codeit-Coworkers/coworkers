@@ -80,7 +80,7 @@ export default function Dropdown({
         setOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside); // click보다 mousedown이 더 정확하게 반응할 때가 많습니다.
+    document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
@@ -115,7 +115,7 @@ export default function Dropdown({
         <div
           className="relative flex items-center"
           onClick={(e) => {
-            e.stopPropagation(); // 👈 부모 모달이나 document로 클릭 전파 방지
+            e.stopPropagation();
             setOpen((prev) => !prev);
           }}
         >
@@ -132,7 +132,7 @@ export default function Dropdown({
         <div
           className="cursor-pointer"
           onClick={(e) => {
-            e.stopPropagation(); // 👈 부모 모달이나 document로 클릭 전파 방지
+            e.stopPropagation();
             setOpen((prev) => !prev);
           }}
         >
