@@ -14,6 +14,7 @@ import ResetPasswordPage from "@/pages/ResetPassword";
 import RootLayout from "@/components/common/Rootlayout/RootLayout";
 import Team from "@/pages/team";
 import MyHistory from "@/pages/MyHistory";
+import MySettings from "@/pages/MySettings";
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +52,7 @@ export const router = createBrowserRouter([
           { path: "/boards/write", element: <BoardWrite /> },
           { path: "/boards/:articleId", element: <BoardDetail /> },
           { path: "/my-history", element: <MyHistory /> },
+          { path: "/my-settings", element: <MySettings /> },
         ],
       },
       {
