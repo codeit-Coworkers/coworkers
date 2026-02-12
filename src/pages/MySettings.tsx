@@ -3,8 +3,8 @@ import { useBlocker } from "react-router-dom";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import { FetchBoundary } from "@/providers/boundary";
 import { useUser, useUpdateUser } from "@/api/user";
-import { Input } from "@/components/common/Input/Input";
 import { useUploadImage } from "@/api/image";
+import { Input } from "@/components/common/Input/Input";
 import {
   PasswordChangeModal,
   WithdrawModal,
