@@ -174,14 +174,10 @@ export default function Dropdown({
         >
           {showArrow && (
             <ArrowDown
-              onClick={() => setOpen((item) => !item)}
               className={`absolute right-[14px] cursor-pointer transition-transform duration-300 ${open ? "rotate-180" : "rotate-0"}`}
             />
           )}
-          <div
-            onClick={() => setOpen((item) => !item)}
-            className="md:text-md-m text-xs-m text-color-default border-background-tertiary active:bg-background-tertiary hover:bg-background-tertiary flex h-[40px] w-[120px] cursor-pointer items-center rounded-[12px] border-1 px-[14px] py-[10px] md:h-[44px] md:w-[130px]"
-          >
+          <div className="md:text-md-m text-xs-m text-color-default border-background-tertiary active:bg-background-tertiary hover:bg-background-tertiary flex h-[40px] w-[120px] cursor-pointer items-center rounded-[12px] border-1 px-[14px] py-[10px] md:h-[44px] md:w-[130px]">
             {selected ? selected.label : defaultLabel}
           </div>
         </div>
