@@ -61,7 +61,7 @@ export default function MyTasks() {
   };
 
   return (
-    <div style={{ padding: "50px" }}>
+    <div>
       <div className="space-y-[48px]">
         {Object.entries(groupedByDate).map(([dateKey, tasks]) => (
           <div key={dateKey}>
