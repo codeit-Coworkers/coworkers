@@ -14,6 +14,7 @@ import TestTodayProgressSection from "@/pages/test/TestTodayProgressSection";
 import TestErrorBoundary from "@/pages/test/TestErrorBoundary";
 import TestTeamMemberSection from "@/pages/test/TestTeamMemberSection";
 import TestTaskColumn from "@/pages/test/TestTaskColumn";
+import TaskListDetail from "@/features/tasks/components/TaskListDetail";
 
 export const testRoutes = [
   {
@@ -79,5 +80,9 @@ export const testRoutes = [
   {
     path: "/test/task-column",
     element: <TestTaskColumn />,
+  },
+  {
+    path: "/test/:groupId/:taskListId/:taskId",
+    element: <TaskListDetail />,
   },
 ];
