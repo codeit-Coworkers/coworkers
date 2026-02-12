@@ -97,6 +97,12 @@ export default function ListPage() {
     setIsTaskModalOpen(false);
   };
 
+  const handleMonthChange = (direction: "prev" | "next") => {
+    const newDate = new Date(selectedDate);
+    newDate.setMonth(selectedDate.getMonth() + (direction === "next" ? 1 : -1));
+    setSelectedDate(newDate);
+  };
+
   const handleWeekChange = (direction: "prev" | "next") => {
     const newDate = new Date(selectedDate);
     newDate.setDate(selectedDate.getDate() + (direction === "next" ? 7 : -7));
@@ -140,7 +146,6 @@ export default function ListPage() {
 
           <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
             <aside className="flex w-full shrink-0 flex-col lg:w-72">
-              {/* 모바일 레이아웃: 제목은 위, 메뉴와 버튼은 아래 라인 */}
               <div className="flex flex-col gap-4">
                 {/* 제목 라인 */}
                 <h2 className="md:text-xl-b text-lg-sb lg:text-lg-sb px-1">
@@ -244,8 +249,8 @@ export default function ListPage() {
                   <div className="flex items-center gap-1 self-end md:self-auto">
                     <DatePagination
                       selectedDate={selectedDate}
-                      onPrevMonth={() => handleWeekChange("prev")}
-                      onNextMonth={() => handleWeekChange("next")}
+                      onPrevMonth={() => handleMonthChange("prev")}
+                      onNextMonth={() => handleMonthChange("next")}
                     />
                     <CalendarPicker
                       selectedDate={selectedDate}
