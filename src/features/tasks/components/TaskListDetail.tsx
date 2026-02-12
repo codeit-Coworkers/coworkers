@@ -21,36 +21,87 @@ import CheckBlue from "@/assets/check.svg";
 import CheckWhite from "@/assets/check-white.svg";
 import Enter from "@/features/boards/assets/enter.svg";
 
+/**
+ * 특정 시간(createdAt)이 현재로부터 며칠 전인지 계산합니다.
+ *
+ * @param {string} createdAt - ISO 문자열 형태의 생성 시각
+ * @returns {number} 현재 기준으로 경과한 일 수 (정수)
+ *
+ * @example
+ * daysAgo("2026-02-01T10:00:00.000Z") // 11
+ */
 const daysAgo = (createdAt: string) => {
   const created = new Date(createdAt).getTime();
   const diffMs = Date.now() - created;
   return Math.floor(diffMs / (1000 * 60 * 60 * 24));
 };
 
+/**
+ * Task 상세 페이지 컴포넌트
+ *
+ * ## 역할
+ * - URL params(groupId, taskListId, taskId)를 기반으로 Task 단건 정보를 조회하여 표시합니다.
+ * - Task 완료/완료 취소(done 상태)를 토글할 수 있습니다.
+ * - 댓글 목록을 조회하고, 댓글 작성/수정/삭제를 제공합니다.
+ *
+ * ## 데이터 흐름(React Query)
+ * - 사용자 정보: `useGetUser()`
+ * - Task 단건: `useGetTask(groupId, taskListId, taskId)`
+ * - 댓글 목록: `useGetTaskComment(taskId)`
+ * - 완료 상태 변경: `useUpdateTaskListDone(...)`
+ * - 댓글 작성: `useCreateTaskComment(taskId)`
+ * - 댓글 수정: `useUpdateTaskComment(taskId)`
+ * - 댓글 삭제: `useDeleteTaskComment(taskId)`
+ *
+ * ## 주요 UI/동작
+ * - 완료 상태에 따라 제목 스트라이크 및 "완료" 뱃지 표시
+ * - "완료 하기 / 완료 취소하기" 버튼으로 done 상태 변경
+ * - 케밥 메뉴(`Dropdown optionsKey="edit"`)로 댓글 수정/삭제 트리거
+ * - 댓글 작성 인풋에서 Enter 아이콘 버튼으로 작성 요청
+ * - 댓글 수정 모드에서는 인라인 편집 입력 + 저장/취소 버튼 제공
+ *
+ * ## 주의사항
+ * - URL params는 string이므로 API 훅 호출 전에 `Number(...)`로 변환합니다.
+ * - `taskData`/`commentData`는 비동기 데이터이므로 optional chaining(`?.`)을 사용합니다.
+ */
 export default function TaskListDetail() {
+  /** 라우트 파라미터: groupId, taskListId, taskId */
   const { groupId, taskListId, taskId } = useParams();
 
+  /** 현재 로그인 사용자 정보 */
   const { data: user } = useGetUser();
 
+  /** Task 단건 데이터 */
   const { data: taskData } = useGetTask(
     Number(groupId),
     Number(taskListId),
     Number(taskId),
   );
 
+  /** Task 완료 여부 */
   const isDone = !!taskData?.doneAt;
 
+  /** done 상태 변경 mutation */
   const { mutate: setDone } = useUpdateTaskListDone(
     Number(groupId),
     Number(taskListId),
     Number(taskId),
   );
 
+  /** Task 완료 처리 */
   const handleDone = () => setDone(true);
+
+  /** Task 완료 취소 처리 */
   const handleUndoDone = () => setDone(false);
 
+  /** 댓글 목록 데이터 */
   const { data: commentData } = useGetTaskComment(Number(taskId));
 
+  /**
+   * 시작 날짜 텍스트
+   * - recurring.startDate가 있으면 유틸로 날짜/시간 문자열로 변환
+   * - 없으면 "-" 표시
+   */
   const startDate = taskData?.recurring?.startDate;
   const startDateText = startDate
     ? (() => {
@@ -59,6 +110,12 @@ export default function TaskListDetail() {
       })()
     : "-";
 
+  /**
+   * 반복 타입을 UI 라벨(한글)로 변환합니다.
+   *
+   * @param {"ONCE" | "DAILY" | "WEEKLY" | "MONTHLY" | undefined} type - 반복 타입
+   * @returns {"한 번" | "매일" | "주 반복" | "월 반복" | undefined} 라벨
+   */
   const freqLabel = (type?: "ONCE" | "DAILY" | "WEEKLY" | "MONTHLY") => {
     switch (type) {
       case "ONCE":
@@ -72,11 +129,19 @@ export default function TaskListDetail() {
     }
   };
 
+  /** 댓글 입력값(작성용) */
   const [comment, setComment] = useState("");
+
+  /** 댓글 생성 mutation + pending 상태 */
   const { mutate: createComment, isPending } = useCreateTaskComment(
     Number(taskId),
   );
 
+  /**
+   * 댓글 생성 요청
+   * - 공백만 있는 경우 요청하지 않습니다.
+   * - 성공 시 입력값을 초기화합니다.
+   */
   const handleCreateComment = () => {
     if (!comment.trim()) return;
     createComment(comment, {
@@ -84,21 +149,39 @@ export default function TaskListDetail() {
     });
   };
 
+  /** 현재 수정 중인 댓글 ID (없으면 null) */
   const [editCommentId, setEditCommentId] = useState<number | null>(null);
+
+  /** 수정 중인 댓글 입력값 */
   const [editComment, setEditComment] = useState("");
 
+  /**
+   * 댓글 편집 시작
+   *
+   * @param {number} commentId - 수정할 댓글 ID
+   * @param {string} currentComment - 기존 댓글 내용
+   */
   const startEdit = (commentId: number, currentComment: string) => {
     setEditCommentId(commentId);
     setEditComment(currentComment);
   };
 
+  /** 댓글 편집 취소 */
   const cancelEditComment = () => {
     setEditCommentId(null);
     setEditComment("");
   };
 
+  /** 댓글 수정 mutation */
   const { mutate: updateComment } = useUpdateTaskComment(Number(taskId));
 
+  /**
+   * 댓글 수정 저장
+   * - 공백만 있는 경우 저장하지 않습니다.
+   * - 저장 후 편집 모드를 해제합니다.
+   *
+   * @param {number} id - 수정할 댓글 ID
+   */
   const saveEdit = (id: number) => {
     if (!editComment.trim()) return;
     updateComment({ commentId: id, content: editComment });
@@ -106,13 +189,17 @@ export default function TaskListDetail() {
     setEditComment("");
   };
 
+  /** 댓글 삭제 mutation */
   const { mutate: deleteComment } = useDeleteTaskComment(Number(taskId));
 
   return (
     <>
       <div className="bg-background-primary flex flex-col gap-4 px-4 pt-3 pb-4 md:px-7 md:pt-11 lg:px-10">
+        {/* 닫기 아이콘 (라우팅/모달 닫기 등은 연결 필요) */}
         <CloseIcon className="cursor-pointer" />
+
         <div className="mt-4 flex flex-row justify-between md:mt-12">
+          {/* 완료 여부에 따른 타이틀 UI */}
           {isDone ? (
             <div className="flex h-[24px] flex-row items-center gap-2 md:h-[28px]">
               <div className="text-xl-b md:text-2xl-b text-color-default line-through">
@@ -127,9 +214,13 @@ export default function TaskListDetail() {
               {taskData?.name}
             </div>
           )}
+
+          {/* Task 액션 메뉴 (현재 onSelect 핸들링은 연결되지 않음) */}
           <Dropdown trigger="kebab" optionsKey="edit" />
         </div>
+
         <div className="flex flex-col gap-6">
+          {/* 작성자(또는 사용자) 정보 */}
           <div className="flex flex-row items-center gap-3">
             {user?.image ? (
               <img
@@ -142,6 +233,8 @@ export default function TaskListDetail() {
             )}
             <p className="text-md-m">{user?.nickname ?? "-"}</p>
           </div>
+
+          {/* 시작 날짜 / 반복 설정 + 완료 버튼 */}
           <div className="flex flex-row justify-between">
             <div className="flex flex-col gap-2">
               <div className="flex flex-row">
@@ -153,6 +246,7 @@ export default function TaskListDetail() {
                 </div>
                 <p className="text-xs-r text-color-primary">{startDateText}</p>
               </div>
+
               <div className="flex flex-row">
                 <div className="flex flex-row gap-1">
                   <RepeatIcon className="h-4 w-4" />
@@ -165,6 +259,8 @@ export default function TaskListDetail() {
                 </p>
               </div>
             </div>
+
+            {/* 완료 상태 토글 버튼 */}
             {isDone ? (
               <button
                 onClick={handleUndoDone}
@@ -183,18 +279,24 @@ export default function TaskListDetail() {
               </button>
             )}
           </div>
+
           <hr className="h-[1px] border-0 bg-[#E2E8F0]" />
+
+          {/* 본문 설명 */}
           <div>
             <p className="text-md-r text-color-primary">
               {taskData?.description}
             </p>
           </div>
         </div>
+
+        {/* 댓글 작성 영역 */}
         <div className="mt-5 flex flex-col gap-4">
           <p className="text-lg-b md:text-2lg-b text-color-primary flex gap-1">
             댓글
             <span className="text-brand-primary">{taskData?.commentCount}</span>
           </p>
+
           <div className="flex flex-row items-center gap-[10px]">
             {user?.image ? (
               <img
@@ -205,6 +307,7 @@ export default function TaskListDetail() {
             ) : (
               <UserIcon />
             )}
+
             <div className="relative flex h-12 w-full justify-center border-t-1 border-b-1 border-[#E2E8F0]">
               <input
                 type="text"
@@ -220,6 +323,8 @@ export default function TaskListDetail() {
           </div>
         </div>
       </div>
+
+      {/* 댓글 목록 영역 */}
       <div className="bg-background-primary pb-10">
         {commentData?.map((item) => {
           const isEditing = editCommentId === item.id;
@@ -242,15 +347,19 @@ export default function TaskListDetail() {
               ) : (
                 <UserIcon />
               )}
+
               <div className="flex w-full flex-col gap-1">
                 <div className="flex flex-row justify-between">
                   <p className="text-color-primary text-md-b">
                     {item.user.nickname}
                   </p>
+
+                  {/* 편집 모드가 아닐 때만 댓글 액션 메뉴 표시 */}
                   {!isEditing && (
                     <Dropdown
                       trigger="kebab"
                       optionsKey="edit"
+                      keepSelected={false}
                       onSelect={(option) => {
                         if (option.value === "수정하기") {
                           startEdit(item.id, item.content);
@@ -263,6 +372,7 @@ export default function TaskListDetail() {
                   )}
                 </div>
 
+                {/* 댓글 본문 / 편집 입력 */}
                 {isEditing ? (
                   <input
                     type="text"
@@ -281,6 +391,7 @@ export default function TaskListDetail() {
                   </>
                 )}
 
+                {/* 편집 모드 버튼 */}
                 {isEditing && (
                   <div className="flex flex-row justify-end gap-2 pt-2">
                     <button
