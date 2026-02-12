@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-
+import { Link, useParams } from "react-router-dom";
 import TaskColumn from "@/features/taskcolumn/TaskColumn";
 import TeamMemberSection from "@/features/TeamMemberSectiom/TeamMemberSection";
 import TodayProgressSection from "@/features/TodayProgressSection/TodayProgressSection";
+import NothingTeamImage from "@/assets/nothingTeam.svg";
+import { Button } from "@/components/common/Button/Button";
+
 export default function Team() {
   const { id } = useParams<{ id: string }>();
   const groupId = Number(id);
@@ -30,8 +32,30 @@ export default function Team() {
         divider: beforeDivider,
       };
 
+  // 팀이 없을 때 화면
   if (!groupId) {
-    return <div>팀이 없는 페이지 보여줌</div>;
+    return (
+      <div>
+        <div className="flex h-[100vh] flex-col items-center justify-center">
+          <NothingTeamImage className="h-[136px] w-[300px] md:h-[211px] md:w-[323px] lg:h-[264px] lg:w-[404px]" />
+          <p className="text-md-m text-color-default lg:text-lg-m mt-[24px] text-center md:mt-[32px]">
+            아직 소속된 팀이 없습니다.
+            <br />
+            팀을 생성하거나 팀에 참여해보세요.
+          </p>
+          <div className="mt-[47px] flex flex-col gap-[8px] md:mt-[80px] lg:gap-[16px]">
+            <Link to="add">
+              <Button size="teamMedium">팀 생성하기</Button>
+            </Link>
+            <Link to="join">
+              <Button size="teamMedium" variant="outline_blue">
+                팀 참여하기
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

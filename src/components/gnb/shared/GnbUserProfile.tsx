@@ -48,6 +48,7 @@ export default function GnbUserProfile() {
               {
                 label: "팀 참여",
                 value: "팀 참여",
+                link: "/team/join",
               },
               {
                 label: "로그아웃",
@@ -88,7 +89,7 @@ export default function GnbUserProfile() {
               {
                 label: "팀 참여",
                 value: "팀 참여",
-                link: "/join-team",
+                link: "/team/join",
               },
               {
                 label: "로그아웃",
