@@ -286,7 +286,7 @@ export default function ListPage() {
                   ) : (
                     <div className="text-color-disabled flex flex-col items-center justify-center py-24 text-center">
                       <p>해당 날짜에 등록된 할 일이 없습니다.</p>
-                      <p className="text-color-tertiary mt-2 text-sm font-medium md:hidden">
+                      <p className="text-color-disabled mt-2 text-sm font-medium md:hidden">
                         좌우로 밀어서 주간을 이동해보세요.
                       </p>
                     </div>

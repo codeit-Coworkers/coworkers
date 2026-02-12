@@ -5,6 +5,17 @@ import User from "@/assets/user.svg";
 import Kebab from "@/assets/kebab.svg";
 import Set from "@/assets/set.svg";
 
+/**
+ * 드롭다운 옵션 타입
+ *
+ * @property {string} label - 화면에 표시될 텍스트
+ * @property {string} value - 옵션을 식별하기 위한 값 (React key 및 선택 식별에 사용)
+ * @property {string} [link] - 선택 시 이동할 라우트 경로 (react-router-dom 사용)
+ * @property {() => void} [action] - 선택 시 실행할 커스텀 함수
+ *
+ * @remarks
+ * - `action`과 `link`가 모두 있는 경우, **action이 우선 실행**됩니다.
+ */
 export type Option = {
   label: string;
   value: string;
@@ -12,6 +23,10 @@ export type Option = {
   action?: () => void;
 };
 
+/**
+ * 기본 옵션 프리셋 목록
+ * - `optionsKey`를 통해 자주 사용되는 옵션 세트를 빠르게 선택할 수 있습니다.
+ */
 const DEFAULT_LIST = {
   newest: [
     { label: "최신순", value: "최신순" },
@@ -42,6 +57,20 @@ const DEFAULT_LIST = {
 
 type OptionsKey = keyof typeof DEFAULT_LIST;
 
+/**
+ * Dropdown 컴포넌트 Props
+ *
+ * @property {OptionsKey} [optionsKey="newest"] - 프리셋 키 (`DEFAULT_LIST` 기준)
+ * @property {Option[]} [options] - 커스텀 옵션 목록. 전달 시 프리셋보다 우선 적용됩니다.
+ * @property {"text" | "user" | "kebab" | "set"} [trigger="text"] - 드롭다운 트리거 타입
+ * @property {string} [defaultLabel=""] - 선택된 값이 없을 때 표시할 기본 라벨
+ * @property {React.ReactNode} [icon] - 트리거가 아이콘일 때 표시할 커스텀 아이콘
+ * @property {"left" | "center"} [listAlign="left"] - 리스트 아이템 텍스트 정렬
+ * @property {boolean} [keepSelected=true] - 선택된 상태를 트리거에 유지할지 여부
+ * @property {(item: Option) => void} [onSelect] - 옵션 선택 시 호출되는 콜백 함수
+ * @property {boolean} [showArrow=true] - text 트리거일 때 화살표 아이콘 표시 여부
+ * @property {string} [listClassName] - 옵션 리스트(ul)에 추가할 커스텀 클래스
+ */
 type DropdownProps = {
   optionsKey?: OptionsKey;
   options?: Option[];
@@ -55,6 +84,20 @@ type DropdownProps = {
   listClassName?: string;
 };
 
+/**
+ * 공용 Dropdown 컴포넌트
+ *
+ * ## 역할
+ * - 다양한 트리거(텍스트, 아이콘)를 통해 옵션 리스트를 노출합니다.
+ * - 내부 프리셋 옵션 또는 커스텀 옵션을 지원하며, 라우팅 및 액션 실행 기능을 포함합니다.
+ *
+ * ## 동작 방식
+ * - 외부 영역 클릭 시 자동 닫힘 기능 (`rootRef` 및 `mousedown` 이벤트 사용)
+ * - `item.action` 우선 실행 후 없을 경우 `item.link`로 이동
+ *
+ * @example
+ * <Dropdown optionsKey="newest" onSelect={(item) => console.log(item)} />
+ */
 export default function Dropdown({
   optionsKey = "newest",
   options,
@@ -71,11 +114,13 @@ export default function Dropdown({
   const [selected, setSelected] = useState<Option | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  /** 최종 옵션: 커스텀 옵션 우선, 없으면 프리셋 사용 */
   const finalOptions = options ?? DEFAULT_LIST[optionsKey];
 
   useEffect(() => {
+    /** 드롭다운 영역 외부 클릭 시 닫기 처리 */
     const handleClickOutside = (e: MouseEvent) => {
-      // rootRef 영역 밖을 클릭했을 때만 닫기
       if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
@@ -87,6 +132,12 @@ export default function Dropdown({
   const listItemAlign =
     listAlign === "center" ? "justify-center text-center" : "justify-start";
 
+  /**
+   * 옵션 선택 시 처리 로직
+   * 1. 선택 상태 업데이트 (keepSelected 시)
+   * 2. 외부 콜백(onSelect) 호출
+   * 3. action 실행 혹은 link 이동
+   */
   const handleSelect = (item: Option) => {
     if (keepSelected) setSelected(item);
     onSelect?.(item);
@@ -99,6 +150,7 @@ export default function Dropdown({
     setOpen(false);
   };
 
+  /** 트리거 아이콘 결정 (커스텀 아이콘 우선) */
   const triggerIcon =
     icon ??
     (trigger === "kebab" ? (
@@ -111,6 +163,7 @@ export default function Dropdown({
 
   return (
     <div ref={rootRef} className="relative inline-block text-left">
+      {/* 트리거 영역: 텍스트 타입 */}
       {trigger === "text" ? (
         <div
           className="relative flex items-center"
@@ -129,6 +182,7 @@ export default function Dropdown({
           </div>
         </div>
       ) : (
+        /* 트리거 영역: 아이콘 타입 */
         <div
           className="cursor-pointer"
           onClick={(e) => {
@@ -140,6 +194,7 @@ export default function Dropdown({
         </div>
       )}
 
+      {/* 옵션 리스트 영역 */}
       {open && (
         <div
           className="absolute z-50 mt-[10px]"
