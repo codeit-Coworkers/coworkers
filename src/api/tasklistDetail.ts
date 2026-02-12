@@ -1,5 +1,4 @@
 import { BASE_URL } from "./config";
-import { TASKIFY_ACCESS_TOKEN } from "./auth";
 import { fetchClient } from "@/lib/fetchClient";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -58,15 +57,9 @@ type TaskComment = {
 
 type TaskCommentsResponse = TaskComment[];
 
-const authHeaders = {
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${TASKIFY_ACCESS_TOKEN}`,
-};
-
 export async function getUser(): Promise<User> {
   const response = await fetchClient<User>(`${BASE_URL}/user`, {
     method: "GET",
-    headers: authHeaders,
   });
   return response;
 }
@@ -83,7 +76,6 @@ export async function getTaskList(groupId: number, taskListId: number) {
     `${BASE_URL}/groups/${groupId}/task-lists/${taskListId}`,
     {
       method: "GET",
-      headers: authHeaders,
     },
   );
   return response;
@@ -99,7 +91,6 @@ export async function updateTaskListDone(
     `${BASE_URL}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
     {
       method: "PATCH",
-      headers: authHeaders,
       body: JSON.stringify({ done }),
     },
   );
@@ -133,7 +124,6 @@ export async function getTask(
     `${BASE_URL}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
     {
       method: "GET",
-      headers: authHeaders,
     },
   );
   return response;
@@ -157,7 +147,6 @@ export async function getTaskComments(
     `${BASE_URL}/tasks/${taskId}/comments`,
     {
       method: "GET",
-      headers: authHeaders,
     },
   );
   return response;
@@ -179,7 +168,7 @@ export async function createTaskComments(
     `${BASE_URL}/tasks/${taskId}/comments`,
     {
       method: "POST",
-      headers: authHeaders,
+      // headers: authHeaders,
       body: JSON.stringify({ content }),
     },
   );
@@ -208,7 +197,6 @@ export async function updateTaskComments(
     `${BASE_URL}/tasks/${taskId}/comments/${commentId}`,
     {
       method: "PATCH",
-      headers: authHeaders,
       body: JSON.stringify({ content }),
     },
   );
@@ -237,7 +225,6 @@ export async function deleteTaskComments(
     `${BASE_URL}/tasks/${taskId}/comments/${commentId}`,
     {
       method: "DELETE",
-      headers: authHeaders,
     },
   );
   return response;
