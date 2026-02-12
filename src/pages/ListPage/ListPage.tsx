@@ -39,6 +39,7 @@ export default function ListPage() {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
 
   const [selectedGroupId] = useState<number>(666);
   const [selectedListId, setSelectedListId] = useState<number>(1);
@@ -68,11 +69,12 @@ export default function ListPage() {
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
+      const target = e.target as Node;
+      if (dropdownRef.current && !dropdownRef.current.contains(target)) {
         setIsDropdownOpen(false);
+      }
+      if (calendarRef.current && !calendarRef.current.contains(target)) {
+        setShowCalendar(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -253,12 +255,14 @@ export default function ListPage() {
                       onPrevMonth={() => handleMonthChange("prev")}
                       onNextMonth={() => handleMonthChange("next")}
                     />
-                    <CalendarPicker
-                      selectedDate={selectedDate}
-                      onDateSelect={setSelectedDate}
-                      showCalendar={showCalendar}
-                      setShowCalendar={setShowCalendar}
-                    />
+                    <div ref={calendarRef} className="relative">
+                      <CalendarPicker
+                        selectedDate={selectedDate}
+                        onDateSelect={setSelectedDate}
+                        showCalendar={showCalendar}
+                        setShowCalendar={setShowCalendar}
+                      />
+                    </div>
                   </div>
                 </div>
 
