@@ -15,12 +15,9 @@ export default function TaskReplyDangerModal({
         <Alert />
       </div>
       <div className="mt-2 flex flex-col gap-2">
-        <h2 className="text-lg-m text-color-primary">
-          댓글 삭제를 진행하시겠어요?
-        </h2>
+        <h2 className="text-lg-m text-color-primary">댓글을 삭제하시겠어요?</h2>
         <p className="text-md-r text-color-primary mb-7">
-          삭제 버튼을 누르시면, 할 일이 완전히 삭제되고
-          <br /> 복구할 수 없으니 신중히 선택해주세요.
+          삭제된 댓글은 복구할 수 없습니다.
         </p>
       </div>
       <div className="flex flex-row justify-center gap-2">
