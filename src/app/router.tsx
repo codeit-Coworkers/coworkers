@@ -53,6 +53,7 @@ export const router = createBrowserRouter([
           { path: "/team", element: <Team /> },
           { path: "/team/:id", element: <Team /> },
           { path: "/team/:id/edit", element: <EditTeam /> },
+          { path: "/team/:id/my-history", element: <MyHistory /> },
           { path: "/team/join", element: <JoinTeam /> },
           { path: "/team/add", element: <AddTeam /> },
           { path: "/boards", element: <Boards /> },

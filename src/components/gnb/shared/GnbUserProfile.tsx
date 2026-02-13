@@ -9,7 +9,7 @@ export default function GnbUserProfile() {
 
   const { logout } = useAuthStore();
   const { isFolded } = useGnbStore();
-  const { id: teamId } = useParams();
+  const { id: groupId } = useParams();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -19,7 +19,7 @@ export default function GnbUserProfile() {
 
   // 현재 선택된 그룹 정보 가져오기
   const selectedGroup = user?.memberships.find(
-    (member) => member.groupId === Number(teamId),
+    (member) => member.groupId === Number(groupId),
   );
 
   // 현재 선택된 팀 이름 (없으면 첫 번째 팀)
@@ -79,7 +79,7 @@ export default function GnbUserProfile() {
               {
                 label: "마이 히스토리",
                 value: "마이 히스토리",
-                link: "/my-history",
+                link: `/team/${groupId}/my-history`,
               },
               {
                 label: "계정 설정",

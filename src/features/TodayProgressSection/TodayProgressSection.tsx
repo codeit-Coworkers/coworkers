@@ -20,7 +20,8 @@ export default function TodayProgressSection({
 
   // 관리자 여부 확인
   const isAdmin =
-    user?.memberships.find((m) => m.groupId === groupData.id)?.role === "ADMIN";
+    user?.memberships.find((member) => member.groupId === groupData.id)
+      ?.role === "ADMIN";
 
   // 진행도 계산
   const totalCount = allTasks.length;
