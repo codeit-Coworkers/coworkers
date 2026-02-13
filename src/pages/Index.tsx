@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // SVG Imports
 import LogoCoworkers from "@/assets/landing/logo_coworkers.svg";
@@ -24,14 +24,31 @@ import FolderFill3 from "@/assets/landing/Folder_fill3.svg";
 
 // Components
 import Gnb from "@/components/gnb/Gnb";
-// import { ThreeButton } from "./ThreeButton";
+import { ThreeButton } from "./ThreeButton";
 import { LoadingModel } from "@/components/common/ThreeModal/LodingModal";
 
 export default function Index() {
-  const [showMain, setShowMain] = useState(false); // 인트로 전환 상태
-  // const [isAtBottom, setIsAtBottom] = useState(false);
-  const targetRef = useRef<HTMLDivElement>(null);
-  // const navigate = useNavigate();
+  const [showMain, setShowMain] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const navigate = useNavigate();
+
+  const setSection4EndRef = (node: HTMLDivElement | null) => {
+    if (node) {
+      // 기존 옵저버가 있다면 연결 해제
+      if (observerRef.current) observerRef.current.disconnect();
+
+      observerRef.current = new IntersectionObserver(
+        ([entry]) => {
+          setIsAtBottom(entry.isIntersecting);
+        },
+        { threshold: 0.1 },
+      );
+
+      observerRef.current.observe(node);
+      console.log("✅ 드디어 감지 대상(Node)을 찾았습니다!", node);
+    }
+  };
 
   return (
     <>
@@ -162,6 +179,10 @@ export default function Index() {
                     <LandingSec4Tab className="hidden h-full w-full md:block 2xl:hidden" />
                     <LandingSec4Mo className="h-full w-full md:hidden" />
                   </div>
+                  <div
+                    ref={setSection4EndRef}
+                    style={{ height: "10px", background: "red" }}
+                  />
                 </section>
               </section>
             </div>
@@ -169,7 +190,7 @@ export default function Index() {
             {/* ================= 플로팅 ThreeButton (Gnb 그룹 밖에서 fixed 유지) ================= */}
             <div className="pointer-events-none fixed inset-0 z-50">
               <AnimatePresence>
-                {/* {!isAtBottom && (
+                {!isAtBottom && (
                   <motion.div
                     key="floating-btn"
                     initial={{ opacity: 0, scale: 0.5 }}
@@ -181,7 +202,7 @@ export default function Index() {
                   >
                     <ThreeButton />
                   </motion.div>
-                )} */}
+                )}
               </AnimatePresence>
             </div>
 
@@ -197,22 +218,21 @@ export default function Index() {
                   </p>
                 </div>
 
-                <div
-                  ref={targetRef}
-                  className="flex h-[48px] w-full items-center justify-center"
-                >
+                <div className="relative flex h-24 w-full items-center justify-center border border-dashed border-transparent">
                   <AnimatePresence>
-                    {/* {isAtBottom && (
+                    {isAtBottom && (
                       <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        className="pointer-events-auto"
+                        key="footer-btn"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="flex w-full cursor-pointer items-center justify-center"
                         onClick={() => navigate("/login")}
+                        style={{ width: "200px", height: "80px" }}
                       >
                         <ThreeButton />
                       </motion.div>
-                    )} */}
+                    )}
                   </AnimatePresence>
                 </div>
               </div>

@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import Home from "@/pages/Home";
 import User from "@/pages/User";
 import Boards from "@/pages/Boards";
 import BoardDetail from "@/pages/BoardDetail";
@@ -23,7 +22,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <Index />,
       },
       {
         path: "/login",
@@ -36,10 +35,6 @@ export const router = createBrowserRouter([
       {
         path: "/reset-password",
         element: <ResetPasswordPage />,
-      },
-      {
-        path: "/index",
-        element: <Index />,
       },
       {
         path: "/user/:id",
