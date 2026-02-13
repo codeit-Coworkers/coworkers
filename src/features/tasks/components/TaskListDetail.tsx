@@ -216,7 +216,12 @@ export default function TaskListDetail() {
           )}
 
           {/* Task 액션 메뉴 (현재 onSelect 핸들링은 연결되지 않음) */}
-          <Dropdown trigger="kebab" optionsKey="edit" />
+          <Dropdown
+            trigger="kebab"
+            optionsKey="edit"
+            listAlign="center"
+            listClassName="absolute right-4 md:right-6 lg:right-10"
+          />
         </div>
 
         <div className="flex flex-col gap-6">
@@ -264,7 +269,7 @@ export default function TaskListDetail() {
             {isDone ? (
               <button
                 onClick={handleUndoDone}
-                className="border-brand-primary text-brand-primary text-md-sb absolute right-5 bottom-7 flex h-[40px] items-center justify-center gap-1 rounded-[40px] border-1 px-4 md:relative md:right-0 md:bottom-0"
+                className="border-brand-primary text-brand-primary text-md-sb fixed right-5 bottom-7 flex h-[40px] items-center justify-center gap-1 rounded-[40px] border-1 px-4 md:relative md:right-0 md:bottom-0"
               >
                 <CheckBlue />
                 완료 취소하기
@@ -272,7 +277,7 @@ export default function TaskListDetail() {
             ) : (
               <button
                 onClick={handleDone}
-                className="bg-brand-primary text-color-inverse text-md-sb absolute right-5 bottom-7 flex h-[40px] items-center justify-center gap-1 rounded-[40px] px-4 md:relative md:right-0 md:bottom-0"
+                className="bg-brand-primary text-color-inverse text-md-sb fixed right-5 bottom-7 flex h-[40px] items-center justify-center gap-1 rounded-[40px] px-4 md:relative md:right-0 md:bottom-0"
               >
                 <CheckWhite />
                 완료 하기
@@ -359,6 +364,8 @@ export default function TaskListDetail() {
                     <Dropdown
                       trigger="kebab"
                       optionsKey="edit"
+                      listAlign="center"
+                      listClassName="absolute right-4 md:right-6 lg:right-10"
                       keepSelected={false}
                       onSelect={(option) => {
                         if (option.value === "수정하기") {
