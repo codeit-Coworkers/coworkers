@@ -7,11 +7,16 @@ export default function RootLayout() {
 
   useEffect(() => {
     const checkTokenExpiration = () => {
+      if (typeof window === "undefined") return;
+
       const token = localStorage.getItem("accessToken");
       if (!token) return;
 
       try {
-        const payload = JSON.parse(atob(token.split(".")[1]));
+        const parts = token.split(".");
+        if (parts.length !== 3) return;
+
+        const payload = JSON.parse(atob(parts[1]));
         const expirationTime = payload.exp * 1000;
         const currentTime = Date.now();
 
@@ -25,7 +30,6 @@ export default function RootLayout() {
         console.error("토큰 확인 중 오류 발생:", error);
       }
     };
-
     const timer = setInterval(checkTokenExpiration, 60000);
     checkTokenExpiration();
 

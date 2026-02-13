@@ -24,7 +24,7 @@ export default function TokenRefreshModal({
     const storedRefreshToken = localStorage.getItem("refreshToken");
 
     if (!storedRefreshToken) {
-      alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+      alert("로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
       navigate("/Login");
       return;
     }
@@ -34,7 +34,7 @@ export default function TokenRefreshModal({
       const { accessToken } = await refreshToken(storedRefreshToken);
 
       localStorage.setItem("accessToken", accessToken);
-      alert("세션이 연장되었습니다.");
+      alert("로그인이 연장되었습니다.");
 
       onClose();
     } catch (error) {
@@ -51,8 +51,8 @@ export default function TokenRefreshModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm">
-      <div className="bg-background-secondary w-full max-w-[343px] rounded-2xl p-8 shadow-xl">
+    <div className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm">
+      <div className="bg-background-secondary pointer-events-auto w-full max-w-[343px] rounded-2xl p-8 shadow-xl">
         <div className="flex flex-col items-center text-center">
           <div className="bg-brand-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-full">
             <AlertIcon className="text-brand-primary h-6 w-6" />
