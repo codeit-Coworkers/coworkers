@@ -23,6 +23,7 @@ import CheckWhite from "@/assets/check-white.svg";
 import Enter from "@/features/boards/assets/enter.svg";
 import Modal from "@/components/common/Modal/Modal";
 import TaskDangerModal from "@/components/common/Modal/Contents/TaskDeleteModal";
+import TaskReplyDangerModal from "@/components/common/Modal/Contents/TaskReplyDeleteModal";
 
 /**
  * 특정 시간(createdAt)이 현재로부터 며칠 전인지 계산합니다.
@@ -71,11 +72,18 @@ export default function TaskListDetail() {
   /** 라우트 파라미터: groupId, taskListId, taskId */
   const { groupId, taskListId, taskId } = useParams();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<"taskDelete" | "replyDelete" | null>(
+    null,
+  );
+  const [pendingReplyId, setPendingReplyId] = useState<number | null>(null);
 
   /** 모달 열기, 닫기 */
-  const handleModalOpen = () => setIsOpen(true);
-  const handleModalClose = () => setIsOpen(false);
+  const openTaskDeleteModal = () => setIsOpen("taskDelete");
+  const openReplyDeleteModal = () => setIsOpen("replyDelete");
+  const closeModal = () => {
+    setIsOpen(null);
+    setPendingReplyId(null);
+  };
 
   /** 현재 로그인 사용자 정보 */
   const { data: user } = useGetUser();
@@ -111,9 +119,30 @@ export default function TaskListDetail() {
   );
 
   /** Task 삭제 모달 오픈 */
-  const handleDeleteTask = (item: { value: string }) => {
-    if (item.value !== "삭제하기") return;
-    handleModalOpen();
+  const handleTaskDelete = (option: { value: string }) => {
+    if (option.value !== "삭제하기") return;
+    openTaskDeleteModal();
+  };
+
+  /** 댓글 삭제시 해당 댓글 ID를 저장, 삭제후 모달 오픈 */
+  const handleReplyDelete = (option: { value: string }, commentId: number) => {
+    if (option.value === "삭제하기") {
+      setPendingReplyId(commentId);
+      openReplyDeleteModal();
+    }
+  };
+
+  /** 할 일 삭제 후 모달 닫기 */
+  const handleConfirmTaskDelete = () => {
+    deleteTask();
+    closeModal();
+  };
+
+  /** 댓글 삭제하고 모달 닫기 */
+  const handleConfirmReplyDelete = () => {
+    if (pendingReplyId === null) return;
+    deleteComment(pendingReplyId);
+    closeModal();
   };
 
   /** 댓글 목록 데이터 */
@@ -244,7 +273,7 @@ export default function TaskListDetail() {
             listAlign="center"
             listClassName="absolute right-4 md:right-6 lg:right-10"
             keepSelected={false}
-            onSelect={handleDeleteTask}
+            onSelect={handleTaskDelete}
           />
         </div>
 
@@ -395,9 +424,7 @@ export default function TaskListDetail() {
                         if (option.value === "수정하기") {
                           startEdit(item.id, item.content);
                         }
-                        if (option.value === "삭제하기") {
-                          deleteComment(item.id);
-                        }
+                        handleReplyDelete(option, item.id);
                       }}
                     />
                   )}
@@ -444,8 +471,20 @@ export default function TaskListDetail() {
           );
         })}
       </div>
-      <Modal isOpen={isOpen} onClose={handleModalClose}>
-        <TaskDangerModal onClose={handleModalClose} onDelete={deleteTask} />
+      <Modal isOpen={isOpen !== null} onClose={closeModal}>
+        {isOpen === "taskDelete" && (
+          <TaskDangerModal
+            onClose={closeModal}
+            onDelete={handleConfirmTaskDelete}
+          />
+        )}
+
+        {isOpen === "replyDelete" && (
+          <TaskReplyDangerModal
+            onClose={closeModal}
+            onDelete={handleConfirmReplyDelete}
+          />
+        )}
       </Modal>
     </>
   );
