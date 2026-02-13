@@ -35,7 +35,6 @@ export default function Index() {
 
   const setSection4EndRef = (node: HTMLDivElement | null) => {
     if (node) {
-      // 기존 옵저버가 있다면 연결 해제
       if (observerRef.current) observerRef.current.disconnect();
 
       observerRef.current = new IntersectionObserver(
@@ -60,7 +59,7 @@ export default function Index() {
             initial={{ opacity: 1 }}
             exit={{
               opacity: 0,
-              scale: 2, // 화면 속으로 빨려 들어가는 느낌
+              scale: 2,
               filter: "blur(15px)",
             }}
             transition={{ duration: 1.2, ease: "easeInOut" }}

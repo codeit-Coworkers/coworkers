@@ -68,22 +68,19 @@ function Scene() {
  */
 export const ThreeButton = () => {
   return (
-    //h-[48px] w-[160px]
     <div className="relative mx-auto h-[80px] w-[200px]">
       <Canvas
         orthographic
         camera={{
-          // 💡 2. 카메라가 보는 범위를 버튼 크기(160x48)보다 넓게 잡습니다.
           left: -100,
           right: 100,
           top: 40,
           bottom: -40,
           near: 0.1,
-          far: 1000, // 여유 있게 1000
+          far: 1000,
           position: [0, 0, 100],
         }}
         gl={{ alpha: true, antialias: true }}
-        // 💡 3. 스타일로 캔버스가 부모를 꽉 채우게 강제합니다.
         style={{
           position: "absolute",
           top: 0,

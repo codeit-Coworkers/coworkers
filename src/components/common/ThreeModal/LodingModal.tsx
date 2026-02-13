@@ -4,7 +4,6 @@ import React, { Suspense, useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
 
 import {
   useGLTF,
@@ -29,16 +28,6 @@ function Model({
   const { scene } = useGLTF(url);
   const meshRef = useRef<THREE.Group>(null);
   const [active, setActive] = useState(false);
-  useEffect(() => {
-    const p1 = scene.getObjectByName("Paper1_01");
-    if (p1 && p1.parent) {
-      // p1의 부모뿐만 아니라 그 할아버지 이름까지 확인해 봅시다.
-      console.log("1단계 부모 (직속):", p1.parent.name);
-      if (p1.parent.parent) {
-        console.log("2단계 부모 (할아버지):", p1.parent.parent.name);
-      }
-    }
-  }, [scene]);
 
   useFrame((state) => {
     if (meshRef.current) {
