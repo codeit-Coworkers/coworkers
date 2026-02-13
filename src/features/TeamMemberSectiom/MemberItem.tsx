@@ -1,4 +1,5 @@
 import Dropdown from "@/components/common/Dropdown/Dropdown";
+import UserDefaultProfile from "@/assets/user.svg";
 
 type Member = {
   userId: number;
@@ -30,12 +31,17 @@ export default function MemberItem({
         onClick={onProfileOpen}
       >
         {/* 프로필 이미지 */}
-        <div className="bg-brand-primary h-[32px] w-[32px] flex-shrink-0 overflow-hidden rounded-[8px]">
-          <img
-            src={member.userImage}
-            alt={member.userName + " 프로필 이미지"}
-            className="h-full w-full object-cover"
-          />
+        <div className="h-[32px] w-[32px] flex-shrink-0 overflow-hidden rounded-[8px]">
+          {member.userImage && (
+            <img
+              src={member.userImage}
+              alt={member.userName + " 프로필 이미지"}
+              className="h-full w-full object-cover"
+            />
+          )}
+          {!member.userImage && (
+            <UserDefaultProfile className="h-full w-full object-cover" />
+          )}
         </div>
         {/* 이름 + 이메일 */}
         <div className="min-w-0 flex-1">
