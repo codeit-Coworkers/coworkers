@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import Dropdown from "@/components/common/Dropdown/Dropdown";
 import {
   useCreateTaskComment,
+  useDeleteTask,
   useDeleteTaskComment,
   useGetTask,
   useGetTaskComment,
@@ -20,6 +21,8 @@ import RepeatIcon from "@/assets/repeat.svg";
 import CheckBlue from "@/assets/check.svg";
 import CheckWhite from "@/assets/check-white.svg";
 import Enter from "@/features/boards/assets/enter.svg";
+import Modal from "@/components/common/Modal/Modal";
+import TaskDangerModal from "@/components/common/Modal/Contents/TaskDeleteModal";
 
 /**
  * 특정 시간(createdAt)이 현재로부터 며칠 전인지 계산합니다.
@@ -68,6 +71,12 @@ export default function TaskListDetail() {
   /** 라우트 파라미터: groupId, taskListId, taskId */
   const { groupId, taskListId, taskId } = useParams();
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  /** 모달 열기, 닫기 */
+  const handleModalOpen = () => setIsOpen(true);
+  const handleModalClose = () => setIsOpen(false);
+
   /** 현재 로그인 사용자 정보 */
   const { data: user } = useGetUser();
 
@@ -93,6 +102,19 @@ export default function TaskListDetail() {
 
   /** Task 완료 취소 처리 */
   const handleUndoDone = () => setDone(false);
+
+  /** Task 삭제 mutation */
+  const { mutate: deleteTask } = useDeleteTask(
+    Number(groupId),
+    Number(taskListId),
+    Number(taskId),
+  );
+
+  /** Task 삭제 모달 오픈 */
+  const handleDeleteTask = (item: { value: string }) => {
+    if (item.value !== "삭제하기") return;
+    handleModalOpen();
+  };
 
   /** 댓글 목록 데이터 */
   const { data: commentData } = useGetTaskComment(Number(taskId));
@@ -221,6 +243,8 @@ export default function TaskListDetail() {
             optionsKey="edit"
             listAlign="center"
             listClassName="absolute right-4 md:right-6 lg:right-10"
+            keepSelected={false}
+            onSelect={handleDeleteTask}
           />
         </div>
 
@@ -420,6 +444,9 @@ export default function TaskListDetail() {
           );
         })}
       </div>
+      <Modal isOpen={isOpen} onClose={handleModalClose}>
+        <TaskDangerModal onClose={handleModalClose} onDelete={deleteTask} />
+      </Modal>
     </>
   );
 }
