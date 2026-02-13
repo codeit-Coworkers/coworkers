@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { FetchBoundary } from "@/providers/boundary";
 import TaskColumn from "@/features/taskcolumn/TaskColumn";
+import TaskColumnSkeleton from "@/features/taskcolumn/TaskColumnSkeleton";
 import TeamMemberSection from "@/features/TeamMemberSectiom/TeamMemberSection";
+import TeamMemberSkeleton from "@/features/TeamMemberSectiom/TeamMemberSkeleton";
 import TodayProgressSection from "@/features/TodayProgressSection/TodayProgressSection";
+import TodayProgressSkeleton from "@/features/TodayProgressSection/TodayProgressSkeleton";
 import NothingTeamImage from "@/assets/nothingTeam.svg";
 import { Button } from "@/components/common/Button/Button";
 
@@ -68,7 +72,9 @@ export default function Team() {
           className={`grid transition-all duration-300 ${foldClass.progressGrid}`}
         >
           <div className="overflow-hidden">
-            <TodayProgressSection groupId={groupId} />
+            <FetchBoundary loadingFallback={<TodayProgressSkeleton />}>
+              <TodayProgressSection groupId={groupId} />
+            </FetchBoundary>
           </div>
         </div>
 
@@ -79,17 +85,21 @@ export default function Team() {
           <div
             className={`bg-background-secondary relative flex-1 ${foldClass.divider}`}
           >
-            <TaskColumn
-              groupId={groupId}
-              isCollapsed={isCollapsed}
-              onToggleCollapse={() => setIsCollapsed((prev) => !prev)}
-            />
+            <FetchBoundary loadingFallback={<TaskColumnSkeleton />}>
+              <TaskColumn
+                groupId={groupId}
+                isCollapsed={isCollapsed}
+                onToggleCollapse={() => setIsCollapsed((prev) => !prev)}
+              />
+            </FetchBoundary>
           </div>
 
           {/* 할 일 목록 펼쳐지면 안나오기 */}
           {!isCollapsed && (
             <div className="mt-[70px] hidden md:block">
-              <TeamMemberSection groupId={groupId} />
+              <FetchBoundary loadingFallback={<TeamMemberSkeleton />}>
+                <TeamMemberSection groupId={groupId} />
+              </FetchBoundary>
             </div>
           )}
         </div>

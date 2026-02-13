@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Dropdown from "@/components/common/Dropdown/Dropdown";
 import {
   useCreateTaskComment,
+  useDeleteTask,
   useDeleteTaskComment,
   useGetTask,
   useGetTaskComment,
@@ -20,6 +21,9 @@ import RepeatIcon from "@/assets/repeat.svg";
 import CheckBlue from "@/assets/check.svg";
 import CheckWhite from "@/assets/check-white.svg";
 import Enter from "@/features/boards/assets/enter.svg";
+import Modal from "@/components/common/Modal/Modal";
+import TaskDangerModal from "@/components/common/Modal/Contents/TaskDeleteModal";
+import TaskReplyDangerModal from "@/components/common/Modal/Contents/TaskReplyDeleteModal";
 
 /**
  * 특정 시간(createdAt)이 현재로부터 며칠 전인지 계산합니다.
@@ -68,6 +72,19 @@ export default function TaskListDetail() {
   /** 라우트 파라미터: groupId, taskListId, taskId */
   const { groupId, taskListId, taskId } = useParams();
 
+  const [isOpen, setIsOpen] = useState<"taskDelete" | "replyDelete" | null>(
+    null,
+  );
+  const [pendingReplyId, setPendingReplyId] = useState<number | null>(null);
+
+  /** 모달 열기, 닫기 */
+  const openTaskDeleteModal = () => setIsOpen("taskDelete");
+  const openReplyDeleteModal = () => setIsOpen("replyDelete");
+  const closeModal = () => {
+    setIsOpen(null);
+    setPendingReplyId(null);
+  };
+
   /** 현재 로그인 사용자 정보 */
   const { data: user } = useGetUser();
 
@@ -93,6 +110,40 @@ export default function TaskListDetail() {
 
   /** Task 완료 취소 처리 */
   const handleUndoDone = () => setDone(false);
+
+  /** Task 삭제 mutation */
+  const { mutate: deleteTask } = useDeleteTask(
+    Number(groupId),
+    Number(taskListId),
+    Number(taskId),
+  );
+
+  /** Task 삭제 모달 오픈 */
+  const handleTaskDelete = (option: { value: string }) => {
+    if (option.value !== "삭제하기") return;
+    openTaskDeleteModal();
+  };
+
+  /** 댓글 삭제시 해당 댓글 ID를 저장, 삭제후 모달 오픈 */
+  const handleReplyDelete = (option: { value: string }, commentId: number) => {
+    if (option.value === "삭제하기") {
+      setPendingReplyId(commentId);
+      openReplyDeleteModal();
+    }
+  };
+
+  /** 할 일 삭제 후 모달 닫기 */
+  const handleConfirmTaskDelete = () => {
+    deleteTask();
+    closeModal();
+  };
+
+  /** 댓글 삭제하고 모달 닫기 */
+  const handleConfirmReplyDelete = () => {
+    if (pendingReplyId === null) return;
+    deleteComment(pendingReplyId);
+    closeModal();
+  };
 
   /** 댓글 목록 데이터 */
   const { data: commentData } = useGetTaskComment(Number(taskId));
@@ -192,6 +243,15 @@ export default function TaskListDetail() {
   /** 댓글 삭제 mutation */
   const { mutate: deleteComment } = useDeleteTaskComment(Number(taskId));
 
+  /** 댓글 목록 최신순 정렬(createdAt 내림차순) */
+  const sortedComments = useMemo(() => {
+    if (!commentData) return [];
+    return [...commentData].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+  }, [commentData]);
+
   return (
     <>
       <div className="bg-background-primary flex flex-col gap-4 px-4 pt-3 pb-4 md:px-7 md:pt-11 lg:px-10">
@@ -216,7 +276,14 @@ export default function TaskListDetail() {
           )}
 
           {/* Task 액션 메뉴 (현재 onSelect 핸들링은 연결되지 않음) */}
-          <Dropdown trigger="kebab" optionsKey="edit" />
+          <Dropdown
+            trigger="kebab"
+            optionsKey="edit"
+            listAlign="center"
+            listClassName="absolute right-4 md:right-6 lg:right-10"
+            keepSelected={false}
+            onSelect={handleTaskDelete}
+          />
         </div>
 
         <div className="flex flex-col gap-6">
@@ -264,7 +331,7 @@ export default function TaskListDetail() {
             {isDone ? (
               <button
                 onClick={handleUndoDone}
-                className="border-brand-primary text-brand-primary text-md-sb absolute right-5 bottom-7 flex h-[40px] items-center justify-center gap-1 rounded-[40px] border-1 px-4 md:relative md:right-0 md:bottom-0"
+                className="border-brand-primary text-brand-primary text-md-sb fixed right-5 bottom-7 flex h-[40px] items-center justify-center gap-1 rounded-[40px] border-1 px-4 md:relative md:right-0 md:bottom-0"
               >
                 <CheckBlue />
                 완료 취소하기
@@ -272,7 +339,7 @@ export default function TaskListDetail() {
             ) : (
               <button
                 onClick={handleDone}
-                className="bg-brand-primary text-color-inverse text-md-sb absolute right-5 bottom-7 flex h-[40px] items-center justify-center gap-1 rounded-[40px] px-4 md:relative md:right-0 md:bottom-0"
+                className="bg-brand-primary text-color-inverse text-md-sb fixed right-5 bottom-7 flex h-[40px] items-center justify-center gap-1 rounded-[40px] px-4 md:relative md:right-0 md:bottom-0"
               >
                 <CheckWhite />
                 완료 하기
@@ -326,7 +393,7 @@ export default function TaskListDetail() {
 
       {/* 댓글 목록 영역 */}
       <div className="bg-background-primary pb-10">
-        {commentData?.map((item) => {
+        {sortedComments?.map((item) => {
           const isEditing = editCommentId === item.id;
 
           return (
@@ -359,14 +426,14 @@ export default function TaskListDetail() {
                     <Dropdown
                       trigger="kebab"
                       optionsKey="edit"
+                      listAlign="center"
+                      listClassName="absolute right-4 md:right-6 lg:right-10"
                       keepSelected={false}
                       onSelect={(option) => {
                         if (option.value === "수정하기") {
                           startEdit(item.id, item.content);
                         }
-                        if (option.value === "삭제하기") {
-                          deleteComment(item.id);
-                        }
+                        handleReplyDelete(option, item.id);
                       }}
                     />
                   )}
@@ -413,6 +480,21 @@ export default function TaskListDetail() {
           );
         })}
       </div>
+      <Modal isOpen={isOpen !== null} onClose={closeModal}>
+        {isOpen === "taskDelete" && (
+          <TaskDangerModal
+            onClose={closeModal}
+            onDelete={handleConfirmTaskDelete}
+          />
+        )}
+
+        {isOpen === "replyDelete" && (
+          <TaskReplyDangerModal
+            onClose={closeModal}
+            onDelete={handleConfirmReplyDelete}
+          />
+        )}
+      </Modal>
     </>
   );
 }

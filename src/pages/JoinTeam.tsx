@@ -1,3 +1,4 @@
+import { FetchBoundary } from "@/providers/boundary";
 import { useAcceptGroupInvitation } from "@/api/group";
 import { useUser } from "@/api/user";
 import { Button } from "@/components/common/Button/Button";
@@ -7,14 +8,36 @@ import { useToastStore } from "@/stores/useToastStore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function JoinTeam() {
+/** 카드 폼 스켈레톤 (입력 + 버튼) */
+function JoinTeamSkeleton() {
+  return (
+    <div className="flex h-[100vh] flex-col items-center justify-center">
+      <div className="bg-background-primary w-[calc(100%-20px)] max-w-[550px] rounded-[20px] px-[20px] pt-[52px] pb-[74px] md:px-[45px] md:pt-[61px] md:pb-[64px]">
+        <div className="bg-background-tertiary mb-[32px] h-8 w-32 animate-pulse rounded md:mb-[48px]" />
+        <div className="mt-[12px] space-y-2 md:mt-[32px]">
+          <div className="bg-background-tertiary h-4 w-16 animate-pulse rounded" />
+          <div className="bg-background-tertiary h-12 w-full animate-pulse rounded-lg" />
+        </div>
+        <div className="mt-[40px]">
+          <div className="bg-background-tertiary h-12 w-full animate-pulse rounded-lg" />
+        </div>
+        <div className="mt-[20px] flex justify-center md:mt-[24px]">
+          <div className="bg-background-tertiary h-4 w-64 animate-pulse rounded" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** 데이터 의존 콘텐츠 (useSuspenseQuery 사용) */
+function JoinTeamContent() {
   // 상태 관리
   const [teamLink, setTeamLink] = useState<string>("");
   const [teamLinkError, setTeamLinkError] = useState<string>("");
 
   // 훅
   const { data: user } = useUser();
-  const { mutate } = useAcceptGroupInvitation();
+  const { mutate, isPending } = useAcceptGroupInvitation();
   const navigate = useNavigate();
   const toast = useToastStore();
 
@@ -25,8 +48,8 @@ export default function JoinTeam() {
   };
 
   const handleSubmit = () => {
-    if (!teamLink) {
-      setTeamLinkError("팀 링크를 입력해주세요.");
+    if (!teamLink || isPending) {
+      if (!teamLink) setTeamLinkError("팀 링크를 입력해주세요.");
       return;
     }
 
@@ -80,10 +103,10 @@ export default function JoinTeam() {
             <Button
               size="authWide"
               onClick={handleSubmit}
-              disabled={!teamLink}
+              disabled={!teamLink || isPending}
               className="disabled:cursor-not-allowed disabled:opacity-50"
             >
-              참여하기
+              {isPending ? "참여 중..." : "참여하기"}
             </Button>
           </div>
           <p className="text-color-default text-xs-r md:text-lg-r mt-[20px] text-center md:mt-[24px]">
@@ -92,5 +115,13 @@ export default function JoinTeam() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function JoinTeam() {
+  return (
+    <FetchBoundary loadingFallback={<JoinTeamSkeleton />}>
+      <JoinTeamContent />
+    </FetchBoundary>
   );
 }
