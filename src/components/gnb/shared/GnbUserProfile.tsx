@@ -38,7 +38,7 @@ export default function GnbUserProfile() {
               {
                 label: "마이 히스토리",
                 value: "마이 히스토리",
-                link: "/my-history",
+                link: `/team/${groupId}/my-history`,
               },
               {
                 label: "계정 설정",
