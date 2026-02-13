@@ -78,13 +78,15 @@ export default function MyTasks({
                               <Todo
                                 content={task.title}
                                 isCompleted={task.isCompleted}
+                                className="gap-2 md:gap-2"
+                                iconClassName="md:h-[16px] md:w-[16px]"
                               />
                             </div>
                           </div>
 
-                          <div className="text-xs-m text-color-disabled mt-1.5 flex flex-wrap items-center gap-3 px-0.5">
+                          <div className="text-xs-m text-color-disabled mt-1.5 flex flex-wrap items-center gap-3">
                             <div className="flex items-center gap-1.5">
-                              <CalendarIcon className="h-4 w-4" />
+                              <CalendarIcon className="h-[14px] w-[14px] md:h-[16px] md:w-[16px]" />
                               <span>{formatDate(task.date, false)}</span>
                               <span>
                                 {new Date(task.doneAt).toLocaleTimeString(
