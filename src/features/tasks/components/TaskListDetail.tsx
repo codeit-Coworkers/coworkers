@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Dropdown from "@/components/common/Dropdown/Dropdown";
@@ -243,6 +243,15 @@ export default function TaskListDetail() {
   /** 댓글 삭제 mutation */
   const { mutate: deleteComment } = useDeleteTaskComment(Number(taskId));
 
+  /** 댓글 목록 최신순 정렬(createdAt 내림차순) */
+  const sortedComments = useMemo(() => {
+    if (!commentData) return [];
+    return [...commentData].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+  }, [commentData]);
+
   return (
     <>
       <div className="bg-background-primary flex flex-col gap-4 px-4 pt-3 pb-4 md:px-7 md:pt-11 lg:px-10">
@@ -384,7 +393,7 @@ export default function TaskListDetail() {
 
       {/* 댓글 목록 영역 */}
       <div className="bg-background-primary pb-10">
-        {commentData?.map((item) => {
+        {sortedComments?.map((item) => {
           const isEditing = editCommentId === item.id;
 
           return (
