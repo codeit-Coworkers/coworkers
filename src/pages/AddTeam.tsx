@@ -6,6 +6,7 @@ import { Input } from "@/components/common/Input/Input";
 import { useCreateGroup } from "@/api/group";
 import { useGroups } from "@/api/user";
 import { useToastStore } from "@/stores/useToastStore";
+import { HttpError } from "@/lib/fetchClient";
 import TeamImageUpload from "@/features/team/components/TeamImageUpload";
 
 /** 카드 폼 스켈레톤 (이미지 + 입력 + 버튼) */
@@ -79,8 +80,13 @@ function AddTeamContent() {
           toast.show("팀이 성공적으로 생성되었습니다.");
           navigate(`/team/${group.id}`);
         },
-        onError: () => {
-          toast.show("팀 생성에 실패했습니다. 다시 시도해주세요.");
+        onError: (error) => {
+          if (
+            error instanceof HttpError &&
+            error.data?.message === "Validation Failed"
+          ) {
+            toast.show("팀 이미지를 넣어주세요.");
+          }
         },
       },
     );
@@ -97,7 +103,7 @@ function AddTeamContent() {
             <TeamImageUpload imageUrl={imageUrl} onImageChange={setImageUrl} />
           </div>
           <div className="mt-[12px] md:mt-[32px]">
-            <div className="space-y-1">
+            <div className="relative space-y-1">
               <Input
                 label="팀 이름"
                 placeholder="팀 이름을 입력해주세요"
@@ -110,7 +116,9 @@ function AddTeamContent() {
                 className={`focus:ring-2 focus:outline-none ${nameError ? "border-status-danger" : ""}`}
               />
               {nameError && (
-                <p className="text-status-danger text-xs">{nameError}</p>
+                <p className="text-status-danger absolute text-xs">
+                  {nameError}
+                </p>
               )}
             </div>
           </div>

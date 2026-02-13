@@ -99,7 +99,7 @@ function EditTeamContent() {
             <TeamImageUpload imageUrl={imageUrl} onImageChange={setImageUrl} />
           </div>
           <div className="mt-[12px] md:mt-[32px]">
-            <div className="space-y-1">
+            <div className="relative space-y-1">
               <Input
                 label="팀 이름"
                 placeholder="팀 이름을 입력해주세요"
@@ -112,7 +112,9 @@ function EditTeamContent() {
                 className={`focus:ring-2 focus:outline-none ${nameError ? "border-status-danger" : ""}`}
               />
               {nameError && (
-                <p className="text-status-danger text-xs">{nameError}</p>
+                <p className="text-status-danger absolute text-xs">
+                  {nameError}
+                </p>
               )}
             </div>
           </div>
