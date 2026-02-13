@@ -17,7 +17,7 @@ export default function AddTeamButton({
   return (
     <>
       <Link
-        to="/add-team"
+        to="team/add"
         className={`group text-md-sb text-brand-primary border-brand-primary hover:bg-brand-primary flex w-full items-center justify-center rounded-[8px] border hover:text-white ${heightClass} ${className ?? ""}`}
         style={style}
       >
