@@ -254,15 +254,49 @@ function MySettingsContent() {
   );
 }
 
+/** 계정 설정 페이지 로딩 스켈레톤 */
+function MySettingsSkeleton() {
+  return (
+    <div className="bg-background-secondary min-h-screen pb-24">
+      <div className="px-4 pt-6 md:px-[56px] md:pt-10 lg:ml-[184px] lg:pt-14">
+        <div className="bg-background-primary mx-auto w-full max-w-[940px] rounded-[20px] px-4 pt-10 pb-10 md:px-[45px] lg:w-[940px] lg:px-[74px]">
+          {/* 타이틀 */}
+          <div className="bg-background-tertiary mb-8 h-7 w-24 animate-pulse rounded" />
+
+          {/* 프로필 이미지 */}
+          <div className="mb-8 flex justify-center">
+            <div className="bg-background-tertiary h-16 w-16 animate-pulse rounded-[8px] md:h-[100px] md:w-[100px]" />
+          </div>
+
+          {/* 이름 필드 */}
+          <div className="mb-5 space-y-2">
+            <div className="bg-background-tertiary h-4 w-10 animate-pulse rounded" />
+            <div className="bg-background-tertiary h-12 w-full animate-pulse rounded-lg" />
+          </div>
+
+          {/* 이메일 필드 */}
+          <div className="mb-5 space-y-2">
+            <div className="bg-background-tertiary h-4 w-12 animate-pulse rounded" />
+            <div className="bg-background-tertiary h-12 w-full animate-pulse rounded-lg" />
+          </div>
+
+          {/* 비밀번호 필드 */}
+          <div className="mb-8 space-y-2">
+            <div className="bg-background-tertiary h-4 w-14 animate-pulse rounded" />
+            <div className="bg-background-tertiary h-12 w-full animate-pulse rounded-lg" />
+          </div>
+
+          {/* 회원 탈퇴 */}
+          <div className="bg-background-tertiary h-5 w-24 animate-pulse rounded" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function MySettings() {
   return (
-    <FetchBoundary
-      loadingFallback={
-        <div className="bg-background-secondary flex min-h-screen items-center justify-center">
-          <span className="text-color-default text-md-r">로딩 중...</span>
-        </div>
-      }
-    >
+    <FetchBoundary loadingFallback={<MySettingsSkeleton />}>
       <MySettingsContent />
     </FetchBoundary>
   );
