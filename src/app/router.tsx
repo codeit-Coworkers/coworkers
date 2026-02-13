@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import Home from "@/pages/Home";
 import User from "@/pages/User";
 import Boards from "@/pages/Boards";
 import BoardDetail from "@/pages/BoardDetail";
@@ -12,6 +11,7 @@ import Index from "@/pages/Index";
 import LoginPage from "@/pages/Login";
 import ResetPasswordPage from "@/pages/ResetPassword";
 import RootLayout from "@/components/common/Rootlayout/RootLayout";
+import KakaoRedirectPage from "@/pages/KakaoRedirectPage";
 import Team from "@/pages/team";
 import MyHistory from "@/pages/MyHistory";
 import JoinTeam from "@/pages/JoinTeam";
@@ -27,19 +27,19 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <Index />,
       },
       {
         path: "/login",
         element: <LoginPage />,
       },
       {
-        path: "/reset-password",
-        element: <ResetPasswordPage />,
+        path: "/login/kakao",
+        element: <KakaoRedirectPage />,
       },
       {
-        path: "/index",
-        element: <Index />,
+        path: "/reset-password",
+        element: <ResetPasswordPage />,
       },
       {
         path: "/user/:id",

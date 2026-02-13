@@ -52,6 +52,13 @@ export async function fetchClient<T>(
 
   // HTTP 에러 (4xx, 5xx) 처리
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("tokenExpiry");
+      alert("로그인 세션이 만료되었습니다.");
+      window.location.href = "/login";
+    }
     let errorData = null;
     try {
       errorData = await response.json();

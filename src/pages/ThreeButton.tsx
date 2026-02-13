@@ -20,9 +20,9 @@ function Scene() {
       if (width < 768) {
         speedFactor = 0.009;
       } else if (width < 1024) {
-        speedFactor = 0.09;
+        speedFactor = 0.2;
       } else {
-        speedFactor = 0.05;
+        speedFactor = 0.0086;
       }
 
       meshRef.current.rotation.x = scrollY * speedFactor;
@@ -68,19 +68,26 @@ function Scene() {
  */
 export const ThreeButton = () => {
   return (
-    <div className="h-[48px] w-[160px]">
+    <div className="relative mx-auto h-[80px] w-[200px]">
       <Canvas
         orthographic
         camera={{
-          left: -80,
-          right: 80,
-          top: 24,
-          bottom: -24,
+          left: -100,
+          right: 100,
+          top: 40,
+          bottom: -40,
           near: 0.1,
-          far: 100,
+          far: 1000,
           position: [0, 0, 100],
         }}
         gl={{ alpha: true, antialias: true }}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+        }}
       >
         <Scene />
       </Canvas>
