@@ -49,7 +49,7 @@ export default function TaskCard({
                 listAlign="center"
                 trigger="kebab"
                 usePortal
-                portalOffset={isMobile && { top: 0, right: 102 }}
+                portalOffset={isMobile ? { top: 0, right: 102 } : undefined}
               />
             </button>
           </div>

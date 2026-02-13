@@ -4,6 +4,7 @@ import { useUser } from "@/api/user";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate, useParams } from "react-router-dom";
 import UserDefaultProfile from "@/assets/user.svg";
+import { useToastStore } from "@/stores/useToastStore";
 
 export default function GnbUserProfile() {
   const { data: user } = useUser();
@@ -12,10 +13,20 @@ export default function GnbUserProfile() {
   const { isFolded } = useGnbStore();
   const { id: groupId } = useParams();
   const navigate = useNavigate();
+  const { show: showToast } = useToastStore();
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const handleMyHistoryNavigate = () => {
+    if (!groupId) {
+      showToast("현재 속한 팀이 없습니다.");
+      return;
+    }
+
+    navigate(`/team/${groupId}/my-history`);
   };
 
   // 현재 선택된 그룹 정보 가져오기
@@ -40,7 +51,7 @@ export default function GnbUserProfile() {
               {
                 label: "마이 히스토리",
                 value: "마이 히스토리",
-                link: `/team/${groupId}/my-history`,
+                action: handleMyHistoryNavigate,
               },
               {
                 label: "계정 설정",
@@ -90,7 +101,7 @@ export default function GnbUserProfile() {
               {
                 label: "마이 히스토리",
                 value: "마이 히스토리",
-                link: `/team/${groupId}/my-history`,
+                action: handleMyHistoryNavigate,
               },
               {
                 label: "계정 설정",
