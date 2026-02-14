@@ -2,6 +2,7 @@ import { useState } from "react";
 import MobileUserArea from "./MobileUserArea";
 import MobileHeaderMenus from "./MobileHeaderMenus";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { FetchBoundary } from "@/providers/boundary";
 import { useLocation } from "react-router-dom";
 
 export default function MobileGnb() {
@@ -30,10 +31,12 @@ export default function MobileGnb() {
     <>
       <header className="border-border-primary relative w-full md:border-r md:border-solid">
         <MobileUserArea onMenuOpen={setIsMenuOpen} />
-        <MobileHeaderMenus
-          isOpen={isMenuOpen}
-          onClose={() => setIsMenuOpen(false)}
-        />
+        <FetchBoundary loadingFallback={null}>
+          <MobileHeaderMenus
+            isOpen={isMenuOpen}
+            onClose={() => setIsMenuOpen(false)}
+          />
+        </FetchBoundary>
       </header>
     </>
   );

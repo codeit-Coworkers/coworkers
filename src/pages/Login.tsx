@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Gnb from "@/components/gnb/Gnb";
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { useSignIn, useSignUp, SignInRequest, SignUpRequest } from "@/api/auth";
@@ -9,6 +8,9 @@ import { Input } from "@/components/common/Input/Input";
 import { Button } from "@/components/common/Button/Button";
 import Kakaoicon from "@/assets/kakao.svg";
 import ForgotPasswordModal from "@/pages/ForgotPassword";
+import { useToastStore } from "@/stores/useToastStore";
+import { getGroups } from "@/api/user";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -16,6 +18,8 @@ export default function LoginPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { mutate: signIn, isPending: isSignInPending } = useSignIn();
   const { mutate: signUp, isPending: isSignUpPending } = useSignUp();
+  const toast = useToastStore();
+  const { login } = useAuthStore();
   const isPending = isSignInPending || isSignUpPending;
   const KAKAO_REST_API_KEY = "35804a1d124738c314f9abcb9b9181ea";
   const REDIRECT_URI = `${window.location.origin}/login/kakao`;
@@ -47,12 +51,12 @@ export default function LoginPage() {
     if (isSignup) {
       signUp(data, {
         onSuccess: () => {
-          alert("회원가입이 완료되었습니다! 로그인해주세요.");
+          toast.show("회원가입이 완료되었습니다! 로그인해주세요.");
           setIsSignup(false);
           reset();
         },
         onError: (error: Error) => {
-          alert(error.message);
+          toast.show(error.message);
         },
       });
     } else {
@@ -61,12 +65,18 @@ export default function LoginPage() {
         password: data.password,
       };
       signIn(signInData, {
-        onSuccess: () => {
-          alert("로그인 성공!");
-          navigate("/team");
+        onSuccess: async (response) => {
+          login();
+          toast.show(`안녕하세요 ${response.user.nickname}님!`);
+          const groups = await getGroups();
+          if (groups.length > 0) {
+            navigate(`/team/${groups[0].id}`);
+          } else {
+            navigate("/team");
+          }
         },
         onError: (error: Error) => {
-          alert(error.message);
+          toast.show(error.message);
         },
       });
     }
@@ -74,9 +84,8 @@ export default function LoginPage() {
 
   return (
     <div className="bg-background-secondary flex h-full w-full flex-col items-center sm:flex-row">
-      <Gnb />
-      <div className="flex w-full items-center justify-center">
-        <div className="relative mt-15 mb-[90px] flex max-w-[343px] flex-1 items-center justify-center md:m-0 md:max-w-[460px] md:p-0">
+      <div className="flex min-h-screen w-full items-center justify-center">
+        <div className="relative mt-15 mb-[90px] flex max-w-[343px] flex-1 items-center justify-center md:max-w-[460px] md:p-0">
           <div className="bg-background-primary h-full w-full rounded-2xl p-6 pt-[57px] shadow-md transition-all duration-300">
             <div className="w-full">
               <div className="mb-8 text-center">
@@ -86,9 +95,9 @@ export default function LoginPage() {
               </div>
 
               <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                <div className="mb-10 space-y-4">
+                <div className="mb-10">
                   {isSignup && (
-                    <div className="space-y-1">
+                    <div className="relative mb-[36px]">
                       <Controller
                         name="nickname"
                         control={control}
@@ -109,14 +118,14 @@ export default function LoginPage() {
                         )}
                       />
                       {errors.nickname && (
-                        <p className="text-status-danger text-xs">
+                        <p className="text-status-danger absolute mt-[8px] text-xs">
                           {errors.nickname.message}
                         </p>
                       )}
                     </div>
                   )}
 
-                  <div className="space-y-1">
+                  <div className="relative mb-[36px]">
                     <Controller
                       name="email"
                       control={control}
@@ -138,13 +147,13 @@ export default function LoginPage() {
                       )}
                     />
                     {errors.email && (
-                      <p className="text-status-danger text-xs">
+                      <p className="text-status-danger absolute mt-[8px] text-xs">
                         {errors.email.message}
                       </p>
                     )}
                   </div>
 
-                  <div className="space-y-1">
+                  <div className="relative mb-[36px]">
                     <Controller
                       name="password"
                       control={control}
@@ -177,14 +186,14 @@ export default function LoginPage() {
                       )}
                     />
                     {errors.password && (
-                      <p className="text-status-danger text-xs">
+                      <p className="text-status-danger absolute mt-[8px] text-xs">
                         {errors.password.message}
                       </p>
                     )}
                   </div>
 
                   {isSignup && (
-                    <div className="space-y-1">
+                    <div className="relative mb-[36px]">
                       <Controller
                         name="passwordConfirmation"
                         control={control}
@@ -205,7 +214,7 @@ export default function LoginPage() {
                         )}
                       />
                       {errors.passwordConfirmation && (
-                        <p className="text-status-danger text-xs">
+                        <p className="text-status-danger absolute mt-[8px] text-xs">
                           {errors.passwordConfirmation.message}
                         </p>
                       )}
@@ -271,7 +280,7 @@ export default function LoginPage() {
 
               <div className="flex items-center justify-between gap-2 pb-6">
                 <span className="text-color-default">간편 로그인하기</span>
-                <a href={KAKAO_AUTH_URL}>
+                <a href={KAKAO_AUTH_URL} target="_blank">
                   <Kakaoicon />
                 </a>
               </div>

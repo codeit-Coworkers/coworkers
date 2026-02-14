@@ -4,6 +4,7 @@ import Dropdown from "@/components/common/Dropdown/Dropdown";
 import Modal from "@/components/common/Modal/Modal";
 import TeamDeleteModal from "@/components/common/Modal/Contents/TeamDeleteModal";
 import MemberAvatars from "./MemberAvatars";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 type Member = {
   userId: number;
@@ -26,6 +27,7 @@ export default function GroupHeader({
   const navigate = useNavigate();
   const location = useLocation();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleEdit = () => {
     navigate(`${location.pathname}/edit`);
@@ -55,6 +57,10 @@ export default function GroupHeader({
                 { label: "수정하기", value: "edit", action: handleEdit },
                 { label: "삭제하기", value: "delete", action: handleDelete },
               ]}
+              usePortal
+              portalOffset={
+                isMobile ? { top: 0, right: 102 } : { top: 8, left: -16 }
+              }
             />
           </button>
           <Modal

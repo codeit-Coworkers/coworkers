@@ -229,6 +229,37 @@ export function useGetTask(
   });
 }
 
+export async function deleteTask(
+  groupId: number,
+  taskListId: number,
+  taskId: number,
+): Promise<void> {
+  const response = await fetchClient<void>(
+    `${BASE_URL}/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
+    {
+      method: "DELETE",
+    },
+  );
+  return response;
+}
+
+export function useDeleteTask(
+  groupId: number,
+  taskListId: number,
+  taskId: number,
+) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => deleteTask(groupId, taskListId, taskId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["task", groupId, taskListId, taskId],
+      });
+    },
+  });
+}
+
 /**
  * 특정 Task의 댓글 목록을 조회합니다.
  *

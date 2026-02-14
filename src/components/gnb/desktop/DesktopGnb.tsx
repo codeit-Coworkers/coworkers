@@ -5,7 +5,8 @@ import UnFoldIcon from "@/assets/fold-false.svg";
 import GnbUserProfile from "../shared/GnbUserProfile";
 import { useGnbStore } from "../useGnbStore";
 import { useAuthStore } from "@/stores/useAuthStore";
-import UserProfile from "@/assets/user.svg";
+import { FetchBoundary } from "@/providers/boundary";
+import UserDefaultProfile from "@/assets/user.svg";
 import { Link } from "react-router-dom";
 
 export default function DesktopGnb() {
@@ -33,7 +34,7 @@ export default function DesktopGnb() {
               className="group inline-flex"
             >
               <span className="inline-flex items-center gap-2">
-                <UserProfile
+                <UserDefaultProfile
                   className={`flex-shrink-0 ${isFolded ? "h-8 w-8" : "h-10 w-10"}`}
                 />
                 <span
@@ -81,7 +82,19 @@ export default function DesktopGnb() {
         }`}
       >
         <div className="mt-[20px]">
-          <GnbUserProfile />
+          <FetchBoundary
+            loadingFallback={
+              <div className="flex items-center gap-3 px-1">
+                <div className="bg-background-tertiary h-10 w-10 animate-pulse rounded-[12px]" />
+                <div className="flex-1 space-y-1">
+                  <div className="bg-background-tertiary h-4 w-20 animate-pulse rounded" />
+                  <div className="bg-background-tertiary h-3 w-14 animate-pulse rounded" />
+                </div>
+              </div>
+            }
+          >
+            <GnbUserProfile />
+          </FetchBoundary>
         </div>
       </div>
 

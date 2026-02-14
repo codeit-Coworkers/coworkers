@@ -1,3 +1,5 @@
+import UserDefaultProfile from "@/assets/user.svg";
+
 type Member = {
   userId: number;
   userImage: string;
@@ -22,11 +24,16 @@ export default function MemberAvatars({
             style={{ zIndex: maxDisplay - index }}
             key={member.userId}
           >
-            <img
-              src={member.userImage}
-              alt={member.userName}
-              className="h-full w-full object-cover"
-            />
+            {member.userImage && (
+              <img
+                src={member.userImage}
+                alt={member.userName}
+                className="h-full w-full object-cover"
+              />
+            )}
+            {!member.userImage && (
+              <UserDefaultProfile className="h-full w-full object-cover" />
+            )}
           </div>
         ))}
       </div>

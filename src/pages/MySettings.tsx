@@ -32,6 +32,7 @@ function MySettingsContent() {
   const uploadImageMutation = useUploadImage();
 
   const [nickname, setNickname] = useState(user.nickname);
+  const [nicknameError, setNicknameError] = useState("");
   const [profileImageUrl, setProfileImageUrl] = useState(user.image);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
@@ -97,8 +98,36 @@ function MySettingsContent() {
     e.target.value = "";
   };
 
+  const handleNicknameChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setNickname(e.target.value);
+    if (nicknameError) setNicknameError("");
+  };
+
+  // 이름 입력란 블러 시 유효성 검사
+  const handleNicknameBlur = () => {
+    if (nickname.trim().length === 0) {
+      setNicknameError("이름을 입력해주세요.");
+    } else if (nickname.trim().length < 2) {
+      setNicknameError("이름은 최소 2자 이상이어야 합니다.");
+    }
+  };
+
   const handleSave = () => {
-    if (!hasUnsavedChanges || updateUserMutation.isPending) return;
+    if (updateUserMutation.isPending) return;
+
+    // 닉네임 유효성 검사 강제 실행
+    if (nickname.trim().length === 0) {
+      setNicknameError("이름을 입력해주세요.");
+      return;
+    }
+    if (nickname.trim().length < 2) {
+      setNicknameError("이름은 최소 2자 이상이어야 합니다.");
+      return;
+    }
+
+    if (!hasUnsavedChanges) return;
     const payload: { nickname?: string; image?: string } = {};
     if (nickname.trim() !== user.nickname) payload.nickname = nickname.trim();
     if (profileImageUrl !== user.image) payload.image = profileImageUrl;
@@ -131,13 +160,8 @@ function MySettingsContent() {
                   alt="프로필"
                   className={`${profileSize} ${profileRadius} object-cover ${uploadImageMutation.isPending ? "animate-pulse" : ""}`}
                 />
-                {uploadImageMutation.isPending && (
-                  <span className="absolute inset-0 flex items-center justify-center rounded-[8px] bg-black/30 text-sm font-medium text-white">
-                    업로드 중...
-                  </span>
-                )}
                 <span
-                  className={`bg-background-secondary absolute right-0 bottom-0 flex items-center justify-center rounded-full shadow [&_path]:!fill-[#64748B] ${isMobile ? "h-[18px] w-[18px]" : "h-8 w-8"}`}
+                  className={`bg-background-secondary absolute right-[-9px] bottom-[-9px] flex items-center justify-center rounded-full shadow md:right-[-16px] md:bottom-[-16px] [&_path]:!fill-[#64748B] ${isMobile ? "h-[18px] w-[18px]" : "h-8 w-8"}`}
                 >
                   <PencilIcon
                     className={`shrink-0 ${isMobile ? "h-3.5 w-3.5" : "h-5 w-5"}`}
@@ -154,15 +178,21 @@ function MySettingsContent() {
             </div>
 
             {/* 이름 */}
-            <div className="mb-5">
+            <div className="relative mb-9">
               <Input
                 label="이름"
                 size="auth"
                 variant="default"
                 value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                className="!h-12"
+                onChange={handleNicknameChange}
+                onBlur={handleNicknameBlur}
+                className={`!h-12 ${nicknameError ? "border-status-danger" : ""}`}
               />
+              {nicknameError && (
+                <p className="text-status-danger absolute mt-[8px] text-xs">
+                  {nicknameError}
+                </p>
+              )}
             </div>
 
             {/* 이메일 (읽기 전용) */}
@@ -254,15 +284,49 @@ function MySettingsContent() {
   );
 }
 
+/** 계정 설정 페이지 로딩 스켈레톤 */
+function MySettingsSkeleton() {
+  return (
+    <div className="bg-background-secondary min-h-screen pb-24">
+      <div className="px-4 pt-6 md:px-[56px] md:pt-10 lg:ml-[184px] lg:pt-14">
+        <div className="bg-background-primary mx-auto w-full max-w-[940px] rounded-[20px] px-4 pt-10 pb-10 md:px-[45px] lg:w-[940px] lg:px-[74px]">
+          {/* 타이틀 */}
+          <div className="bg-background-tertiary mb-8 h-7 w-24 animate-pulse rounded" />
+
+          {/* 프로필 이미지 */}
+          <div className="mb-8 flex justify-center">
+            <div className="bg-background-tertiary h-16 w-16 animate-pulse rounded-[8px] md:h-[100px] md:w-[100px]" />
+          </div>
+
+          {/* 이름 필드 */}
+          <div className="mb-5 space-y-2">
+            <div className="bg-background-tertiary h-4 w-10 animate-pulse rounded" />
+            <div className="bg-background-tertiary h-12 w-full animate-pulse rounded-lg" />
+          </div>
+
+          {/* 이메일 필드 */}
+          <div className="mb-5 space-y-2">
+            <div className="bg-background-tertiary h-4 w-12 animate-pulse rounded" />
+            <div className="bg-background-tertiary h-12 w-full animate-pulse rounded-lg" />
+          </div>
+
+          {/* 비밀번호 필드 */}
+          <div className="mb-8 space-y-2">
+            <div className="bg-background-tertiary h-4 w-14 animate-pulse rounded" />
+            <div className="bg-background-tertiary h-12 w-full animate-pulse rounded-lg" />
+          </div>
+
+          {/* 회원 탈퇴 */}
+          <div className="bg-background-tertiary h-5 w-24 animate-pulse rounded" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function MySettings() {
   return (
-    <FetchBoundary
-      loadingFallback={
-        <div className="bg-background-secondary flex min-h-screen items-center justify-center">
-          <span className="text-color-default text-md-r">로딩 중...</span>
-        </div>
-      }
-    >
+    <FetchBoundary loadingFallback={<MySettingsSkeleton />}>
       <MySettingsContent />
     </FetchBoundary>
   );
