@@ -39,13 +39,16 @@ export default function Index() {
 
       observerRef.current = new IntersectionObserver(
         ([entry]) => {
+          // 화면에 들어오면 true(푸터 버튼), 나가면 false(플로팅 버튼)
           setIsAtBottom(entry.isIntersecting);
         },
-        { threshold: 0.1 },
+        {
+          threshold: 0.1,
+          rootMargin: "0px 0px -50px 0px", // 💡 푸터가 조금 더 많이 보일 때 전환되도록 마진 조정
+        },
       );
 
       observerRef.current.observe(node);
-      console.log("✅ 드디어 감지 대상(Node)을 찾았습니다!", node);
     }
   };
 
@@ -180,7 +183,8 @@ export default function Index() {
                   </div>
                   <div
                     ref={setSection4EndRef}
-                    style={{ height: "10px", background: "red" }}
+                    className="absolute bottom-0 h-1 w-full"
+                    style={{ background: "transparent" }}
                   />
                 </section>
               </section>
@@ -191,13 +195,35 @@ export default function Index() {
               <AnimatePresence>
                 {!isAtBottom && (
                   <motion.div
-                    key="floating-btn"
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.5 }}
-                    transition={{ duration: 0.3 }}
-                    className="pointer-events-auto absolute right-10 bottom-10 md:right-12 md:bottom-12"
+                    initial={false}
+                    animate={{
+                      // 💡 항상 fixed로 두어 레이아웃 끊김을 방지합니다.
+                      position: "fixed",
+                      // 💡 위치 계산: 바닥일 때는 화면 중앙(50%), 아닐 때는 우측(40px)
+                      left: isAtBottom ? "50%" : "calc(100% - 100px)",
+                      bottom: isAtBottom ? "150px" : "40px",
+                      x: isAtBottom ? "-50%" : "-50%", // 중앙 정렬 유지
+
+                      // 💡 비행 디테일
+                      rotate: isAtBottom ? 360 : 0, // 날아갈 때 회전
+                      scale: isAtBottom ? 1.3 : 1, // 도착 시 강조
+                      filter: isAtBottom ? "blur(0px)" : "blur(0px)",
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 40, // 💡 낮을수록 더 멀리서 슝~ 날아오는 느낌
+                      damping: 12, // 💡 공기 저항 느낌
+                      mass: 1.2, // 💡 약간의 무게감
+                    }}
+                    className="pointer-events-auto z-[9999] cursor-pointer"
                     onClick={() => navigate("/login")}
+                    style={{
+                      width: "160px",
+                      height: "48px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
                   >
                     <ThreeButton />
                   </motion.div>
@@ -216,20 +242,24 @@ export default function Index() {
                     팀원 모두와 같은 방향, 같은 속도로 나아가는 가장 쉬운 방법
                   </p>
                 </div>
-
-                <div className="relative flex h-24 w-full items-center justify-center border border-dashed border-transparent">
+                <div className="h-24 w-full" />
+                <div className="relative flex h-24 w-full items-center justify-center">
                   <AnimatePresence>
                     {isAtBottom && (
                       <motion.div
                         key="footer-btn"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        className="flex w-full cursor-pointer items-center justify-center"
+                        // 💡 플로팅 버튼과 동일한 애니메이션 수치를 적용하여 이질감을 없앱니다.
+                        initial={{ opacity: 0, scale: 1, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 1, y: 10 }}
+                        transition={{ duration: 0.2 }}
+                        className="flex cursor-pointer items-center justify-center"
                         onClick={() => navigate("/login")}
-                        style={{ width: "200px", height: "80px" }}
                       >
-                        <ThreeButton />
+                        {/* 💡 푸터에서도 동일한 크기(160x48)를 유지합니다. */}
+                        <div className="flex h-[48px] w-[160px] items-center justify-center">
+                          <ThreeButton />
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>

@@ -10,22 +10,15 @@ function Scene() {
   const [clicked, setClicked] = useState(false);
   const meshRef = useRef<THREE.Mesh>(null);
 
-  useFrame(() => {
+  useFrame((state) => {
     if (meshRef.current) {
-      const scrollY = typeof window !== "undefined" ? window.scrollY : 0;
-      const width = typeof window !== "undefined" ? window.innerWidth : 1024;
+      const t = state.clock.getElapsedTime();
+      const floatingSpeed = 4;
+      const floatingRange = 10;
 
-      let speedFactor = 0.01;
+      meshRef.current.position.y = Math.sin(t * floatingSpeed) * floatingRange;
 
-      if (width < 768) {
-        speedFactor = 0.009;
-      } else if (width < 1024) {
-        speedFactor = 0.2;
-      } else {
-        speedFactor = 0.0086;
-      }
-
-      meshRef.current.rotation.x = scrollY * speedFactor;
+      meshRef.current.rotation.z = Math.cos(t * 2.1) * 0.08;
     }
   });
 
@@ -55,7 +48,13 @@ function Scene() {
           roughness={0.3}
           metalness={0.8}
         />
-        <Text position={[0, 0, 11]} fontSize={16} color="white">
+        <Text
+          position={[0, 0, 11]}
+          fontSize={18}
+          color="white"
+          letterSpacing={0.2}
+          font="/font/Pretendard-Bold.woff"
+        >
           시작하기
         </Text>
       </RoundedBox>

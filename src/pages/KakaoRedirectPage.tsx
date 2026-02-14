@@ -53,7 +53,7 @@ export default function KakaoRedirectPage() {
         localStorage.setItem("refreshToken", response.refreshToken);
 
         alert("카카오 로그인 성공!");
-        navigate("/");
+        navigate("/team");
       } catch (error) {
         console.error("카카오 로그인 실패 상세:", error);
         if (error instanceof Error) {

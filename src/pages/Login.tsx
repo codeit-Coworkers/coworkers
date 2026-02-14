@@ -63,7 +63,7 @@ export default function LoginPage() {
       signIn(signInData, {
         onSuccess: () => {
           alert("로그인 성공!");
-          navigate("/");
+          navigate("/team");
         },
         onError: (error: Error) => {
           alert(error.message);
