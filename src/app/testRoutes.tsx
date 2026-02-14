@@ -15,6 +15,7 @@ import TestErrorBoundary from "@/pages/test/TestErrorBoundary";
 import TestTeamMemberSection from "@/pages/test/TestTeamMemberSection";
 import TestTaskColumn from "@/pages/test/TestTaskColumn";
 import TaskListDetail from "@/features/tasks/components/TaskListDetail";
+import Spinner from "@/components/common/Spinner/Spinner";
 
 export const testRoutes = [
   {
@@ -60,6 +61,10 @@ export const testRoutes = [
   {
     path: "/test/list-page",
     element: <TestListPage />,
+  },
+  {
+    path: "/test/loading",
+    element: <Spinner message="로딩 중..." />,
   },
   {
     path: "/test/modal",

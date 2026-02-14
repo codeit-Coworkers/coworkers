@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { FetchBoundary } from "@/providers/boundary";
+import { useGroups } from "@/api/user";
 import TaskColumn from "@/features/taskcolumn/TaskColumn";
 import TaskColumnSkeleton from "@/features/taskcolumn/TaskColumnSkeleton";
 import TeamMemberSection from "@/features/TeamMemberSectiom/TeamMemberSection";
@@ -36,8 +37,14 @@ export default function Team() {
         divider: beforeDivider,
       };
 
-  // 팀이 없을 때 화면
+  // groupId 없으면 그룹 목록 조회 후 첫 번째 팀으로 리다이렉트
+  const { data: groups } = useGroups();
+
   if (!groupId) {
+    if (groups.length > 0) {
+      return <Navigate to={`/team/${groups[0].id}`} replace />;
+    }
+
     return (
       <div>
         <div className="flex h-[100vh] flex-col items-center justify-center">

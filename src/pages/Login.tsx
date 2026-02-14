@@ -9,8 +9,8 @@ import { Button } from "@/components/common/Button/Button";
 import Kakaoicon from "@/assets/kakao.svg";
 import ForgotPasswordModal from "@/pages/ForgotPassword";
 import { useToastStore } from "@/stores/useToastStore";
-import { getGroups } from "@/api/user";
 import { useAuthStore } from "@/stores/useAuthStore";
+import Spinner from "@/components/common/Spinner/Spinner";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -20,6 +20,7 @@ export default function LoginPage() {
   const { mutate: signUp, isPending: isSignUpPending } = useSignUp();
   const toast = useToastStore();
   const { login } = useAuthStore();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const isPending = isSignInPending || isSignUpPending;
   const KAKAO_REST_API_KEY = "35804a1d124738c314f9abcb9b9181ea";
   const REDIRECT_URI = `${window.location.origin}/login/kakao`;
@@ -65,15 +66,13 @@ export default function LoginPage() {
         password: data.password,
       };
       signIn(signInData, {
-        onSuccess: async (response) => {
+        onSuccess: (response) => {
           login();
-          toast.show(`안녕하세요 ${response.user.nickname}님!`);
-          const groups = await getGroups();
-          if (groups.length > 0) {
-            navigate(`/team/${groups[0].id}`);
-          } else {
+          setIsLoggingIn(true);
+          setTimeout(() => {
             navigate("/team");
-          }
+            toast.show(`안녕하세요 ${response.user.nickname}님!`);
+          }, 1000);
         },
         onError: (error: Error) => {
           toast.show(error.message);
@@ -81,6 +80,10 @@ export default function LoginPage() {
       });
     }
   };
+
+  if (isLoggingIn) {
+    return <Spinner message="로그인 중..." />;
+  }
 
   return (
     <div className="bg-background-secondary flex h-full w-full flex-col items-center sm:flex-row">
