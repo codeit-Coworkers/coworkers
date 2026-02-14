@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Dropdown from "@/components/common/Dropdown/Dropdown";
 import { useGnbStore } from "../useGnbStore";
 import { useUser } from "@/api/user";
@@ -5,6 +6,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate, useParams } from "react-router-dom";
 import UserDefaultProfile from "@/assets/user.svg";
 import { useToastStore } from "@/stores/useToastStore";
+import Spinner from "@/components/common/Spinner/Spinner";
 
 export default function GnbUserProfile() {
   const { data: user } = useUser();
@@ -15,9 +17,15 @@ export default function GnbUserProfile() {
   const navigate = useNavigate();
   const { show: showToast } = useToastStore();
 
+  // 로그아웃 상태 관리
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const handleLogout = () => {
-    logout();
-    navigate("/login");
+    setIsLoggingOut(true);
+    setTimeout(() => {
+      logout();
+      navigate("/login");
+    }, 1000);
   };
 
   const handleMyHistoryNavigate = () => {
@@ -37,6 +45,10 @@ export default function GnbUserProfile() {
   // 현재 선택된 팀 이름 (없으면 첫 번째 팀)
   const teamName =
     selectedGroup?.group.name ?? user?.memberships[0]?.group.name;
+
+  if (isLoggingOut) {
+    return <Spinner message="로그아웃 중..." />;
+  }
 
   return (
     <>

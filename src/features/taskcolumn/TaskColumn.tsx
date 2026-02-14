@@ -6,6 +6,7 @@ import { Button } from "@/components/common/Button/Button";
 import PlusBlue from "@/assets/plus_blue.svg";
 import FoldTrue from "@/assets/fold-true.svg";
 import FoldFalse from "@/assets/fold-false.svg";
+import { Link } from "react-router-dom";
 
 interface TaskColumnProps {
   groupId: number;
@@ -104,13 +105,14 @@ export default function TaskColumn({
               )}
 
               {todoLists.map((taskList) => (
-                <TaskCard
-                  key={taskList.id}
-                  taskList={taskList}
-                  badgeState="start"
-                  onEdit={() => openModal("ListEdit", taskList)}
-                  onDelete={() => openModal("ListDelete", taskList)}
-                />
+                <Link to={`tasklists/${taskList.id}`} key={taskList.id}>
+                  <TaskCard
+                    taskList={taskList}
+                    badgeState="start"
+                    onEdit={() => openModal("ListEdit", taskList)}
+                    onDelete={() => openModal("ListDelete", taskList)}
+                  />
+                </Link>
               ))}
             </div>
           </div>

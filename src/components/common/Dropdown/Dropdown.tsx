@@ -217,6 +217,7 @@ export default function Dropdown({
           className="relative flex items-center"
           onClick={(e) => {
             e.stopPropagation();
+            e.preventDefault();
             setOpen((prev) => !prev);
           }}
         >
@@ -235,6 +236,7 @@ export default function Dropdown({
           className="cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
+            e.preventDefault();
             setOpen((prev) => !prev);
           }}
         >
