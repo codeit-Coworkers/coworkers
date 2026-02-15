@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
-// SVG Imports
+// SVG Imports (기존과 동일)
 import LogoCoworkers from "@/assets/landing/logo_coworkers.svg";
 import LandingSec1Pc from "@/assets/landing/sec1_pc.svg";
 import LandingSec1Tab from "@/assets/landing/sec1_tablet.svg";
@@ -28,45 +28,64 @@ import { ThreeButton } from "./ThreeButton";
 import { LoadingModel } from "@/components/common/ThreeModal/LodingModal";
 
 export default function Index() {
-  const [showMain, setShowMain] = useState(false);
-  const [isAtBottom, setIsAtBottom] = useState(false);
-  const observerRef = useRef<IntersectionObserver | null>(null);
   const navigate = useNavigate();
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  const isLoggedIn =
+    typeof window !== "undefined" && !!localStorage.getItem("accessToken");
+
+  const [showMain, setShowMain] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!sessionStorage.getItem("hasSeenIntro");
+    }
+    return false;
+  });
+
+  const handleIntroFinish = () => {
+    sessionStorage.setItem("hasSeenIntro", "true");
+    setShowMain(true);
+  };
 
   const setSection4EndRef = (node: HTMLDivElement | null) => {
     if (node) {
       if (observerRef.current) observerRef.current.disconnect();
-
       observerRef.current = new IntersectionObserver(
         ([entry]) => {
           setIsAtBottom(entry.isIntersecting);
         },
-        { threshold: 0.1 },
+        {
+          threshold: 0.1,
+          rootMargin: "0px 0px 100px 0px", // 타이밍 조절 여백
+        },
       );
-
       observerRef.current.observe(node);
-      console.log("✅ 드디어 감지 대상(Node)을 찾았습니다!", node);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (observerRef.current) observerRef.current.disconnect();
+    };
+  }, []);
 
   return (
     <>
       <AnimatePresence mode="wait">
         {!showMain ? (
-          /* ================= [PHASE 1] 3D 인트로 섹션 ================= */
+          /* ================= [PHASE 1] 인트로 ================= */
           <motion.div
             key="intro-screen"
             initial={{ opacity: 1 }}
             exit={{
               opacity: 0,
-              scale: 2,
+              scale: 1,
               filter: "blur(15px)",
             }}
             transition={{ duration: 1.2, ease: "easeInOut" }}
             className="bg-background-primary fixed inset-0 z-[100] flex flex-col items-center justify-center"
           >
             <div className="h-[600px] w-full">
-              <LoadingModel onFinish={() => setShowMain(true)} />
+              <LoadingModel onFinish={handleIntroFinish} />
             </div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -81,7 +100,7 @@ export default function Index() {
             </motion.div>
           </motion.div>
         ) : (
-          /* ================= [PHASE 2] 메인 랜딩 컨텐츠 ================= */
+          /* ================= [PHASE 2] 메인 컨텐츠 ================= */
           <motion.main
             key="main-content"
             initial={{ opacity: 0 }}
@@ -94,6 +113,7 @@ export default function Index() {
                 <Gnb />
               </div>
               <section className="w-full overflow-hidden">
+                {/* 섹션 1 */}
                 <section className="bg-background-secondary flex w-full flex-col items-start pt-[34px] 2xl:flex-row 2xl:p-0">
                   <div className="mb-[19px] ml-[20px] h-auto w-fit shrink-0 md:ml-[37px] 2xl:mt-[208px] 2xl:mr-[169px] 2xl:ml-[76px] 2xl:h-auto">
                     <LogoCoworkers className="h-9 w-9 shrink-0 2xl:h-12 2xl:w-12" />
@@ -113,7 +133,7 @@ export default function Index() {
                   </div>
                 </section>
 
-                {/* ================= 랜딩 섹션 2 ================= */}
+                {/* 섹션 2 */}
                 <section className="bg-icon-inverse relative flex w-full flex-col pt-[73px] 2xl:flex-row 2xl:justify-between 2xl:pt-[114px]">
                   <div className="mb-6 ml-[35px] flex flex-col gap-1 md:ml-[62px] 2xl:ml-[180px] 2xl:pt-[78px]">
                     <FolderFill className="2xl:h-12 2xl:w-12" />
@@ -134,9 +154,8 @@ export default function Index() {
                   </div>
                 </section>
 
-                {/* ================= 랜딩 섹션 3 ================= */}
+                {/* 섹션 3 */}
                 <section className="bg-brand-primary relative flex w-full flex-col pt-[73px] md:pt-[49px] 2xl:flex-row-reverse 2xl:items-center 2xl:justify-end 2xl:pt-[84px]">
-                  {/* ... 섹션 3 내용 생략 (기존 코드 유지) ... */}
                   <div className="mb-6 ml-[35px] flex flex-col gap-1 md:mb-[41px] md:ml-[71px] 2xl:h-auto 2xl:w-auto">
                     <FolderFill2 className="2xl:h-12 2xl:w-12" />
                     <p className="text-lg-b text-color-inverse md:text-2xl-b 2xl:text-3xl-b mb-3 2xl:mb-3.5">
@@ -157,9 +176,8 @@ export default function Index() {
                   </div>
                 </section>
 
-                {/* ================= 랜딩 섹션 4 ================= */}
+                {/* 섹션 4 */}
                 <section className="bg-icon-inverse relative flex w-full flex-col pt-[43px] md:pt-[96px] 2xl:flex-row 2xl:pt-0">
-                  {/* ... 섹션 4 내용 생략 (기존 코드 유지) ... */}
                   <div className="mb-[50px] ml-[35px] flex shrink-0 flex-col gap-1 md:mb-[79px] md:ml-[71px] 2xl:mr-[171px] 2xl:h-auto 2xl:w-auto 2xl:pt-[192px]">
                     <FolderFill3 className="2xl:h-12 2xl:w-12" />
                     <p className="text-lg-b text-brand-primary md:text-2xl-b 2xl:text-3xl-b mb-2 2xl:mb-3.5">
@@ -180,32 +198,44 @@ export default function Index() {
                   </div>
                   <div
                     ref={setSection4EndRef}
-                    style={{ height: "10px", background: "red" }}
+                    className="absolute bottom-0 h-1 w-full"
+                    style={{ background: "transparent" }}
                   />
                 </section>
               </section>
             </div>
 
-            {/* ================= 플로팅 ThreeButton (Gnb 그룹 밖에서 fixed 유지) ================= */}
-            <div className="pointer-events-none fixed inset-0 z-50">
-              <AnimatePresence>
-                {!isAtBottom && (
-                  <motion.div
-                    key="floating-btn"
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.5 }}
-                    transition={{ duration: 0.3 }}
-                    className="pointer-events-auto absolute right-10 bottom-10 md:right-12 md:bottom-12"
-                    onClick={() => navigate("/login")}
-                  >
-                    <ThreeButton />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <motion.div
+              onClick={() => {
+                if (isAtBottom) {
+                  navigate(isLoggedIn ? "/team" : "/login");
+                }
+              }}
+              animate={{
+                position: "fixed",
+                left: isAtBottom ? "50%" : "calc(100% - 100px)",
+                bottom: isAtBottom ? "160px" : "40px",
+                x: "-50%",
+                scale: 1,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 50,
+                damping: 40,
+                mass: 2,
+              }}
+              className="pointer-events-auto z-[9999] cursor-pointer"
+              style={{
+                width: "160px",
+                height: "48px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ThreeButton />
+            </motion.div>
 
-            {/* ================= 랜딩 하단 시작하기 버튼 섹션 (Gnb 그룹 밖) ================= */}
             <footer className="mt-[63px] w-full pb-[93px] text-center md:mt-[76px] 2xl:mt-[97px] 2xl:pb-[123px]">
               <div className="mx-auto w-full max-w-[280px] md:max-w-[373px]">
                 <div className="mb-7">
@@ -216,24 +246,7 @@ export default function Index() {
                     팀원 모두와 같은 방향, 같은 속도로 나아가는 가장 쉬운 방법
                   </p>
                 </div>
-
-                <div className="relative flex h-24 w-full items-center justify-center border border-dashed border-transparent">
-                  <AnimatePresence>
-                    {isAtBottom && (
-                      <motion.div
-                        key="footer-btn"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        className="flex w-full cursor-pointer items-center justify-center"
-                        onClick={() => navigate("/login")}
-                        style={{ width: "200px", height: "80px" }}
-                      >
-                        <ThreeButton />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                <div className="h-1 w-full" />
               </div>
             </footer>
           </motion.main>

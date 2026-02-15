@@ -283,7 +283,7 @@ export default function LoginPage() {
 
               <div className="flex items-center justify-between gap-2 pb-6">
                 <span className="text-color-default">간편 로그인하기</span>
-                <a href={KAKAO_AUTH_URL} target="_blank">
+                <a href={KAKAO_AUTH_URL} target="_self">
                   <Kakaoicon />
                 </a>
               </div>

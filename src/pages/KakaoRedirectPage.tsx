@@ -5,7 +5,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { fetchClient } from "@/lib/fetchClient";
 import { BASE_URL } from "@/api/config";
 
-// 💡 응답 데이터 타입을 명확히 정의하여 any 에러를 방지합니다.
 interface KakaoLoginResponse {
   accessToken: string;
   refreshToken: string;
@@ -53,7 +52,7 @@ export default function KakaoRedirectPage() {
         localStorage.setItem("refreshToken", response.refreshToken);
 
         alert("카카오 로그인 성공!");
-        navigate("/");
+        navigate("/team");
       } catch (error) {
         console.error("카카오 로그인 실패 상세:", error);
         if (error instanceof Error) {
