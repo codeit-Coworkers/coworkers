@@ -27,7 +27,7 @@ export default function BoardListGrid({
             state="default"
             size={cardSize}
             title={article.title}
-            content=""
+            content={article.content ?? ""}
             author={article.writer.nickname}
             date={formatDate(article.createdAt)}
             likeCount={article.likeCount}
