@@ -7,7 +7,7 @@ function toBestPost(article: ArticleSummary) {
   return {
     id: article.id,
     title: article.title,
-    content: "",
+    content: article.content ?? "",
     author: article.writer.nickname,
     date: formatDate(article.createdAt),
     likeCount: article.likeCount,
