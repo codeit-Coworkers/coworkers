@@ -61,7 +61,7 @@ export const router = createBrowserRouter([
           { path: "/boards/:articleId", element: <BoardDetail /> },
           { path: "/my-history", element: <MyHistory /> },
           { path: "/my-settings", element: <MySettings /> },
-          { path: "/list", element: <ListPage /> },
+          { path: "/team/:groupId/list", element: <ListPage /> },
         ],
       },
       {

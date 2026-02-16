@@ -1,10 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { fetchClient, HttpError } from "@/lib/fetchClient";
+import { BASE_URL } from "@/api/config";
+
 import Modal from "@/components/common/Modal/Modal";
 import ListCreateModal from "@/components/common/Modal/Contents/ListCreateModal";
 import TaskCreateModal, {
   TaskData,
 } from "@/components/common/Modal/Contents/TaskCreateModal";
-
 import { WeeklyCalendar } from "./components/WeeklyCalendar";
 import DatePagination from "./components/DatePagination";
 import CalendarPicker from "./components/CalendarPicker";
@@ -17,100 +22,181 @@ import ArrowDown from "@/assets/arrow-down.svg";
 import Loading from "@/assets/progress-ongoing.svg";
 import LoadingDone from "@/assets/progress-done.svg";
 
+import { useDeleteTaskList } from "@/api/tasklist";
+import { getTasks, createTask, updateTask, deleteTask } from "@/api/task";
+import { useToastStore } from "@/stores/useToastStore";
+import { TaskServer } from "@/types/task";
+
 // --- 타입 정의 ---
-interface Task {
-  id: number;
-  taskListId: string | number;
-  groupId: string | number;
-  title: string;
-  commentCount: number;
-  date: Date;
-  time?: string | null;
-  repeatLabel?: string;
-  isRecurring: boolean;
-  isCompleted: boolean;
-  memo?: string;
+interface CreateTaskParams {
+  name: string;
+  description: string;
+  startDate: string;
+  frequencyType: "DAILY" | "WEEKLY" | "MONTHLY" | "ONCE";
 }
 
+interface TaskListResponse {
+  id: number;
+  name: string;
+  displayIndex: number;
+  tasks: TaskServer[];
+}
+
+interface UITask extends Omit<TaskServer, "name"> {
+  title: string;
+  isCompleted: boolean;
+}
+
+const formatDateToYYYYMMDD = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 export default function ListPage() {
+  const queryClient = useQueryClient();
+  const { show: showToast } = useToastStore();
+
+  // 1. URL 파라미터 추출 및 숫자 변환
+  const { groupId } = useParams<{ groupId: string }>();
+  const selectedGroupId = Number(groupId);
+
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [isListModalOpen, setIsListModalOpen] = useState<boolean>(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
-
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const [userSelectedListId, setUserSelectedListId] = useState<number | null>(
+    null,
+  );
+
   const dropdownRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
 
-  const [selectedGroupId] = useState<number>(666);
-  const [selectedListId, setSelectedListId] = useState<number>(1);
-
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
-
-  const [taskGroups, setTaskGroups] = useState([
-    { id: 1, name: "법인 설립", current: 3, total: 5 },
-    { id: 2, name: "법인 등기", current: 3, total: 5 },
-    { id: 3, name: "정기 주총", current: 3, total: 5 },
-  ]);
-
-  const [allTasks, setAllTasks] = useState<Task[]>([
-    {
-      id: 1,
-      taskListId: "1",
-      groupId: "666",
-      title: "법인 설립 비용 안내 드리기",
-      commentCount: 3,
-      date: new Date(),
-      repeatLabel: "매일",
-      isRecurring: true,
-      isCompleted: true,
+  // 그룹 할 일 목록 조회 (404 방어 로직 포함)
+  const { data: taskGroups = [] } = useQuery({
+    queryKey: ["taskLists", selectedGroupId],
+    queryFn: async () => {
+      try {
+        return await fetchClient<TaskListResponse[]>(
+          `${BASE_URL}/groups/${selectedGroupId}/task-lists`,
+          {
+            method: "GET",
+          },
+        );
+      } catch (error: unknown) {
+        if (error instanceof HttpError && error.status === 404) {
+          console.warn("해당 그룹에 등록된 할 일 목록이 없습니다.");
+          return [];
+        }
+        throw error;
+      }
     },
-  ]);
+    enabled: !!selectedGroupId && !isNaN(selectedGroupId),
+  });
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (dropdownRef.current && !dropdownRef.current.contains(target)) {
-        setIsDropdownOpen(false);
-      }
-      if (calendarRef.current && !calendarRef.current.contains(target)) {
-        setShowCalendar(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  // 2. 현재 선택된 리스트 ID 계산 (목록이 생기면 자동으로 첫 번째 것을 선택)
+  const currentListId =
+    userSelectedListId ?? (taskGroups.length > 0 ? taskGroups[0].id : null);
+  const dateParam = `${formatDateToYYYYMMDD(selectedDate)}T00:00:00Z`;
+
+  // 할 일 리스트 조회
+  const { data: tasks = [], isLoading: isTasksLoading } = useQuery({
+    queryKey: ["tasks", currentListId, dateParam],
+    queryFn: () => getTasks(selectedGroupId, currentListId!, dateParam),
+    enabled: !!currentListId && !!selectedGroupId,
+    select: (data: TaskServer[]): UITask[] =>
+      data.map((task) => ({
+        ...task,
+        title: task.name,
+        isCompleted: !!task.doneAt,
+      })),
+    staleTime: 1000 * 60,
+  });
+
+  const { mutate: deleteList } = useDeleteTaskList(selectedGroupId);
+
+  const createTaskMutation = useMutation({
+    mutationFn: (data: { taskListId: number; body: CreateTaskParams }) => {
+      return createTask(data.taskListId, {
+        title: data.body.name,
+        description: data.body.description,
+        date: data.body.startDate,
+        frequencyType:
+          data.body.frequencyType === "ONCE" ? "NONE" : data.body.frequencyType,
+      } as Parameters<typeof createTask>[1]);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", currentListId] });
+      queryClient.invalidateQueries({
+        queryKey: ["taskLists", selectedGroupId],
+      });
+      setIsTaskModalOpen(false);
+      showToast("할 일이 추가되었습니다.");
+    },
+    onError: () => showToast("할 일 추가에 실패했습니다."),
+  });
+
+  const toggleTaskMutation = useMutation({
+    mutationFn: ({ id, doneAt }: { id: number; doneAt: string | null }) =>
+      updateTask(id, { doneAt } as Parameters<typeof updateTask>[1]),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", currentListId] });
+      queryClient.invalidateQueries({
+        queryKey: ["taskLists", selectedGroupId],
+      });
+    },
+  });
+
+  const deleteTaskMutation = useMutation({
+    mutationFn: (id: number) => deleteTask(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", currentListId] });
+      queryClient.invalidateQueries({
+        queryKey: ["taskLists", selectedGroupId],
+      });
+      showToast("할 일이 삭제되었습니다.");
+    },
+  });
 
   const handleCreateTask = (data: TaskData) => {
-    const taskDate = data.startDate ? new Date(data.startDate) : selectedDate;
-    const newTask: Task = {
-      id: Date.now(),
-      taskListId: data.taskListId,
-      groupId: data.groupId,
-      title: data.title,
-      commentCount: 0,
-      date: taskDate,
-      repeatLabel: data.repeatLabel,
-      isRecurring: data.isRecurring,
-      isCompleted: false,
-      memo: data.description,
+    const frequencyMap: Record<
+      string,
+      "DAILY" | "WEEKLY" | "MONTHLY" | "ONCE"
+    > = {
+      매일: "DAILY",
+      "주 반복": "WEEKLY",
+      "월 반복": "MONTHLY",
+      "반복 안함": "ONCE",
     };
-    setAllTasks((prev) => [...prev, newTask]);
-    setIsTaskModalOpen(false);
+
+    const payload: CreateTaskParams = {
+      name: data.title,
+      description: data.description,
+      startDate: data.startDate || new Date().toISOString(),
+      frequencyType: frequencyMap[data.repeatLabel] || "ONCE",
+    };
+
+    if (currentListId) {
+      createTaskMutation.mutate({
+        taskListId: Number(data.taskListId),
+        body: payload,
+      });
+    }
+  };
+
+  const handleDeleteList = (listId: number) => {
+    if (confirm("정말 이 목록을 삭제하시겠습니까?")) {
+      deleteList(listId);
+      setUserSelectedListId(null);
+    }
   };
 
   const handleMonthChange = (direction: "prev" | "next") => {
     const newDate = new Date(selectedDate);
-    const currentDay = selectedDate.getDate();
-    newDate.setDate(1);
     newDate.setMonth(newDate.getMonth() + (direction === "next" ? 1 : -1));
-    const lastDayOfNewMonth = new Date(
-      newDate.getFullYear(),
-      newDate.getMonth() + 1,
-      0,
-    ).getDate();
-    newDate.setDate(Math.min(currentDay, lastDayOfNewMonth));
     setSelectedDate(newDate);
   };
 
@@ -120,50 +206,61 @@ export default function ListPage() {
     setSelectedDate(newDate);
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.targetTouches[0].clientX;
-  };
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.targetTouches[0].clientX;
-  };
-  const handleTouchEnd = () => {
-    const distance = touchStartX.current - touchEndX.current;
-    if (Math.abs(distance) > 50)
-      handleWeekChange(distance > 0 ? "next" : "prev");
-  };
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (dropdownRef.current && !dropdownRef.current.contains(target))
+        setIsDropdownOpen(false);
+      if (calendarRef.current && !calendarRef.current.contains(target))
+        setShowCalendar(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-  const isSameDay = (d1: Date, d2: Date) =>
-    d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate();
+  if (!groupId || isNaN(selectedGroupId)) {
+    return (
+      <div className="bg-background-secondary flex h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-xl font-bold">올바르지 않은 접근입니다.</p>
+          <p className="text-color-tertiary mt-2">그룹 ID를 확인해 주세요.</p>
+        </div>
+      </div>
+    );
+  }
 
-  const activeGroup =
-    taskGroups.find((g) => g.id === selectedListId) || taskGroups[0];
-  const filteredTasks = allTasks.filter(
-    (task) =>
-      Number(task.taskListId) === selectedListId &&
-      isSameDay(new Date(task.date), selectedDate),
-  );
+  // 3. Optional Chaining 강화 (데이터가 없을 때 필터 오류 방지)
+  const activeGroup = taskGroups.find((g) => g.id === currentListId) || {
+    name: "목록 없음",
+    id: -1,
+    tasks: [],
+  };
+  const currentCount = (activeGroup.tasks ?? []).filter(
+    (t) => !!t.doneAt,
+  ).length;
+  const totalCount = (activeGroup.tasks ?? []).length;
 
   return (
     <div className="bg-background-secondary font-pretendard flex min-h-screen flex-col lg:flex-row">
       <main className="text-color-primary flex-1 p-4 md:p-6 lg:p-10">
         <div className="mx-auto max-w-full space-y-6 lg:max-w-300">
-          {/* 헤더 */}
           <header className="lg:border-border-primary lg:bg-background-inverse text-2xl-b mb-6 flex items-center rounded-xl py-3 md:mb-12 md:py-4 lg:justify-between lg:border lg:px-4 lg:shadow-sm">
-            <h1 className="md:text-2xl-b text-xl font-bold">경영관리팀</h1>
+            {/* API에서 팀 이름을 가져오기 전까지는 '팀 목록' 등으로 표시 가능 */}
+            <h1 className="md:text-2xl-b text-xl font-bold">
+              {activeGroup.name !== "목록 없음"
+                ? activeGroup.name
+                : "할 일 목록"}
+            </h1>
             <SettingsIcon className="text-icon-primary ml-2.5 h-5 w-5 cursor-pointer" />
           </header>
 
           <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
             <aside className="flex w-full shrink-0 flex-col lg:w-72">
               <div className="flex flex-col gap-4">
-                {/* 제목 라인 */}
                 <h2 className="md:text-xl-b text-lg-sb lg:text-xl-b px-1 font-bold">
                   할 일
                 </h2>
-
-                {/* 드롭다운 & 할 일 추가 버튼 라인 (모바일 전용) */}
+                {/* 모바일 뷰 드롭다운 */}
                 <div className="flex items-center justify-between gap-2 lg:hidden">
                   <div className="relative max-w-50 flex-1" ref={dropdownRef}>
                     <button
@@ -175,13 +272,13 @@ export default function ListPage() {
                           {activeGroup.name}
                         </span>
                         <div className="flex items-center gap-1">
-                          {activeGroup.current === activeGroup.total ? (
+                          {currentCount === totalCount && totalCount > 0 ? (
                             <LoadingDone className="h-4 w-4" />
                           ) : (
                             <Loading className="h-4 w-4" />
                           )}
                           <span className="text-brand-primary text-md-r">
-                            {activeGroup.current}/{activeGroup.total}
+                            {currentCount}/{totalCount}
                           </span>
                         </div>
                       </div>
@@ -189,25 +286,28 @@ export default function ListPage() {
                         className={`text-icon-primary h-4 w-4 transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`}
                       />
                     </button>
-
                     {isDropdownOpen && (
                       <ul className="border-border-primary animate-in fade-in slide-in-from-top-1 absolute z-70 mt-2 w-full overflow-hidden rounded-xl border bg-white shadow-2xl">
                         {taskGroups.map((group) => (
                           <li
                             key={group.id}
                             onClick={() => {
-                              setSelectedListId(group.id);
+                              setUserSelectedListId(group.id);
                               setIsDropdownOpen(false);
                             }}
-                            className={`hover:bg-background-secondary cursor-pointer px-4 py-3 text-sm transition-colors ${selectedListId === group.id ? "text-brand-primary bg-blue-50 font-bold" : "text-color-primary"}`}
+                            className={`hover:bg-background-secondary cursor-pointer px-4 py-3 text-sm transition-colors ${currentListId === group.id ? "text-brand-primary bg-blue-50 font-bold" : "text-color-primary"}`}
                           >
-                            {group.name} ({group.current}/{group.total})
+                            {group.name} (
+                            {
+                              (group.tasks ?? []).filter((t) => !!t.doneAt)
+                                .length
+                            }
+                            /{(group.tasks ?? []).length})
                           </li>
                         ))}
                       </ul>
                     )}
                   </div>
-
                   <button
                     onClick={() => setIsTaskModalOpen(true)}
                     className="border-brand-primary text-brand-primary text-sm-sb bg-background-inverse flex shrink-0 items-center gap-1.5 rounded-4xl border px-4 py-3 shadow-sm transition-all active:scale-95"
@@ -217,42 +317,39 @@ export default function ListPage() {
                 </div>
               </div>
 
-              {/* 데스크탑 리스트 카드 (데스크탑에서만 보임) */}
+              {/* 데스크탑 사이드바 목록 */}
               <div className="mt-6 hidden w-full flex-col gap-3 lg:flex">
+                <p className="text-xs text-red-500">
+                  불러온 목록 개수: {taskGroups?.length || 0}
+                </p>
                 {taskGroups.map((group) => (
                   <TaskGroupCard
                     key={group.id}
-                    {...group}
-                    isActive={selectedListId === group.id}
-                    onClick={() => setSelectedListId(group.id)}
-                    onEdit={() => console.log("수정")}
-                    onDelete={() =>
-                      setTaskGroups((prev) =>
-                        prev.filter((g) => g.id !== group.id),
-                      )
+                    name={group.name}
+                    current={
+                      (group.tasks ?? []).filter((t) => !!t.doneAt).length
                     }
+                    total={(group.tasks ?? []).length}
+                    isActive={currentListId === group.id}
+                    onClick={() => setUserSelectedListId(group.id)}
+                    onEdit={() => console.log("수정")}
+                    onDelete={() => handleDeleteList(group.id)}
                   />
                 ))}
-
                 <div className="mt-4 flex w-full items-center justify-center">
                   <button
                     onClick={() => setIsListModalOpen(true)}
                     className="border-brand-primary text-brand-primary text-sm-sb bg-background-inverse hover:bg-brand-primary group flex h-10 w-28 items-center justify-center gap-1.5 rounded-4xl border shadow-sm transition-all hover:text-white active:scale-95"
                   >
                     <PlusIcon className="h-3.5 w-3.5 group-hover:brightness-0 group-hover:invert" />
-                    할 일 추가
+                    할 일 목록 추가
                   </button>
                 </div>
               </div>
             </aside>
 
             {/* 메인 섹션 */}
-            <section
-              className="border-border-primary relative min-h-125 flex-1 rounded-xl border bg-white p-6 shadow-sm md:p-8 lg:p-12"
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-            >
+            <section className="border-border-primary relative min-h-125 flex-1 rounded-xl border bg-white p-6 shadow-sm md:p-8 lg:p-12">
               <div className="mx-auto max-w-full space-y-8 lg:max-w-3xl">
                 <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                   <h3 className="md:text-2xl-b text-color-tertiary text-xl font-bold">
@@ -274,7 +371,6 @@ export default function ListPage() {
                     </div>
                   </div>
                 </div>
-
                 <WeeklyCalendar
                   selectedDate={selectedDate}
                   onDateSelect={setSelectedDate}
@@ -283,31 +379,52 @@ export default function ListPage() {
                 />
 
                 <div className="flex flex-col gap-3">
-                  {filteredTasks.length > 0 ? (
-                    filteredTasks.map((task) => (
+                  {isTasksLoading ? (
+                    <div className="py-20 text-center text-gray-400">
+                      로딩 중...
+                    </div>
+                  ) : tasks.length > 0 ? (
+                    tasks.map((task: UITask) => (
                       <TaskCard
                         key={task.id}
-                        {...task}
+                        title={task.title}
+                        isCompleted={task.isCompleted}
+                        commentCount={task.commentCount}
+                        date={new Date(task.date)}
+                        time={null}
                         repeatLabel={
-                          task.repeatLabel && task.repeatLabel !== "반복 안함"
-                            ? `${task.repeatLabel} 반복`
-                            : ""
+                          task.frequency === "DAILY"
+                            ? "매일"
+                            : task.frequency === "WEEKLY"
+                              ? "주 반복"
+                              : task.frequency === "MONTHLY"
+                                ? "월 반복"
+                                : ""
                         }
-                        onToggle={() => {}}
+                        isRecurring={task.frequency !== "ONCE"}
+                        onToggle={() =>
+                          toggleTaskMutation.mutate({
+                            id: task.id,
+                            doneAt: task.doneAt
+                              ? null
+                              : new Date().toISOString(),
+                          })
+                        }
+                        onDelete={() => {
+                          if (confirm("할 일을 삭제하시겠습니까?"))
+                            deleteTaskMutation.mutate(task.id);
+                        }}
+                        onEdit={() => console.log("수정 모달 연결 필요")}
                       />
                     ))
                   ) : (
                     <div className="text-color-disabled flex flex-col items-center justify-center py-24 text-center">
                       <p>해당 날짜에 등록된 할 일이 없습니다.</p>
-                      <p className="text-color-disabled mt-2 text-sm font-medium md:hidden">
-                        좌우로 밀어서 주간을 이동해보세요.
-                      </p>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Floating Action Button (모바일/태블릿용) */}
               <button
                 type="button"
                 onClick={() => setIsTaskModalOpen(true)}
@@ -320,16 +437,19 @@ export default function ListPage() {
         </div>
       </main>
 
-      {/* 모달 배경 및 컴포넌트 */}
+      {/* 모달 영역 */}
       {(isListModalOpen || isTaskModalOpen) && (
         <div
-          className=""
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
           onClick={() => {
             setIsListModalOpen(false);
             setIsTaskModalOpen(false);
           }}
         >
-          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-lg">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg px-4"
+          >
             {isListModalOpen && (
               <Modal
                 isOpen={isListModalOpen}
@@ -349,7 +469,7 @@ export default function ListPage() {
                 <TaskCreateModal
                   onClose={() => setIsTaskModalOpen(false)}
                   onCreate={handleCreateTask}
-                  currentListId={selectedListId}
+                  currentListId={currentListId || 0}
                   currentGroupId={selectedGroupId}
                 />
               </Modal>
