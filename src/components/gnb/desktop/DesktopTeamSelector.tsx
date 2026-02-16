@@ -15,6 +15,9 @@ export default function DesktopTeamSelector() {
 
   const { data: group } = useGroups();
 
+  // 팀이 하나도 없는 경우 팀 선택 부분 안보이게 처리
+  if (group.length === 0) return null;
+
   if (isFolded) {
     const firstGroupId = group[0]?.id;
 

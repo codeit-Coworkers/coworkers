@@ -1,6 +1,7 @@
 import Badge from "@/components/common/Badge/Badge";
 import Dropdown from "@/components/common/Dropdown/Dropdown";
 import Todo from "@/components/common/Todo/todo";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 import { TaskListServer } from "@/types/taskList";
 
 interface TaskCardProps {
@@ -20,6 +21,8 @@ export default function TaskCard({
   const cardPadding = showTasks
     ? "pt-[16px] pr-[16px] pb-[24px]"
     : "pt-[14px] pr-[12px] pb-[14px]";
+
+  const isMobile = useIsMobile();
 
   return (
     <div className="mt-[12px] lg:mt-[20px]">
@@ -45,6 +48,8 @@ export default function TaskCard({
                 ]}
                 listAlign="center"
                 trigger="kebab"
+                usePortal
+                portalOffset={isMobile ? { top: 0, right: 102 } : undefined}
               />
             </button>
           </div>

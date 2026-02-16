@@ -5,7 +5,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Input } from "@/components/common/Input/Input";
 import { Button } from "@/components/common/Button/Button";
 import { resetPassword } from "@/api/user";
-import Gnb from "@/components/gnb/Gnb";
 
 interface ResetPasswordFormData {
   password: string;
@@ -63,7 +62,6 @@ export default function ResetPasswordPage() {
   return (
     <>
       <div className="bg-background-secondary flex h-screen flex-col md:flex-row">
-        <Gnb />
         <div className="bg-background-primary m-auto max-h-[450px] w-full max-w-[320px] rounded-2xl p-8 shadow-md md:max-w-[460px]">
           <h1 className="text-color-primary mb-8 text-center text-2xl font-bold">
             새 비밀번호 설정

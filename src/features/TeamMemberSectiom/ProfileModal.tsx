@@ -1,4 +1,5 @@
 import Close from "@/assets/close.svg";
+import UserDefaultProfile from "@/assets/user.svg";
 import { useToastStore } from "@/stores/useToastStore";
 
 type ProfileModalProps = {
@@ -32,11 +33,15 @@ export default function ProfileModal({
         <div className="flex flex-col gap-3">
           <div className="mb-6 flex flex-col items-center justify-center">
             <div className="h-[40px] w-[40px] overflow-hidden rounded-[12px]">
-              <img
-                className="h-full w-full object-cover"
-                src={selectedMember?.userImage}
-                alt={selectedMember?.userName + " 프로필 이미지"}
-              />
+              {selectedMember?.userImage ? (
+                <img
+                  className="h-full w-full object-cover"
+                  src={selectedMember.userImage}
+                  alt={selectedMember.userName + " 프로필 이미지"}
+                />
+              ) : (
+                <UserDefaultProfile className="h-full w-full object-cover" />
+              )}
             </div>
             <div className="mt-[16px]">
               <p className="text-md-sb text-color-primary">

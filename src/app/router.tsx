@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import User from "@/pages/User";
 import Boards from "@/pages/Boards";
 import BoardDetail from "@/pages/BoardDetail";
 import BoardWrite from "@/pages/BoardWrite";
@@ -29,39 +28,39 @@ export const router = createBrowserRouter([
         path: "/",
         element: <Index />,
       },
-      {
-        path: "/login",
-        element: <LoginPage />,
-      },
-      {
-        path: "/login/kakao",
-        element: <KakaoRedirectPage />,
-      },
-      {
-        path: "/reset-password",
-        element: <ResetPasswordPage />,
-      },
-      {
-        path: "/user/:id",
-        element: <User />,
-      },
       ...(import.meta.env.DEV ? testRoutes : []),
       {
         element: <Layout />,
         children: [
-          { path: "/user", element: <User /> },
-          { path: "/team", element: <Team /> },
-          { path: "/team/:id", element: <Team /> },
-          { path: "/team/:id/edit", element: <EditTeam /> },
-          { path: "/team/:id/my-history", element: <MyHistory /> },
-          { path: "/team/join", element: <JoinTeam /> },
-          { path: "/team/add", element: <AddTeam /> },
-          { path: "/boards", element: <Boards /> },
-          { path: "/boards/write", element: <BoardWrite /> },
-          { path: "/boards/:articleId", element: <BoardDetail /> },
-          { path: "/my-history", element: <MyHistory /> },
-          { path: "/my-settings", element: <MySettings /> },
-          { path: "/team/:groupId/list", element: <ListPage /> },
+          {
+            path: "login",
+            children: [
+              { index: true, element: <LoginPage /> },
+              { path: "kakao", element: <KakaoRedirectPage /> },
+            ],
+          },
+          { path: "reset-password", element: <ResetPasswordPage /> },
+          {
+            path: "team",
+            children: [
+              { index: true, element: <Team /> },
+              { path: ":id", element: <Team /> },
+              { path: ":id/edit", element: <EditTeam /> },
+              { path: ":id/my-history", element: <MyHistory /> },
+              { path: "join", element: <JoinTeam /> },
+              { path: "add", element: <AddTeam /> },
+            ],
+          },
+          {
+            path: "boards",
+            children: [
+              { index: true, element: <Boards /> },
+              { path: "write", element: <BoardWrite /> },
+              { path: ":articleId", element: <BoardDetail /> },
+            ],
+          },
+          { path: "my-settings", element: <MySettings /> },
+          { path: "list", element: <ListPage /> },
         ],
       },
       {

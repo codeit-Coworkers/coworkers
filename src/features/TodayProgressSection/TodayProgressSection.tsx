@@ -16,8 +16,6 @@ export default function TodayProgressSection({
   const { data: user } = useUser();
   const { data: allTasks } = useAllTasks(groupId);
 
-  console.log(groupData);
-
   // 관리자 여부 확인
   const isAdmin =
     user?.memberships.find((member) => member.groupId === groupData.id)
@@ -30,7 +28,7 @@ export default function TodayProgressSection({
     totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
 
   return (
-    <div className="bg-background-inverse relative rounded-[20px] shadow-[0_15px_50px_-12px_rgba(0,0,0,0.05)]">
+    <div className="bg-background-inverse relative shadow-[0_15px_50px_-12px_rgba(0,0,0,0.05)] md:rounded-[20px]">
       <GroupHeader
         groupName={groupData.name}
         members={groupData.members}

@@ -22,7 +22,7 @@ const SORT_MAP: Record<SortLabel, "recent" | "like"> = {
 // ─── 베스트 게시글 섹션 (Suspense 내부) ─────────────────────
 
 function BestPostSection() {
-  const { data } = useBestArticles(5);
+  const { data } = useBestArticles(15);
 
   // API 응답 → BestPostCarousel 형식으로 변환
   const bestPosts = data.list.map(toBestPost);
@@ -246,7 +246,7 @@ export default function Boards() {
                     state="default"
                     size={cardSize}
                     title={article.title}
-                    content=""
+                    content={article.content ?? ""}
                     author={article.writer.nickname}
                     date={formatDate(article.createdAt)}
                     likeCount={article.likeCount}
@@ -326,7 +326,7 @@ function toBestPost(article: ArticleSummary) {
   return {
     id: article.id,
     title: article.title,
-    content: "", // 목록 API는 content를 반환하지 않음
+    content: article.content ?? "",
     author: article.writer.nickname,
     date: formatDate(article.createdAt),
     likeCount: article.likeCount,

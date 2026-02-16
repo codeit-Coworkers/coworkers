@@ -33,6 +33,7 @@ export function useCreateGroup() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["group"] });
       queryClient.invalidateQueries({ queryKey: ["groups"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 }
@@ -63,6 +64,26 @@ export function useUpdateGroup() {
       id: number;
       data: { name: string; image?: string };
     }) => updateGroup(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["group"] });
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+    },
+  });
+}
+
+// 그룹 삭제
+export async function deleteGroup(id: number): Promise<void> {
+  return await fetchClient(`${BASE_URL}/groups/${id}`, {
+    method: "DELETE",
+  });
+}
+
+// 그룹 삭제 훅
+export function useDeleteGroup() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => deleteGroup(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["group"] });
       queryClient.invalidateQueries({ queryKey: ["groups"] });

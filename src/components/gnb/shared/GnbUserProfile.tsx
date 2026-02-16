@@ -1,8 +1,12 @@
+import { useState } from "react";
 import Dropdown from "@/components/common/Dropdown/Dropdown";
 import { useGnbStore } from "../useGnbStore";
 import { useUser } from "@/api/user";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate, useParams } from "react-router-dom";
+import UserDefaultProfile from "@/assets/user.svg";
+import { useToastStore } from "@/stores/useToastStore";
+import Spinner from "@/components/common/Spinner/Spinner";
 
 export default function GnbUserProfile() {
   const { data: user } = useUser();
@@ -11,10 +15,26 @@ export default function GnbUserProfile() {
   const { isFolded } = useGnbStore();
   const { id: groupId } = useParams();
   const navigate = useNavigate();
+  const { show: showToast } = useToastStore();
+
+  // 로그아웃 상태 관리
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = () => {
-    logout();
-    navigate("/login");
+    setIsLoggingOut(true);
+    setTimeout(() => {
+      logout();
+      navigate("/login");
+    }, 1000);
+  };
+
+  const handleMyHistoryNavigate = () => {
+    if (!groupId) {
+      showToast("현재 속한 팀이 없습니다.");
+      return;
+    }
+
+    navigate(`/team/${groupId}/my-history`);
   };
 
   // 현재 선택된 그룹 정보 가져오기
@@ -26,9 +46,14 @@ export default function GnbUserProfile() {
   const teamName =
     selectedGroup?.group.name ?? user?.memberships[0]?.group.name;
 
+  if (isLoggingOut) {
+    return <Spinner message="로그아웃 중..." />;
+  }
+
   return (
     <>
       <div>
+        {/* 모바일 */}
         <div className="relative md:hidden">
           <Dropdown
             optionsKey="myHistory"
@@ -38,7 +63,7 @@ export default function GnbUserProfile() {
               {
                 label: "마이 히스토리",
                 value: "마이 히스토리",
-                link: "/my-history",
+                action: handleMyHistoryNavigate,
               },
               {
                 label: "계정 설정",
@@ -59,16 +84,25 @@ export default function GnbUserProfile() {
             keepSelected={false}
             listClassName="right-0"
             icon={
-              <span className="block h-[28px] w-[28px] flex-shrink-0 overflow-hidden rounded-full">
-                <img
-                  src={user.image}
-                  alt={`${user.nickname} 프로필 이미지`}
-                  className="h-full w-full object-cover"
-                />
-              </span>
+              <>
+                <span className="block h-[28px] w-[28px] flex-shrink-0 overflow-hidden rounded-full">
+                  {user.image && (
+                    <img
+                      src={user.image}
+                      alt={`${user.nickname} 프로필 이미지`}
+                      className="h-full w-full object-cover"
+                    />
+                  )}
+                  {!user.image && (
+                    <UserDefaultProfile className="h-full w-full object-cover" />
+                  )}
+                </span>
+              </>
             }
           />
         </div>
+
+        {/* 데스크탑 */}
         <div className="relative hidden md:block">
           <Dropdown
             optionsKey="myHistory"
@@ -79,7 +113,7 @@ export default function GnbUserProfile() {
               {
                 label: "마이 히스토리",
                 value: "마이 히스토리",
-                link: `/team/${groupId}/my-history`,
+                action: handleMyHistoryNavigate,
               },
               {
                 label: "계정 설정",
@@ -105,11 +139,16 @@ export default function GnbUserProfile() {
                 <div
                   className={`flex-shrink-0 ${isFolded ? "h-8 w-8" : "h-10 w-10"}`}
                 >
-                  <img
-                    src={user.image}
-                    alt={`${user.nickname} 프로필 이미지`}
-                    className="h-full w-full rounded-[12px] object-cover"
-                  />
+                  {user.image && (
+                    <img
+                      src={user.image}
+                      alt={`${user.nickname} 프로필 이미지`}
+                      className="h-full w-full rounded-[12px] object-cover"
+                    />
+                  )}
+                  {!user.image && (
+                    <UserDefaultProfile className="h-full w-full rounded-[12px] object-cover" />
+                  )}
                 </div>
                 <div
                   className={`min-w-0 flex-1 flex-col gap-1 text-left transition-opacity ${isFolded ? "pointer-events-none scale-0 opacity-0" : "flex scale-100 opacity-100 duration-200"}`}

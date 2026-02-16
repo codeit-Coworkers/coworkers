@@ -6,7 +6,7 @@ import GnbUserProfile from "../shared/GnbUserProfile";
 import { useGnbStore } from "../useGnbStore";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { FetchBoundary } from "@/providers/boundary";
-import UserProfile from "@/assets/user.svg";
+import UserDefaultProfile from "@/assets/user.svg";
 import { Link } from "react-router-dom";
 
 export default function DesktopGnb() {
@@ -34,7 +34,7 @@ export default function DesktopGnb() {
               className="group inline-flex"
             >
               <span className="inline-flex items-center gap-2">
-                <UserProfile
+                <UserDefaultProfile
                   className={`flex-shrink-0 ${isFolded ? "h-8 w-8" : "h-10 w-10"}`}
                 />
                 <span
