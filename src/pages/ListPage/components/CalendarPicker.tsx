@@ -23,7 +23,7 @@ const CalendarPicker = ({
         className={`flex h-7 w-7 items-center justify-center rounded-full transition-all sm:h-8 sm:w-8 ${
           showCalendar
             ? "bg-brand-primary/10"
-            : "bg-[#F1F5F9] hover:bg-[#E2E8F0]"
+            : "bg-background-secondary hover:bg-border-primary"
         }`}
       >
         <CalendarIconSvg

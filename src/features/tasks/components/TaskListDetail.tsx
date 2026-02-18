@@ -347,7 +347,7 @@ export default function TaskListDetail() {
             )}
           </div>
 
-          <hr className="h-[1px] border-0 bg-[#E2E8F0]" />
+          <hr className="bg-border-primary h-[1px] border-0" />
 
           {/* 본문 설명 */}
           <div>
@@ -375,7 +375,7 @@ export default function TaskListDetail() {
               <UserIcon />
             )}
 
-            <div className="relative flex h-12 w-full justify-center border-t-1 border-b-1 border-[#E2E8F0]">
+            <div className="border-border-primary relative flex h-12 w-full justify-center border-t-1 border-b-1">
               <input
                 type="text"
                 placeholder="댓글을 달아주세요"
@@ -401,8 +401,8 @@ export default function TaskListDetail() {
               key={item.id}
               className={
                 isEditing
-                  ? "flex flex-row gap-4 bg-[#F8FAFC] px-4 py-3 md:px-7 lg:px-10"
-                  : "mx-2 flex flex-row gap-4 border-b-1 border-[#E2E8F0] px-2 py-3 last:border-b-0 md:mx-7 md:px-0 lg:mx-10"
+                  ? "bg-icon-inverse flex flex-row gap-4 px-4 py-3 md:px-7 lg:px-10"
+                  : "border-border-primary mx-2 flex flex-row gap-4 border-b-1 px-2 py-3 last:border-b-0 md:mx-7 md:px-0 lg:mx-10"
               }
             >
               {item.user.image ? (

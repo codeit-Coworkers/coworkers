@@ -13,7 +13,7 @@ export default function ProgressBar({ percentage }: ProgressBarProps) {
         aria-valuemin={0}
         aria-valuemax={100}
       >
-        <div className="animate-marqueeAnimation absolute left-0 flex h-full w-full rounded-full bg-[#F1F5F9]">
+        <div className="animate-marqueeAnimation bg-background-secondary absolute left-0 flex h-full w-full rounded-full">
           <div className="animate-progress-stripes absolute left-full h-full w-full rounded-r-full bg-[repeating-linear-gradient(135deg,#EBEFF5_0px,#EBEFF5_12px,#F1F5F9_12px,#F1F5F9_24px)]"></div>
           <div className="animate-progress-stripes h-full w-full rounded-l-full bg-[repeating-linear-gradient(135deg,#EBEFF5_0px,#EBEFF5_12px,#F1F5F9_12px,#F1F5F9_24px)]"></div>
         </div>
