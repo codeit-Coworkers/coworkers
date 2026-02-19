@@ -18,6 +18,7 @@ import AddTeam from "@/pages/AddTeam";
 import EditTeam from "@/pages/EditTeam";
 import MySettings from "@/pages/MySettings";
 import ListPage from "@/pages/ListPage/ListPage";
+import TaskListDetail from "@/features/tasks/components/TaskListDetail";
 
 export const router = createBrowserRouter([
   {
@@ -60,7 +61,15 @@ export const router = createBrowserRouter([
             ],
           },
           { path: "my-settings", element: <MySettings /> },
-          { path: "list", element: <ListPage /> },
+          {
+            path: "team/:teamId/tasklists",
+            element: <ListPage />,
+            children: [
+              { index: true, element: null },
+              { path: ":listId", element: null },
+              { path: ":listId/tasks/:taskId", element: <TaskListDetail /> },
+            ],
+          },
         ],
       },
       {
