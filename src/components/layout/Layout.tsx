@@ -21,7 +21,7 @@ export default function Layout() {
           <Gnb />
         </div>
         <main
-          className="bg-background-primary flex-1"
+          className="bg-background-primary min-w-0 flex-1"
           style={!isMobile ? { marginLeft: gnbWidth } : undefined}
         >
           {/* 각 페이지 랜더링 */}
