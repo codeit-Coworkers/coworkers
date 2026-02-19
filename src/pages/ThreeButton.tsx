@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useState, useRef } from "react";
-import { RoundedBox, Text } from "@react-three/drei";
+import { RoundedBox, Text, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 
 function Scene() {
@@ -26,6 +26,14 @@ function Scene() {
     <>
       <ambientLight intensity={2} />
       <pointLight position={[100, 100, 100]} intensity={1} />
+      <ContactShadows
+        position={[0, -10, 0]}
+        opacity={1} // 더 진하게
+        scale={1} // 더 넓게
+        blur={1.5} // 더 선명하게
+        far={50}
+        color="#000000"
+      />
       <RoundedBox
         ref={meshRef}
         args={[160, 48, 20]}
