@@ -432,7 +432,7 @@ export default function TaskListDetail() {
                   {/* 편집 모드가 아닐 때만 댓글 액션 메뉴 표시 */}
                   {!isEditing && (
                     <Dropdown
-                      trigger="kebab"
+                      trigger="kebabSmall"
                       optionsKey="edit"
                       listAlign="center"
                       listClassName="absolute right-4 md:right-6 lg:right-10"

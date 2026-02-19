@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ArrowDown from "@/assets/arrow-down.svg";
 import User from "@/assets/user.svg";
 import Kebab from "@/assets/kebab.svg";
+import KebabSmall from "@/assets/kebab-small.svg";
 import Set from "@/assets/set.svg";
 
 /**
@@ -75,7 +76,7 @@ type OptionsKey = keyof typeof DEFAULT_LIST;
 type DropdownProps = {
   optionsKey?: OptionsKey;
   options?: Option[];
-  trigger?: "text" | "user" | "kebab" | "set";
+  trigger?: "text" | "user" | "kebab" | "kebabSmall" | "set";
   defaultLabel?: string;
   icon?: React.ReactNode;
   listAlign?: "left" | "center";
@@ -203,6 +204,8 @@ export default function Dropdown({
     icon ??
     (trigger === "kebab" ? (
       <Kebab />
+    ) : trigger === "kebabSmall" ? (
+      <KebabSmall />
     ) : trigger === "user" ? (
       <User />
     ) : trigger === "set" ? (
