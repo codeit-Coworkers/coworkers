@@ -101,18 +101,21 @@ function MobileBestPostScroll({ posts }: { posts: BestPost[] }) {
   const cardWidth = cardsPerView === 2 ? "calc((100% - 12px) / 2)" : "100%";
 
   return (
-    <section className="bg-background-secondary rounded-xl p-6">
+    <section className="bg-background-secondary min-w-0 rounded-xl p-6">
       {/* 헤더 */}
       <h2 className="text-2lg-b text-color-primary mb-6">베스트 게시글</h2>
 
-      {/* 가로 스크롤 영역 */}
+      {/* 가로 스크롤 영역: w-full min-w-0으로 부모 너비 고정 → 2개일 때도 overflow 발생 */}
       <style>{`[data-best-scroll]::-webkit-scrollbar { display: none; }`}</style>
       <div
         ref={scrollRef}
         onScroll={handleScroll}
         data-best-scroll=""
-        className="flex snap-x snap-mandatory gap-3 overflow-x-auto"
-        style={{ scrollbarWidth: "none" }}
+        className="flex w-full min-w-0 snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain"
+        style={{
+          scrollbarWidth: "none",
+          WebkitOverflowScrolling: "touch",
+        }}
       >
         {posts.map((post) => (
           <Link
