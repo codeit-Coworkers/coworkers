@@ -18,6 +18,7 @@ import AddTeam from "@/pages/AddTeam";
 import EditTeam from "@/pages/EditTeam";
 import MySettings from "@/pages/MySettings";
 import ListPage from "@/pages/ListPage/ListPage";
+import TaskListDetail from "@/features/tasks/components/TaskListDetail";
 import withAuth from "@/hoc/withAuth";
 import withLoggedInRedirect from "@/hoc/withLoggedInRedirect";
 
@@ -74,6 +75,16 @@ export const router = createBrowserRouter([
               { index: true, element: <ProtectedBoards /> },
               { path: "write", element: <ProtectedBoardWrite /> },
               { path: ":articleId", element: <ProtectedBoardDetail /> },
+            ],
+          },
+          { path: "my-settings", element: <MySettings /> },
+          {
+            path: "team/:teamId/tasklists",
+            element: <ListPage />,
+            children: [
+              { index: true, element: null },
+              { path: ":listId", element: null },
+              { path: ":listId/tasks/:taskId", element: <TaskListDetail /> },
             ],
           },
           { path: "my-settings", element: <ProtectedMySettings /> },
