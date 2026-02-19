@@ -6,6 +6,38 @@ import { useIsMobile } from "@/hooks/useMediaQuery";
 import { TaskListServer } from "@/types/taskList";
 import { useUpdateTask } from "@/api/task";
 
+// 브라우저 기본 고스트 이미지 대신 카드 클론을 드래그 이미지로 등록한다.
+// clone을 body에 붙였다가 rAF에서 즉시 제거해 화면에 보이지 않게 한다.
+function createDragImage(e: React.DragEvent<HTMLElement>): void {
+  const el = e.currentTarget as HTMLElement;
+  const rect = el.getBoundingClientRect();
+  const clone = el.cloneNode(true) as HTMLElement;
+
+  clone.style.position = "fixed";
+  clone.style.top = "0px";
+  clone.style.left = "0px";
+  clone.style.transform = "translate(-9999px, -9999px)";
+  clone.style.width = `${rect.width}px`;
+  clone.style.opacity = "1";
+  clone.style.backgroundColor = "#fff";
+  clone.style.mixBlendMode = "normal";
+  clone.style.filter = "none";
+  clone.style.backdropFilter = "none";
+  clone.style.willChange = "transform";
+  clone.style.borderRadius = "12px";
+  clone.style.pointerEvents = "none";
+
+  document.body.appendChild(clone);
+  e.dataTransfer.setDragImage(
+    clone,
+    e.clientX - rect.left,
+    e.clientY - rect.top,
+  );
+  requestAnimationFrame(() => {
+    document.body.removeChild(clone);
+  });
+}
+
 interface TaskCardProps {
   groupId: number;
   taskList: TaskListServer;
@@ -13,10 +45,8 @@ interface TaskCardProps {
   onEdit: () => void;
   onDelete: () => void;
   onDragStart: () => void;
-  // --- UI 개선용 추가 props ---
-  isDragging?: boolean; // 이 카드가 드래그 중인지
-  onDragEnd?: () => void; // 드래그 종료 시 콜백
-  // ----------------------------
+  isDragging?: boolean;
+  onDragEnd?: () => void;
 }
 
 export default function TaskCard({
@@ -41,41 +71,11 @@ export default function TaskCard({
     <div
       className={`mt-[12px] lg:mt-[20px] ${isDragging ? "opacity-30" : ""}`}
       draggable
-      onDragStart={(e: React.DragEvent) => {
-        const el = e.currentTarget as HTMLElement;
-        const rect = el.getBoundingClientRect();
-        const clone = el.cloneNode(true) as HTMLElement;
-        clone.style.position = "fixed";
-        clone.style.top = "0px";
-        clone.style.left = "0px";
-        clone.style.transform = "translate(-9999px, -9999px)";
-        clone.style.width = `${rect.width}px`;
-
-        // 🔥 선명도 관련
-        clone.style.opacity = "1";
-        clone.style.backgroundColor = "#fff";
-        clone.style.mixBlendMode = "normal";
-        clone.style.filter = "none";
-        clone.style.backdropFilter = "none";
-        clone.style.willChange = "transform";
-
-        // 🔥 rounded 처리
-        clone.style.borderRadius = "12px"; // 네 카드 rounded 값
-
-        clone.style.pointerEvents = "none";
-
-        document.body.appendChild(clone);
-        e.dataTransfer.setDragImage(
-          clone,
-          e.clientX - rect.left,
-          e.clientY - rect.top,
-        );
-        requestAnimationFrame(() => {
-          document.body.removeChild(clone);
-        });
+      onDragEnd={onDragEnd}
+      onDragStart={(e: React.DragEvent<HTMLElement>) => {
+        createDragImage(e);
         onDragStart();
       }}
-      onDragEnd={onDragEnd}
     >
       <div
         className={`border-border-primary bg-background-primary rounded-[12px] border-1 pl-[20px] ${cardPadding}`}
