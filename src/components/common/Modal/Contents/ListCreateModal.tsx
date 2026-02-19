@@ -50,7 +50,7 @@ export default function ListCreateModal({
 
           <input
             type="text"
-            className="placeholder-color-default mb-6 h-12 w-full rounded-xl border border-solid border-[#e2e8f0] p-4"
+            className="placeholder-color-default border-border-primary mb-6 h-12 w-full rounded-xl border border-solid p-4"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="목록 명을 입력해주세요."

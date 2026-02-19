@@ -112,7 +112,7 @@ function Model({
         if (!active) {
           setActive(true);
           onActive();
-          setTimeout(onOpen, 1500);
+          setTimeout(onOpen, 900);
         }
       }}
       onPointerOver={() => {

@@ -19,6 +19,23 @@ import EditTeam from "@/pages/EditTeam";
 import MySettings from "@/pages/MySettings";
 import ListPage from "@/pages/ListPage/ListPage";
 import TaskListDetail from "@/features/tasks/components/TaskListDetail";
+import withAuth from "@/hoc/withAuth";
+import withLoggedInRedirect from "@/hoc/withLoggedInRedirect";
+
+// 보호 페이지: 로그인 필요
+const ProtectedTeam = withAuth(Team);
+const ProtectedEditTeam = withAuth(EditTeam);
+const ProtectedMyHistory = withAuth(MyHistory);
+const ProtectedJoinTeam = withAuth(JoinTeam);
+const ProtectedAddTeam = withAuth(AddTeam);
+const ProtectedBoards = withAuth(Boards);
+const ProtectedBoardWrite = withAuth(BoardWrite);
+const ProtectedBoardDetail = withAuth(BoardDetail);
+const ProtectedMySettings = withAuth(MySettings);
+const ProtectedListPage = withAuth(ListPage);
+
+// 로그인 상태면 /team으로 리다이렉트
+const GuestLoginPage = withLoggedInRedirect(LoginPage);
 
 export const router = createBrowserRouter([
   {
@@ -36,7 +53,7 @@ export const router = createBrowserRouter([
           {
             path: "login",
             children: [
-              { index: true, element: <LoginPage /> },
+              { index: true, element: <GuestLoginPage /> },
               { path: "kakao", element: <KakaoRedirectPage /> },
             ],
           },
@@ -44,20 +61,20 @@ export const router = createBrowserRouter([
           {
             path: "team",
             children: [
-              { index: true, element: <Team /> },
-              { path: ":id", element: <Team /> },
-              { path: ":id/edit", element: <EditTeam /> },
-              { path: ":id/my-history", element: <MyHistory /> },
-              { path: "join", element: <JoinTeam /> },
-              { path: "add", element: <AddTeam /> },
+              { index: true, element: <ProtectedTeam /> },
+              { path: ":id", element: <ProtectedTeam /> },
+              { path: ":id/edit", element: <ProtectedEditTeam /> },
+              { path: ":id/my-history", element: <ProtectedMyHistory /> },
+              { path: "join", element: <ProtectedJoinTeam /> },
+              { path: "add", element: <ProtectedAddTeam /> },
             ],
           },
           {
             path: "boards",
             children: [
-              { index: true, element: <Boards /> },
-              { path: "write", element: <BoardWrite /> },
-              { path: ":articleId", element: <BoardDetail /> },
+              { index: true, element: <ProtectedBoards /> },
+              { path: "write", element: <ProtectedBoardWrite /> },
+              { path: ":articleId", element: <ProtectedBoardDetail /> },
             ],
           },
           { path: "my-settings", element: <MySettings /> },
@@ -70,6 +87,8 @@ export const router = createBrowserRouter([
               { path: ":listId/tasks/:taskId", element: <TaskListDetail /> },
             ],
           },
+          { path: "my-settings", element: <ProtectedMySettings /> },
+          { path: "list", element: <ProtectedListPage /> },
         ],
       },
       {
