@@ -18,6 +18,7 @@ import AddTeam from "@/pages/AddTeam";
 import EditTeam from "@/pages/EditTeam";
 import MySettings from "@/pages/MySettings";
 import ListPage from "@/pages/ListPage/ListPage";
+import SignupPage from "@/pages/Signup";
 
 export const router = createBrowserRouter([
   {
@@ -40,6 +41,7 @@ export const router = createBrowserRouter([
             ],
           },
           { path: "reset-password", element: <ResetPasswordPage /> },
+          { path: "signup", element: <SignupPage /> },
           {
             path: "team",
             children: [
