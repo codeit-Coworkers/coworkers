@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Gnb from "@/components/gnb/Gnb";
+import Gnb from "@/components/layout/Gnb/Gnb";
 import Todo from "@/components/common/Todo/todo";
 import Badge from "@/components/common/Badge/Badge";
 import { Button } from "@/components/common/Button/Button";

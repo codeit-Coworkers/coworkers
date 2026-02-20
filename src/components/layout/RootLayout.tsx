@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import TokenRefreshModal from "@/pages/TokenRefreshModal";
+import TokenRefreshModal from "./TokenRefreshModal";
 
 export default function RootLayout() {
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);

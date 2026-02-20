@@ -21,9 +21,9 @@ import LandingSec4Mo from "@/assets/landing/sec4_mobile.svg";
 import FolderFill3 from "@/assets/landing/Folder_fill3.svg";
 
 // Components
-import Gnb from "@/components/gnb/Gnb";
+import Gnb from "@/components/layout/Gnb/Gnb";
 import { ThreeButton } from "./ThreeButton";
-import { LoadingModel } from "@/components/common/ThreeModal/LodingModal";
+import { LoadingModel } from "./LodingModal";
 
 export default function Index() {
   const navigate = useNavigate();
