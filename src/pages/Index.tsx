@@ -49,13 +49,20 @@ export default function Index() {
   const setSection4EndRef = (node: HTMLDivElement | null) => {
     if (node) {
       if (observerRef.current) observerRef.current.disconnect();
+
       observerRef.current = new IntersectionObserver(
         ([entry]) => {
-          setIsAtBottom(entry.isIntersecting);
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              setIsAtBottom(true);
+            }, 100);
+          } else {
+            setIsAtBottom(false);
+          }
         },
         {
           threshold: 0.1,
-          rootMargin: "0px 0px 100px 0px", // 타이밍 조절 여백
+          rootMargin: "0px 0px -50px 0px",
         },
       );
       observerRef.current.observe(node);
@@ -216,12 +223,15 @@ export default function Index() {
                 left: isAtBottom ? "50%" : "calc(100% - 100px)",
                 bottom: isAtBottom ? "160px" : "40px",
                 x: "-50%",
+                y: isAtBottom ? [-150, -50, 0] : [0, 0, 0],
                 scale: 1,
               }}
               transition={{
                 type: "spring",
+                left: { type: "spring", stiffness: 30, damping: 20 },
                 stiffness: 50,
                 damping: 40,
+                y: { duration: 0.8, ease: "easeInOut" },
                 mass: 2,
               }}
               className="pointer-events-auto z-[9999] cursor-pointer"
