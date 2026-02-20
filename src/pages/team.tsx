@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { FetchBoundary } from "@/providers/boundary";
 import { useGroups } from "@/api/user";
-import TaskColumn from "@/features/taskcolumn/TaskColumn";
-import TaskColumnSkeleton from "@/features/taskcolumn/TaskColumnSkeleton";
-import TeamMemberSection from "@/features/TeamMemberSectiom/TeamMemberSection";
-import TeamMemberSkeleton from "@/features/TeamMemberSectiom/TeamMemberSkeleton";
-import TodayProgressSection from "@/features/TodayProgressSection/TodayProgressSection";
-import TodayProgressSkeleton from "@/features/TodayProgressSection/TodayProgressSkeleton";
+import TaskColumn from "@/features/Team/taskcolumn/TaskColumn";
+import TaskColumnSkeleton from "@/features/Team/taskcolumn/TaskColumnSkeleton";
+import TeamMemberSection from "@/features/Team/TeamMemberSection/TeamMemberSection";
+import TeamMemberSkeleton from "@/features/Team/TeamMemberSection/TeamMemberSkeleton";
+import TodayProgressSection from "@/features/Team/TodayProgressSection/TodayProgressSection";
+import TodayProgressSkeleton from "@/features/Team/TodayProgressSection/TodayProgressSkeleton";
 import NothingTeamImage from "@/assets/nothingTeam.svg";
 import { Button } from "@/components/common/Button/Button";
 

@@ -19,7 +19,7 @@ import EditTeam from "@/pages/EditTeam";
 import MySettings from "@/pages/MySettings";
 import ListPage from "@/pages/ListPage/ListPage";
 import SignupPage from "@/pages/Signup";
-import TaskListDetail from "@/features/tasks/components/TaskListDetail";
+import TaskListDetail from "@/features/Tasks/components/TaskListDetail";
 import withAuth from "@/hoc/withAuth";
 import withLoggedInRedirect from "@/hoc/withLoggedInRedirect";
 

@@ -20,7 +20,7 @@ import DateIcon from "@/assets/calendar.svg";
 import RepeatIcon from "@/assets/repeat.svg";
 import CheckBlue from "@/assets/check.svg";
 import CheckWhite from "@/assets/check-white.svg";
-import Enter from "@/features/boards/assets/enter.svg";
+import Enter from "@/features/Boards/assets/enter.svg";
 import Modal from "@/components/common/Modal/Modal";
 import TaskDangerModal from "@/components/common/Modal/Contents/TaskDeleteModal";
 import TaskReplyDangerModal from "@/components/common/Modal/Contents/TaskReplyDeleteModal";

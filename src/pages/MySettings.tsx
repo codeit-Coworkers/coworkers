@@ -8,7 +8,7 @@ import { Input } from "@/components/common/Input/Input";
 import {
   PasswordChangeModal,
   WithdrawModal,
-} from "@/features/my-settings/components";
+} from "@/features/MySettings/components";
 import AlertIcon from "@/assets/alert-white.svg";
 import PencilIcon from "@/assets/pencil.svg";
 import SecessionIcon from "@/assets/secession.svg";
