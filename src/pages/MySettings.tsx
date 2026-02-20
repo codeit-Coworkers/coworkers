@@ -161,7 +161,7 @@ function MySettingsContent() {
                   className={`${profileSize} ${profileRadius} object-cover ${uploadImageMutation.isPending ? "animate-pulse" : ""}`}
                 />
                 <span
-                  className={`bg-background-secondary absolute right-[-9px] bottom-[-9px] flex items-center justify-center rounded-full shadow md:right-[-16px] md:bottom-[-16px] [&_path]:!fill-[#64748B] ${isMobile ? "h-[18px] w-[18px]" : "h-8 w-8"}`}
+                  className={`bg-background-secondary [&_path]:!fill-icon-primary absolute right-[-9px] bottom-[-9px] flex items-center justify-center rounded-full shadow md:right-[-16px] md:bottom-[-16px] ${isMobile ? "h-[18px] w-[18px]" : "h-8 w-8"}`}
                 >
                   <PencilIcon
                     className={`shrink-0 ${isMobile ? "h-3.5 w-3.5" : "h-5 w-5"}`}

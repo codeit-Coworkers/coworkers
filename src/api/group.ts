@@ -71,6 +71,26 @@ export function useUpdateGroup() {
   });
 }
 
+// 그룹 삭제
+export async function deleteGroup(id: number): Promise<void> {
+  return await fetchClient(`${BASE_URL}/groups/${id}`, {
+    method: "DELETE",
+  });
+}
+
+// 그룹 삭제 훅
+export function useDeleteGroup() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => deleteGroup(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["group"] });
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+    },
+  });
+}
+
 // 단일 그룹 조회
 export async function getGroup(id: number): Promise<GroupServer> {
   return await fetchClient(`${BASE_URL}/groups/${id}`, {

@@ -9,8 +9,9 @@ import { Button } from "@/components/common/Button/Button";
 import Kakaoicon from "@/assets/kakao.svg";
 import ForgotPasswordModal from "@/pages/ForgotPassword";
 import { useToastStore } from "@/stores/useToastStore";
-import { getGroups } from "@/api/user";
 import { useAuthStore } from "@/stores/useAuthStore";
+import Spinner from "@/components/common/Spinner/Spinner";
+import { getGroup } from "@/api/group";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export default function LoginPage() {
   const { mutate: signIn, isPending } = useSignIn();
   const toast = useToastStore();
   const { login } = useAuthStore();
-
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const KAKAO_REST_API_KEY = "35804a1d124738c314f9abcb9b9181ea";
   const REDIRECT_URI = `${window.location.origin}/login/kakao`;
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
@@ -33,22 +34,31 @@ export default function LoginPage() {
   });
 
   const onSubmit = (data: SignInRequest) => {
+    setIsLoggingIn(true);
     signIn(data, {
       onSuccess: async (response) => {
         login();
+        setIsLoggingIn(false);
         toast.show(
           `안녕하세요 ${response.user.nickname}님 오늘도 즐거운 일 시작해요!`,
         );
-        const groups = await getGroups();
-        if (groups.length > 0) {
-          navigate(`/team/${groups[0].id}`);
+        const groups = await getGroup(response.user.id);
+        if (groups && groups.id) {
+          navigate(`/team/${groups.id}`);
         } else {
           navigate("/team");
         }
       },
-      onError: (error: Error) => toast.show(error.message),
+      onError: (error: Error) => {
+        setIsLoggingIn(false);
+        toast.show(error.message);
+      },
     });
   };
+
+  if (isLoggingIn) {
+    return <Spinner message="로그인 중..." />;
+  }
 
   return (
     <div className="bg-background-secondary flex min-h-screen w-full items-center justify-center p-6">

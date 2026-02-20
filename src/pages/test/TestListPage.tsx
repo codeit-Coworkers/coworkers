@@ -118,7 +118,7 @@ export default function TestListPage() {
                     {item.d}
                   </span>
                   <div
-                    className={`flex h-11 w-11 items-center justify-center rounded-xl text-sm font-bold ${item.active ? "bg-[#334155] text-white shadow-lg" : "border border-gray-100 text-gray-600"}`}
+                    className={`flex h-11 w-11 items-center justify-center rounded-xl text-sm font-bold ${item.active ? "bg-color-secondary text-white shadow-lg" : "border border-gray-100 text-gray-600"}`}
                   >
                     {item.n}
                   </div>

@@ -3,7 +3,7 @@ import ListCreateModal from "@/components/common/Modal/Contents/ListCreateModal"
 import ListEditModal from "@/components/common/Modal/Contents/ListEditModal";
 import ListDeleteModal from "@/components/common/Modal/Contents/ListDeleteModal";
 import { TaskListServer } from "@/types/taskList";
-import { ModalType } from "./useTaskColumnModals";
+import { ModalType } from "../hooks/useTaskColumnModals";
 import { useParams } from "react-router-dom";
 
 interface TaskColumnModalsProps {

@@ -1,9 +1,9 @@
-import { useCreateTaskList } from "@/api/tasklist";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Close from "@/assets/close.svg";
 import { useToastStore } from "@/stores/useToastStore";
 import { useState } from "react";
+import { createTaskList } from "@/api/tasklist";
 
-// Props 타입 정의
 type ListCreateModalProps = {
   onClose: () => void;
   groupId: number;
@@ -13,59 +13,59 @@ export default function ListCreateModal({
   onClose,
   groupId,
 }: ListCreateModalProps) {
-  // 1. API 뮤테이션 및 상태 관리
-  const { mutate: createList } = useCreateTaskList(groupId);
   const [name, setName] = useState("");
   const { show: showToast } = useToastStore();
+  const queryClient = useQueryClient();
 
-  // 2. 만들기 버튼 클릭 핸들러
+  // useCreateTaskList 훅 대신 직접 mutation 정의
+  const mutation = useMutation({
+    mutationFn: (listName: string) => createTaskList(groupId, listName),
+    // ListCreateModal 내 invalidateQueries 부분
+    onSuccess: () => {
+      showToast("목록이 생성되었습니다.");
+      queryClient.invalidateQueries({
+        queryKey: ["taskLists", Number(groupId)],
+      });
+      onClose();
+    },
+  });
+
   const handleCreate = () => {
     if (!name.trim()) {
       showToast("목록 이름을 입력해주세요.");
       return;
     }
-
-    createList(name, {
-      onSuccess: () => {
-        showToast("목록이 생성되었습니다.");
-        onClose();
-      },
-      onError: () => {
-        showToast("목록 생성에 실패했습니다.");
-      },
-    });
+    mutation.mutate(name);
   };
 
   return (
     <div className="bg-background-primary border-border-primary font-pretendard relative w-full rounded-3xl border p-6 shadow-xl md:w-[384px]">
-      {/* 상단 닫기 버튼 영역 */}
       <div className="-mb-2 flex w-full justify-end pt-2">
         <Close onClick={onClose} className="cursor-pointer" />
       </div>
 
-      {/* 콘텐츠 영역 */}
       <div className="p-5">
         <div className="flex flex-col gap-4">
           <h2 className="text-lg-m text-color-primary">할 일 목록</h2>
 
           <input
             type="text"
-            className="placeholder-color-default mb-6 h-12 w-full rounded-xl border border-solid border-[#e2e8f0] p-4"
+            className="placeholder-color-default border-border-primary mb-6 h-12 w-full rounded-xl border border-solid p-4"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="목록 명을 입력해주세요."
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleCreate(); // 엔터 키 지원
+              if (e.key === "Enter") handleCreate();
             }}
           />
         </div>
 
-        {/* 버튼 영역 */}
         <button
-          className="bg-brand-primary text-lg-b text-color-inverse h-12 w-full rounded-xl text-center"
-          onClick={handleCreate} // 핸들러 연결
+          className="bg-brand-primary text-lg-b text-color-inverse h-12 w-full rounded-xl text-center disabled:opacity-50"
+          onClick={handleCreate}
+          disabled={mutation.isPending}
         >
-          만들기
+          {mutation.isPending ? "생성 중..." : "만들기"}
         </button>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import ChevronLeftIcon from "@/assets/arrow-left.svg";
 import ChevronRightIcon from "@/assets/arrow-right.svg";
 
@@ -35,10 +35,40 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
   }, [selectedDate]);
 
   const dayLabels: string[] = ["월", "화", "수", "목", "금", "토", "일"];
+
   const isSameDay = (d1: Date, d2: Date): boolean =>
     d1.getFullYear() === d2.getFullYear() &&
     d1.getMonth() === d2.getMonth() &&
     d1.getDate() === d2.getDate();
+
+  // ✅ 스와이프용 ref
+  const startXRef = useRef<number | null>(null);
+  const pointerIdRef = useRef<number | null>(null);
+  const THRESHOLD = 60; // px
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    pointerIdRef.current = e.pointerId;
+    startXRef.current = e.clientX;
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (pointerIdRef.current !== e.pointerId) return;
+    if (startXRef.current == null) return;
+
+    const dx = e.clientX - startXRef.current;
+
+    // ✅ 왼쪽으로 밀면 다음 주 / 오른쪽으로 밀면 이전 주
+    if (dx <= -THRESHOLD) onNextWeek();
+    else if (dx >= THRESHOLD) onPrevWeek();
+
+    startXRef.current = null;
+    pointerIdRef.current = null;
+  };
+
+  const handlePointerCancel = () => {
+    startXRef.current = null;
+    pointerIdRef.current = null;
+  };
 
   return (
     <div className="flex w-full items-center gap-1 sm:gap-2">
@@ -50,7 +80,14 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
         <ChevronLeftIcon className="text-icon-primary h-4 w-4 sm:h-5 sm:w-5" />
       </button>
 
-      <div className="flex flex-1 items-center justify-between gap-1 sm:gap-2">
+      <div
+        className="flex flex-1 items-center justify-between gap-1 select-none sm:gap-2"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+        style={{ touchAction: "pan-y" }}
+        aria-label="주간 캘린더 (좌우로 밀어서 주 이동)"
+      >
         {weekDays.map((date, idx) => {
           const isSelected = isSameDay(selectedDate, date);
 
@@ -66,7 +103,9 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
               }`}
             >
               <span
-                className={`sm:text-xs-m mb-0.5 text-[10px] font-medium sm:mb-1 ${isSelected ? "text-gray-300" : "text-color-tertiary"}`}
+                className={`sm:text-xs-m mb-0.5 text-[10px] font-medium sm:mb-1 ${
+                  isSelected ? "text-gray-300" : "text-color-tertiary"
+                }`}
               >
                 {dayLabels[idx]}
               </span>
