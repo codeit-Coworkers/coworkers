@@ -1,7 +1,7 @@
 import { useBestArticles } from "@/api/article";
 import type { ArticleSummary } from "@/types/article";
 import { formatDate } from "@/utils/format";
-import BestPostCarousel from "../BestPostCarousel";
+import BestPostCarousel from "../BestPostCarousel/BestPostCarousel";
 
 function toBestPost(article: ArticleSummary) {
   return {

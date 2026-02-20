@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-import PostCard from "../PostCard";
+import PostCard from "../PostCard/PostCard";
 import CarouselDots from "./CarouselDots";
 import CarouselArrows from "./CarouselArrows";
 

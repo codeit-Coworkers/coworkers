@@ -1,6 +1,6 @@
 import type { TaskListServer } from "@/types/taskList";
 import type { TaskDoneClient } from "@/types/user";
-import MyTasks from "@/features/MyTasks/MyTasks";
+import MyTasks from "@/features/MyHistory/components/MyTasks";
 import DatePagination from "@/pages/ListPage/components/DatePagination";
 import CalendarPicker from "@/pages/ListPage/components/CalendarPicker";
 

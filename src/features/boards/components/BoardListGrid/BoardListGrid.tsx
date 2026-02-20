@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import PostCard from "../PostCard";
+import PostCard from "../PostCard/PostCard";
 import type { ArticleSummary } from "@/types/article";
 import { formatDate } from "@/utils/format";
 
