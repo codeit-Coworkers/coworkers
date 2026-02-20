@@ -1,5 +1,3 @@
-"use client";
-
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/common/Button/Button";
 import { Input } from "@/components/common/Input/Input";

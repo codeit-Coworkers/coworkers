@@ -1,5 +1,3 @@
-"use client";
-
 import { useNavigate, Link } from "react-router-dom";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { useSignUp, SignUpRequest } from "@/api/auth";

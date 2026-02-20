@@ -1,5 +1,3 @@
-"use client";
-
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Input } from "@/components/common/Input/Input";
