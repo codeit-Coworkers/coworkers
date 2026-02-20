@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import Dropdown from "@/components/common/Dropdown/Dropdown";
 import {
@@ -70,7 +70,12 @@ const daysAgo = (createdAt: string) => {
  */
 export default function TaskListDetail() {
   /** 라우트 파라미터: groupId, taskListId, taskId */
-  const { groupId, taskListId, taskId } = useParams();
+  const { teamId, listId, taskId } = useParams<{
+    teamId: string;
+    listId: string;
+    taskId?: string;
+  }>();
+  const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState<"taskDelete" | "replyDelete" | null>(
     null,
@@ -90,8 +95,8 @@ export default function TaskListDetail() {
 
   /** Task 단건 데이터 */
   const { data: taskData } = useGetTask(
-    Number(groupId),
-    Number(taskListId),
+    Number(teamId),
+    Number(listId),
     Number(taskId),
   );
 
@@ -100,8 +105,8 @@ export default function TaskListDetail() {
 
   /** done 상태 변경 mutation */
   const { mutate: setDone } = useUpdateTaskListDone(
-    Number(groupId),
-    Number(taskListId),
+    Number(teamId),
+    Number(listId),
     Number(taskId),
   );
 
@@ -113,8 +118,8 @@ export default function TaskListDetail() {
 
   /** Task 삭제 mutation */
   const { mutate: deleteTask } = useDeleteTask(
-    Number(groupId),
-    Number(taskListId),
+    Number(teamId),
+    Number(listId),
     Number(taskId),
   );
 
@@ -256,7 +261,10 @@ export default function TaskListDetail() {
     <>
       <div className="bg-background-primary flex flex-col gap-4 px-4 pt-3 pb-4 md:px-7 md:pt-11 lg:px-10">
         {/* 닫기 아이콘 (라우팅/모달 닫기 등은 연결 필요) */}
-        <CloseIcon className="cursor-pointer" />
+        <CloseIcon
+          className="cursor-pointer"
+          onClick={() => navigate(`/team/${teamId}/tasklists/${listId}`)}
+        />
 
         <div className="mt-4 flex flex-row justify-between md:mt-12">
           {/* 완료 여부에 따른 타이틀 UI */}
@@ -424,7 +432,7 @@ export default function TaskListDetail() {
                   {/* 편집 모드가 아닐 때만 댓글 액션 메뉴 표시 */}
                   {!isEditing && (
                     <Dropdown
-                      trigger="kebab"
+                      trigger="kebabSmall"
                       optionsKey="edit"
                       listAlign="center"
                       listClassName="absolute right-4 md:right-6 lg:right-10"
