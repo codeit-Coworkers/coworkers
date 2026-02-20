@@ -25,13 +25,13 @@ export default function Team() {
   // 접기/펼치기 상태에 따른 클래스
   const foldClass = isCollapsed
     ? {
-        container: "md:mt-[32px] md:min-h-[calc(100vh-32px)]",
+        container: "md:pt-[32px] md:min-h-[calc(100vh-32px)]",
         progressGrid: "md:grid-rows-[0fr]",
         listSection: "md:pt-[0px] md:pb-[0px]",
         divider: "",
       }
     : {
-        container: "md:mt-[120px] md:min-h-[calc(100vh-120px)]",
+        container: "md:pt-[120px] md:min-h-[calc(100vh-120px)]",
         progressGrid: "md:grid-rows-[1fr]",
         listSection: "md:pt-[64px]",
         divider: beforeDivider,
@@ -71,44 +71,46 @@ export default function Team() {
 
   return (
     <>
-      <div
-        className={`flex min-h-[calc(100vh-59px)] flex-col md:ml-[85px] md:w-[1120px] ${foldClass.container}`}
-      >
-        {/* 오늘의 진행도 */}
+      <div className="bg-background-secondary">
         <div
-          className={`grid transition-all duration-300 ${foldClass.progressGrid}`}
+          className={`flex min-h-[calc(100vh-59px)] flex-col md:w-[1205px] md:pl-[85px] ${foldClass.container}`}
         >
-          <div className="overflow-hidden">
-            <FetchBoundary loadingFallback={<TodayProgressSkeleton />}>
-              <TodayProgressSection groupId={groupId} />
-            </FetchBoundary>
-          </div>
-        </div>
-
-        {/* 목록 */}
-        <div
-          className={`flex gap-[32px] px-[16px] pt-[34px] pb-[54px] md:flex-row md:gap-[24px] md:px-0 ${foldClass.listSection}`}
-        >
+          {/* 오늘의 진행도 */}
           <div
-            className={`bg-background-secondary relative flex-1 ${foldClass.divider}`}
+            className={`grid transition-all duration-300 ${foldClass.progressGrid}`}
           >
-            <FetchBoundary loadingFallback={<TaskColumnSkeleton />}>
-              <TaskColumn
-                groupId={groupId}
-                isCollapsed={isCollapsed}
-                onToggleCollapse={() => setIsCollapsed((prev) => !prev)}
-              />
-            </FetchBoundary>
-          </div>
-
-          {/* 할 일 목록 펼쳐지면 안나오기 */}
-          {!isCollapsed && (
-            <div className="mt-[70px] hidden md:block">
-              <FetchBoundary loadingFallback={<TeamMemberSkeleton />}>
-                <TeamMemberSection groupId={groupId} />
+            <div className="overflow-hidden">
+              <FetchBoundary loadingFallback={<TodayProgressSkeleton />}>
+                <TodayProgressSection groupId={groupId} />
               </FetchBoundary>
             </div>
-          )}
+          </div>
+
+          {/* 목록 */}
+          <div
+            className={`flex gap-[32px] px-[16px] pt-[34px] pb-[54px] md:flex-row md:gap-[24px] md:px-0 ${foldClass.listSection}`}
+          >
+            <div
+              className={`bg-background-secondary relative flex-1 ${foldClass.divider}`}
+            >
+              <FetchBoundary loadingFallback={<TaskColumnSkeleton />}>
+                <TaskColumn
+                  groupId={groupId}
+                  isCollapsed={isCollapsed}
+                  onToggleCollapse={() => setIsCollapsed((prev) => !prev)}
+                />
+              </FetchBoundary>
+            </div>
+
+            {/* 할 일 목록 펼쳐지면 안나오기 */}
+            {!isCollapsed && (
+              <div className="mt-[70px] hidden md:block">
+                <FetchBoundary loadingFallback={<TeamMemberSkeleton />}>
+                  <TeamMemberSection groupId={groupId} />
+                </FetchBoundary>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>
