@@ -1,9 +1,9 @@
-import TaskColumn from "@/features/taskcolumn/TaskColumn";
+import TaskColumn from "@/features/Team/TaskColumn/TaskColumn";
 
 export default function TestTaskColumn() {
   return (
     <div>
-      <TaskColumn />
+      <TaskColumn groupId={3810} />
     </div>
   );
 }

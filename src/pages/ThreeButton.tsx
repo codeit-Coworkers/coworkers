@@ -1,5 +1,3 @@
-"use client";
-
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useState, useRef } from "react";
 import { RoundedBox, Text, ContactShadows } from "@react-three/drei";

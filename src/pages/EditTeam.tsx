@@ -6,7 +6,7 @@ import { Input } from "@/components/common/Input/Input";
 import { useGroup, useUpdateGroup } from "@/api/group";
 import { useGroups } from "@/api/user";
 import { useToastStore } from "@/stores/useToastStore";
-import TeamImageUpload from "@/features/team/components/TeamImageUpload";
+import TeamImageUpload from "@/features/Team/components/TeamImageUpload";
 
 /** 카드 폼 스켈레톤 (이미지 + 입력 + 버튼) */
 function EditTeamSkeleton() {

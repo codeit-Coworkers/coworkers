@@ -1,9 +1,9 @@
 import { FetchBoundary } from "@/providers/boundary";
-import { useBoardList } from "@/features/boards/hooks/useBoardList";
-import BestPostSection from "@/features/boards/components/BestPostSection";
-import BoardListHeader from "@/features/boards/components/BoardListHeader";
-import BoardListSection from "@/features/boards/components/BoardListSection";
-import FloatingWriteButton from "@/features/boards/components/FloatingWriteButton";
+import { useBoardList } from "@/features/Boards/hooks/useBoardList";
+import BestPostSection from "@/features/Boards/components/BestPostSection/BestPostSection";
+import BoardListHeader from "@/features/Boards/components/BoardListHeader/BoardListHeader";
+import BoardListSection from "@/features/Boards/components/BoardListSection/BoardListSection";
+import FloatingWriteButton from "@/features/Boards/components/FloatingWriteButton/FloatingWriteButton";
 
 /**
  * 자유게시판 페이지

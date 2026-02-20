@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import Gnb from "../gnb/Gnb";
-import { useGnbStore } from "../gnb/useGnbStore";
+import Gnb from "./Gnb/Gnb";
+import { useGnbStore } from "./Gnb/useGnbStore";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 
 export default function Layout() {

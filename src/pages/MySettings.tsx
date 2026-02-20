@@ -5,10 +5,8 @@ import { FetchBoundary } from "@/providers/boundary";
 import { useUser, useUpdateUser } from "@/api/user";
 import { useUploadImage } from "@/api/image";
 import { Input } from "@/components/common/Input/Input";
-import {
-  PasswordChangeModal,
-  WithdrawModal,
-} from "@/features/my-settings/components";
+import PasswordChangeModal from "@/features/MySettings/components/PasswordChangeModal";
+import WithdrawModal from "@/features/MySettings/components/WithdrawModal";
 import AlertIcon from "@/assets/alert-white.svg";
 import PencilIcon from "@/assets/pencil.svg";
 import SecessionIcon from "@/assets/secession.svg";
