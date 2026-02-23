@@ -21,12 +21,6 @@ export default function MobileGnb() {
         setIsHeaderTrigger(false);
       }
 
-      // 최상단으로 스크롤 할 때
-      // if (currentScrollY === 0) {
-      //   setIsHeaderFixed(false);
-      //   setIsHeaderHidden(false);
-      // }
-
       // 아래 스크롤할 때
       if (currentScrollY > lastScrollY.current) {
         setIsHeaderHidden(true);
