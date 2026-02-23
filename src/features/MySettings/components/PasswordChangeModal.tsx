@@ -4,6 +4,7 @@ import { Input } from "@/components/common/Input/Input";
 import { useChangePassword } from "@/api/user";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import { Button } from "@/components/common/Button/Button";
+import { useToastStore } from "@/stores/useToastStore";
 
 interface PasswordChangeModalProps {
   isOpen: boolean;
@@ -30,6 +31,7 @@ export default function PasswordChangeModal({
   const [confirmError, setConfirmError] = useState("");
 
   const changePassword = useChangePassword();
+  const showToast = useToastStore((s) => s.show);
 
   const isValid =
     password.length > 0 &&
@@ -76,6 +78,7 @@ export default function PasswordChangeModal({
         onSuccess: () => {
           setPassword("");
           setPasswordConfirmation("");
+          showToast("비밀번호가 변경되었습니다.");
           onSuccess?.();
           onClose();
         },
