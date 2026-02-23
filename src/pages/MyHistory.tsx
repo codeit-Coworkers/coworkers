@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useMyHistory } from "@/features/MyHistory/useMyHistory";
 import { useMyHistoryData } from "@/features/MyHistory/useMyHistoryData";
-import TeamHeader from "@/features/Team/components/TeamHeader";
+import TeamHeader from "@/features/common/components/TeamHeader";
 import MyHistorySidebar from "@/features/MyHistory/MyHistorySidebar";
 import MyHistoryContent from "@/features/MyHistory/MyHistoryContent";
 
