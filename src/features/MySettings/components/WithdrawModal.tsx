@@ -45,7 +45,7 @@ export default function WithdrawModal({ isOpen, onClose }: WithdrawModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="text-color-default border-border-primary text-md-sb h-12 w-[135px] rounded-lg border bg-white text-center"
+            className="text-color-default border-border-primary text-md-sb h-12 w-[135px] rounded-lg border bg-white text-center transition-colors hover:bg-background-secondary"
           >
             닫기
           </button>
@@ -53,7 +53,7 @@ export default function WithdrawModal({ isOpen, onClose }: WithdrawModalProps) {
             type="button"
             onClick={handleWithdraw}
             disabled={deleteUser.isPending}
-            className="bg-status-danger text-color-inverse text-md-sb h-12 w-[135px] rounded-lg text-center disabled:opacity-50"
+            className="bg-status-danger text-color-inverse text-md-sb h-12 w-[135px] rounded-lg text-center transition-colors hover:opacity-80 disabled:opacity-50"
           >
             {deleteUser.isPending ? "처리 중..." : "회원 탈퇴"}
           </button>
