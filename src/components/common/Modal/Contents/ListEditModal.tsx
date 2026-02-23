@@ -3,6 +3,7 @@ import Close from "@/assets/close.svg";
 import { Input } from "@/components/common/Input/Input";
 import { useState } from "react";
 import { useToastStore } from "@/stores/useToastStore";
+import { Button } from "../../Button/Button";
 
 type TaskListClient = { id: number; name: string };
 
@@ -54,16 +55,16 @@ export default function ListEditModal({
             />
           </div>
         </div>
-        <button
+        <Button
           type="submit"
-          className="bg-brand-primary text-lg-b text-color-inverse h-[48px] w-[280px] rounded-[12px] text-center"
+          size="authWide"
           onClick={() => {
             handleEdit(selectedTaskList.id);
             onClose();
           }}
         >
           수정하기
-        </button>
+        </Button>
       </div>
     </>
   );
