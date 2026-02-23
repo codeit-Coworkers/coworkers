@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
 import { useGroup } from "@/api/group";
 import TaskCard from "./components/TaskCard";
-import TaskColumnModals from "./components/TaskColumnModals";
-import { useTaskColumnModals } from "./hooks/useTaskColumnModals";
+import TaskListModals from "@/features/common/components/TaskListModals";
+import { useTaskListModals } from "@/features/common/hooks/useTaskListModals";
 import { useTaskDragDrop } from "./hooks/useTaskDragDrop";
 import { Button } from "@/components/common/Button/Button";
 import Plus from "@/assets/plus.svg";
@@ -41,7 +41,7 @@ export default function TaskColumn({
   } = useTaskDragDrop({ groupId, taskLists });
 
   const { modalType, selectedTaskList, openModal, closeModal } =
-    useTaskColumnModals();
+    useTaskListModals();
 
   // 특정 위치에 드롭 플레이스홀더를 표시할지 여부
   const showPlaceholderAt = (column: KanbanStatus, index: number) =>
@@ -231,7 +231,7 @@ export default function TaskColumn({
         </div>
       </div>
 
-      <TaskColumnModals
+      <TaskListModals
         modalType={modalType}
         selectedTaskList={selectedTaskList}
         closeModal={closeModal}

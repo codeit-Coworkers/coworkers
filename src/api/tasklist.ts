@@ -82,6 +82,7 @@ export function useUpdateTaskList(groupId: number) {
     }) => updateTaskList(groupId, taskListId, newName),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["group", groupId] });
+      queryClient.invalidateQueries({ queryKey: ["taskLists", groupId] });
     },
   });
 }
@@ -109,6 +110,7 @@ export function useDeleteTaskList(groupId: number) {
     mutationFn: (taskListId: number) => deleteTaskList(groupId, taskListId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["group", groupId] });
+      queryClient.invalidateQueries({ queryKey: ["taskLists", groupId] });
     },
   });
 }

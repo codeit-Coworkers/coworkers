@@ -1,11 +1,11 @@
 import { useDeleteTaskList } from "@/api/tasklist";
 import Alert from "@/assets/alert.svg";
 import { useToastStore } from "@/stores/useToastStore";
-import { TaskListServer } from "@/types/taskList";
+type TaskListClient = { id: number; name: string };
 
 type ListDeleteModalProps = {
   onClose: () => void;
-  selectedTaskList: TaskListServer | null;
+  selectedTaskList: TaskListClient | null;
   groupId: number;
 };
 
