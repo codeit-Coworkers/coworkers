@@ -3,6 +3,7 @@ import Close from "@/assets/close.svg";
 import { useToastStore } from "@/stores/useToastStore";
 import { useState } from "react";
 import { createTaskList } from "@/api/tasklist";
+import { Button } from "../../Button/Button";
 
 type ListCreateModalProps = {
   onClose: () => void;
@@ -60,13 +61,14 @@ export default function ListCreateModal({
           />
         </div>
 
-        <button
-          className="bg-brand-primary text-lg-b text-color-inverse h-12 w-full rounded-xl text-center disabled:opacity-50"
+        <Button
+          size="authWide"
           onClick={handleCreate}
           disabled={mutation.isPending}
+          className="disabled:opacity-50"
         >
           {mutation.isPending ? "생성 중..." : "만들기"}
-        </button>
+        </Button>
       </div>
     </div>
   );

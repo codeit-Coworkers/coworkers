@@ -2,6 +2,7 @@ import { useDeleteTaskList } from "@/api/tasklist";
 import Alert from "@/assets/alert.svg";
 import { useToastStore } from "@/stores/useToastStore";
 import { TaskListServer } from "@/types/taskList";
+import { Button } from "../../Button/Button";
 
 type ListDeleteModalProps = {
   onClose: () => void;
@@ -37,22 +38,19 @@ export default function ListDeleteModal({
           </h2>
         </div>
         <div className="mt-7 flex flex-row justify-center gap-2">
-          <button
-            onClick={onClose}
-            className="text-lg-b text-color-default border-border-secondary h-[48px] w-[135px] rounded-[12px] border-[1px] border-solid text-center"
-          >
+          <Button onClick={onClose} variant="close">
             닫기
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            className="bg-status-danger text-lg-b text-color-inverse h-[48px] w-[135px] rounded-[12px] text-center"
+            variant="danger"
             onClick={() => {
               handleDelete(selectedTaskList.id);
               onClose();
             }}
           >
-            가차없이 삭제
-          </button>
+            삭제
+          </Button>
         </div>
       </div>
     </>
