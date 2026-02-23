@@ -45,6 +45,7 @@ export function useCreateTaskList(groupId: number) {
     mutationFn: (newName: string) => createTaskList(groupId, newName),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["group", groupId] });
+      queryClient.invalidateQueries({ queryKey: ["taskLists", groupId] });
     },
   });
 }
