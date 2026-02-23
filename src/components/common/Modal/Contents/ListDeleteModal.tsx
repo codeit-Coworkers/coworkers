@@ -33,7 +33,8 @@ export default function ListDeleteModal({
         </div>
         <div className="mt-2 flex flex-col gap-2">
           <h2 className="text-lg-m text-color-primary">
-            {selectedTaskList.name} 목록을 삭제하시겠어요?
+            {selectedTaskList.name.replace("{status:doing}", "").trim()} 목록을
+            삭제하시겠어요?
           </h2>
         </div>
         <div className="mt-7 flex flex-row justify-center gap-2">
