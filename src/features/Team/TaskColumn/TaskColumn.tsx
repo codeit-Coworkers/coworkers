@@ -5,7 +5,7 @@ import TaskColumnModals from "./components/TaskColumnModals";
 import { useTaskColumnModals } from "./hooks/useTaskColumnModals";
 import { useTaskDragDrop } from "./hooks/useTaskDragDrop";
 import { Button } from "@/components/common/Button/Button";
-import PlusBlue from "@/assets/plus_blue.svg";
+import Plus from "@/assets/plus.svg";
 import FoldTrue from "@/assets/fold-true.svg";
 import FoldFalse from "@/assets/fold-false.svg";
 import { Link } from "react-router-dom";
@@ -86,7 +86,7 @@ export default function TaskColumn({
           <Button
             size="todoAdd"
             variant="default"
-            icon={<PlusBlue className="h-4 w-4" />}
+            icon={<Plus className="text-icon-inverse h-4 w-4" />}
             onClick={() => openModal("ListCreate", null)}
           >
             목록 추가
