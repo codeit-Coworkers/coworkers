@@ -42,10 +42,6 @@ interface TaskCardProps {
   onToggle: () => void;
   onDelete?: () => void;
 
-  /**
-   * ✅ 수정 모달을 띄우고 싶을 때만 넘겨줘
-   * - 없으면 "할 일 수정하기" 클릭 시 아무 동작 안 함
-   */
   updateModalProps?: {
     initialTask: TaskUpdateInitialTask;
     onUpdate: (data: TaskUpdatePayload) => void;
@@ -78,7 +74,7 @@ export default function TaskCard({
   const menuOptions: Option[] = useMemo(
     () => [
       {
-        label: "할 일 수정하기",
+        label: "수정하기",
         value: "edit",
         action: () => {
           if (!canEdit) return;
@@ -86,7 +82,7 @@ export default function TaskCard({
         },
       },
       {
-        label: "할 일 삭제하기",
+        label: "삭제하기",
         value: "delete",
         action: () => onDelete?.(),
       },
@@ -139,6 +135,7 @@ export default function TaskCard({
         <div className="ml-2 sm:ml-4">
           <Dropdown
             trigger="kebab"
+            listAlign="center"
             icon={
               <button
                 type="button"
@@ -155,7 +152,7 @@ export default function TaskCard({
         </div>
       </div>
 
-      {/* ✅ 수정 모달 (updateModalProps 있을 때만) */}
+      {/* 수정 모달 (updateModalProps 있을 때만) */}
       {updateModalProps && (
         <Modal
           isOpen={isUpdateModalOpen}

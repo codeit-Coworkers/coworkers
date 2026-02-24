@@ -20,7 +20,7 @@ interface TaskGroupCardProps {
   isActive?: boolean;
   onClick?: () => void;
 
-  // ✅ 부모에서 모달 띄우도록 콜백만 호출
+  // 부모에서 모달 띄우도록 콜백만 호출
   onEdit?: () => void;
   onDelete?: () => void;
 }
@@ -38,7 +38,7 @@ export const TaskGroupCard = ({
   const countText =
     current === null || total === null ? "—/—" : `${current}/${total}`;
 
-  // ✅ action에 이벤트가 없어서, 여기서는 "카드 클릭 방지"를 trigger 쪽에서 처리해줄게
+  // action에 이벤트가 없어서, 여기서는 "카드 클릭 방지"를 trigger 쪽에서 처리해줄게
   const menuOptions: Option[] = [
     {
       label: "수정하기",
@@ -89,6 +89,7 @@ export const TaskGroupCard = ({
         {/* 케밥 메뉴: 공통 Dropdown */}
         <Dropdown
           trigger="kebab"
+          listAlign="center"
           icon={
             <button
               type="button"

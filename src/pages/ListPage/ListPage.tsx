@@ -832,7 +832,7 @@ export default function ListPage() {
       {/* 오른쪽 슬라이드 패널 */}
       <aside
         className={[
-          "fixed right-0 z-50 bg-white shadow-xl",
+          "fixed right-0 z-30 bg-white shadow-xl",
           "transition-transform duration-300 ease-out",
           isOpen ? "translate-x-0" : "translate-x-full",
           "top-13 left-0 h-[calc(100dvh-52px)] w-full",
