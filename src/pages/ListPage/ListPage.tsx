@@ -237,6 +237,11 @@ export default function ListPage() {
       queryClient.invalidateQueries({
         queryKey: ["taskLists", selectedTeamId],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["group", selectedTeamId],
+      });
+
       showToast("할 일이 추가되었습니다.");
       setIsTaskModalOpen(false);
     },
