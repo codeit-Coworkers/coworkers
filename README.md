@@ -12,7 +12,7 @@
 ## 🔗 링크 (Links)
 
 - **배포 주소**: [코워커스](https://coworkers-six.vercel.app/)
-- **시연 영상**: [유튜브 또는 기타 영상 링크 입력]
+- **시연 영상**: [코워커스 시연](https://www.youtube.com/watch?v=XkPNaoleILM)
 
 <br/>
 
